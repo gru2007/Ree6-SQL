@@ -1,6 +1,7 @@
 package de.presti.ree6.sql;
 
 import com.zaxxer.hikari.HikariConfig;
+import de.presti.ree6.sql.util.SettingsManager;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,6 +76,8 @@ public class SQLSession {
         setMaxPoolSize(maxPoolSize);
         setDatabaseTyp(databaseTyp);
         setJdbcURL(buildConnectionURL());
+
+        SettingsManager.loadDefaults();
 
         sqlConnector = new SQLConnector();
     }

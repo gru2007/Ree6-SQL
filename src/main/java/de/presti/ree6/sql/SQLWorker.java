@@ -12,6 +12,7 @@ import de.presti.ree6.sql.entities.stats.CommandStats;
 import de.presti.ree6.sql.entities.stats.GuildCommandStats;
 import de.presti.ree6.sql.entities.stats.Statistics;
 import de.presti.ree6.sql.entities.webhook.*;
+import de.presti.ree6.sql.util.SettingsManager;
 import jakarta.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
@@ -19,6 +20,8 @@ import org.hibernate.query.NativeQuery;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 import javax.annotation.Nonnull;
 import java.text.ParseException;
@@ -1330,48 +1333,11 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      */
     public void createSettings(String guildId) {
-        // Create the Chat Prefix Setting.
-        if (!hasSetting(guildId, "chatprefix")) setSetting(new Setting(guildId, "chatprefix", "ree!"));
-
-        // Create the Level Message Setting.
-        if (!hasSetting(guildId, "level_message")) setSetting(new Setting(guildId, "level_message", false));
-
-        // Create the Language Setting.
-        if (!hasSetting(guildId, "configuration_language"))
-            setSetting(new Setting(guildId, "configuration_language", "en-GB"));
-
-        // Create the Join Message Setting
-        if (!hasSetting(guildId, "message_join"))
-            setSetting(new Setting(guildId, "message_join", "Welcome %user_mention%!\nWe wish you a great stay on %guild_name%"));
-
-        if (!hasSetting(guildId, "message_join_image"))
-            setSetting(new Setting(guildId, "message_join_image", ""));
-
-
-
-        // Create Log Settings.
-        if (!hasSetting(guildId, "logging_invite")) setSetting(guildId, "logging_invite", true);
-        if (!hasSetting(guildId, "logging_memberjoin")) setSetting(guildId, "logging_memberjoin", true);
-        if (!hasSetting(guildId, "logging_memberleave")) setSetting(guildId, "logging_memberleave", true);
-        if (!hasSetting(guildId, "logging_memberban")) setSetting(guildId, "logging_memberban", true);
-        if (!hasSetting(guildId, "logging_memberunban")) setSetting(guildId, "logging_memberunban", true);
-        if (!hasSetting(guildId, "logging_nickname")) setSetting(guildId, "logging_nickname", true);
-        if (!hasSetting(guildId, "logging_voicejoin")) setSetting(guildId, "logging_voicejoin", true);
-        if (!hasSetting(guildId, "logging_voicemove")) setSetting(guildId, "logging_voicemove", true);
-        if (!hasSetting(guildId, "logging_voiceleave")) setSetting(guildId, "logging_voiceleave", true);
-        if (!hasSetting(guildId, "logging_roleadd")) setSetting(guildId, "logging_roleadd", true);
-        if (!hasSetting(guildId, "logging_roleremove")) setSetting(guildId, "logging_roleremove", true);
-        if (!hasSetting(guildId, "logging_voicechannel")) setSetting(guildId, "logging_voicechannel", true);
-        if (!hasSetting(guildId, "logging_textchannel")) setSetting(guildId, "logging_textchannel", true);
-        if (!hasSetting(guildId, "logging_rolecreate")) setSetting(guildId, "logging_rolecreate", true);
-        if (!hasSetting(guildId, "logging_roledelete")) setSetting(guildId, "logging_roledelete", true);
-        if (!hasSetting(guildId, "logging_rolename")) setSetting(guildId, "logging_rolename", true);
-        if (!hasSetting(guildId, "logging_rolemention")) setSetting(guildId, "logging_rolemention", true);
-        if (!hasSetting(guildId, "logging_rolehoisted")) setSetting(guildId, "logging_rolehoisted", true);
-        if (!hasSetting(guildId, "logging_rolepermission")) setSetting(guildId, "logging_rolepermission", true);
-        if (!hasSetting(guildId, "logging_rolecolor")) setSetting(guildId, "logging_rolecolor", true);
-        if (!hasSetting(guildId, "logging_messagedelete")) setSetting(guildId, "logging_messagedelete", true);
-        if (!hasSetting(guildId, "logging_timeout")) setSetting(guildId, "logging_timeout", true);
+        SettingsManager.getSettings().forEach(setting -> {
+            if (!hasSetting(guildId, setting)) {
+                setSetting(guildId, setting.getName(), setting.getValue());
+            }
+        });
     }
 
     //endregion
@@ -1663,8 +1629,11 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      */
     public void deleteAllData(String guildId) {
-        Reflections reflections = new Reflections("de.presti.ree6.sql.entities");
-        Set<Class<?>> classSet = reflections.getTypesAnnotatedWith(Table.class);
+        Set<Class<?>> classSet = new Reflections(
+                ConfigurationBuilder
+                        .build()
+                        .forPackage("de.presti.ree6.webinterface.sql.entities", ClasspathHelper.staticClassLoader()))
+                .getTypesAnnotatedWith(Table.class);
         for (Class<?> clazz : classSet) {
             if (clazz.isAnnotationPresent(Table.class)) {
                 Table table = clazz.getAnnotation(Table.class);
