@@ -4,8 +4,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import de.presti.ree6.sql.converter.ByteAttributeConverter;
 import de.presti.ree6.sql.converter.JsonAttributeConverter;
-import de.presti.ree6.utils.others.RandomUtils;
 import jakarta.persistence.*;
+
+import java.security.SecureRandom;
+import java.util.Base64;
 
 /**
  * This class is used to represent a Ree6-Voice-Recording, in our Database.
@@ -74,7 +76,12 @@ public class Recording {
      * @param jsonArray an JsonArray containing the IDs of the Users who have participated in the Recording.
      */
     public Recording(String guildId, String voiceId, String creatorId, byte[] recording, JsonElement jsonArray) {
-        this.identifier = RandomUtils.getRandomBase64String(16);
+
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] randomBytes = new byte[16];
+        secureRandom.nextBytes(randomBytes);
+
+        this.identifier = Base64.getUrlEncoder().encodeToString(randomBytes);
         this.guildId = guildId;
         this.voiceId = voiceId;
         this.creatorId = creatorId;

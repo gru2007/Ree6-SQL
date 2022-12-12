@@ -1,12 +1,6 @@
 package de.presti.ree6.sql;
 
 import com.google.gson.JsonObject;
-import de.presti.ree6.bot.BotWorker;
-import de.presti.ree6.commands.Category;
-import de.presti.ree6.commands.interfaces.Command;
-import de.presti.ree6.commands.interfaces.ICommand;
-import de.presti.ree6.logger.invite.InviteContainer;
-import de.presti.ree6.main.Main;
 import de.presti.ree6.sql.entities.*;
 import de.presti.ree6.sql.entities.level.ChatUserLevel;
 import de.presti.ree6.sql.entities.level.UserLevel;
@@ -20,7 +14,6 @@ import de.presti.ree6.sql.entities.stats.Statistics;
 import de.presti.ree6.sql.entities.webhook.*;
 import jakarta.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.Guild;
 import org.hibernate.Session;
 import org.hibernate.query.NativeQuery;
 import org.jetbrains.annotations.NotNull;
@@ -212,16 +205,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         // Check if there is already a Webhook set.
         if (isLogSetup(guildId)) {
-
-            // Get the Guild from the ID.
-            Guild guild = BotWorker.getShardManager().getGuildById(guildId);
-
-            if (guild != null) {
-                Webhook webhookEntity = getLogWebhook(guildId);
-                // Delete the existing Webhook.
-                guild.retrieveWebhooks().queue(webhooks -> webhooks.stream().filter(webhook -> webhook.getToken() != null).filter(webhook -> webhook.getId().equalsIgnoreCase(webhookEntity.getChannelId()) && webhook.getToken().equalsIgnoreCase(webhookEntity.getToken())).forEach(webhook -> webhook.delete().queue()));
-            }
-
             // Delete the entry.
             sqlConnector.querySQL("DELETE FROM LogWebhooks WHERE GID=?", guildId);
         }
@@ -291,16 +274,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         // Check if there is already a Webhook set.
         if (isWelcomeSetup(guildId)) {
-
-            // Get the Guild from the ID.
-            Guild guild = BotWorker.getShardManager().getGuildById(guildId);
-
-            if (guild != null) {
-                Webhook webhookEntity = getWelcomeWebhook(guildId);
-                // Delete the existing Webhook.
-                guild.retrieveWebhooks().queue(webhooks -> webhooks.stream().filter(webhook -> webhook.getToken() != null).filter(webhook -> webhook.getId().equalsIgnoreCase(webhookEntity.getChannelId()) && webhook.getToken().equalsIgnoreCase(webhookEntity.getToken())).forEach(webhook -> webhook.delete().queue()));
-            }
-
             // Delete the entry.
             sqlConnector.querySQL("DELETE FROM WelcomeWebhooks WHERE GID=?", guildId);
         }
@@ -390,16 +363,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         // Check if there is a Webhook set.
         if (isTwitchSetup(guildId, twitchName)) {
-
-            // Get the Guild from the ID.
-            Guild guild = BotWorker.getShardManager().getGuildById(guildId);
-
-            if (guild != null) {
-                Webhook webhookEntity = getTwitchWebhook(guildId, twitchName);
-                // Delete the existing Webhook.
-                guild.retrieveWebhooks().queue(webhooks -> webhooks.stream().filter(webhook -> webhook.getToken() != null).filter(webhook -> webhook.getId().equalsIgnoreCase(webhookEntity.getChannelId()) && webhook.getToken().equalsIgnoreCase(webhookEntity.getToken())).forEach(webhook -> webhook.delete().queue()));
-            }
-
             // Delete the entry.
             sqlConnector.querySQL("DELETE FROM TwitchNotify WHERE GID=? AND NAME=?", guildId, twitchName);
         }
@@ -497,16 +460,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         // Check if there is a Webhook set.
         if (isInstagramSetup(guildId, name)) {
-
-            // Get the Guild from the ID.
-            Guild guild = BotWorker.getShardManager().getGuildById(guildId);
-
-            if (guild != null) {
-                Webhook webhookEntity = getInstagramWebhook(guildId, name);
-                // Delete the existing Webhook.
-                guild.retrieveWebhooks().queue(webhooks -> webhooks.stream().filter(webhook -> webhook.getToken() != null).filter(webhook -> webhook.getId().equalsIgnoreCase(webhookEntity.getChannelId()) && webhook.getToken().equalsIgnoreCase(webhookEntity.getToken())).forEach(webhook -> webhook.delete().queue()));
-            }
-
             // Delete the entry.
             sqlConnector.querySQL("DELETE FROM InstagramNotify WHERE GID=? AND NAME=?", guildId, name);
         }
@@ -604,16 +557,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         // Check if there is a Webhook set.
         if (isRedditSetup(guildId, subreddit)) {
-
-            // Get the Guild from the ID.
-            Guild guild = BotWorker.getShardManager().getGuildById(guildId);
-
-            if (guild != null) {
-                Webhook webhookEntity = getRedditWebhook(guildId, subreddit);
-                // Delete the existing Webhook.
-                guild.retrieveWebhooks().queue(webhooks -> webhooks.stream().filter(webhook -> webhook.getToken() != null).filter(webhook -> webhook.getId().equalsIgnoreCase(webhookEntity.getChannelId()) && webhook.getToken().equalsIgnoreCase(webhookEntity.getToken())).forEach(webhook -> webhook.delete().queue()));
-            }
-
             // Delete the entry.
             sqlConnector.querySQL("DELETE FROM RedditNotify WHERE GID=? AND SUBREDDIT=?", guildId, subreddit);
         }
@@ -711,16 +654,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         // Check if there is a Webhook set.
         if (isYouTubeSetup(guildId, youtubeChannel)) {
-
-            // Get the Guild from the ID.
-            Guild guild = BotWorker.getShardManager().getGuildById(guildId);
-
-            if (guild != null) {
-                Webhook webhookEntity = getYouTubeWebhook(guildId, youtubeChannel);
-                // Delete the existing Webhook.
-                guild.retrieveWebhooks().queue(webhooks -> webhooks.stream().filter(webhook -> webhook.getToken() != null).filter(webhook -> webhook.getId().equalsIgnoreCase(webhookEntity.getChannelId()) && webhook.getToken().equalsIgnoreCase(webhookEntity.getToken())).forEach(webhook -> webhook.delete().queue()));
-            }
-
             // Delete the entry.
             sqlConnector.querySQL("DELETE FROM YouTubeNotify WHERE GID=? AND NAME=?", guildId, youtubeChannel);
         }
@@ -817,16 +750,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public void removeTwitterWebhook(String guildId, String twitterName) {
         // Check if there is a Webhook set.
         if (isTwitterSetup(guildId, twitterName)) {
-
-            // Get the Guild from the ID.
-            Guild guild = BotWorker.getShardManager().getGuildById(guildId);
-
-            if (guild != null) {
-                Webhook webhookEntity = getTwitterWebhook(guildId, twitterName);
-                // Delete the existing Webhook.
-                guild.retrieveWebhooks().queue(webhooks -> webhooks.stream().filter(webhook -> webhook.getToken() != null).filter(webhook -> webhook.getId().equalsIgnoreCase(webhookEntity.getChannelId()) && webhook.getToken().equalsIgnoreCase(webhookEntity.getToken())).forEach(webhook -> webhook.delete().queue()));
-            }
-
             // Delete the entry.
             sqlConnector.querySQL(new WebhookTwitter(), "DELETE FROM TwitterNotify WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", twitterName));
         }
@@ -1101,15 +1024,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get a List of every saved Invite from our Database.
      *
      * @param guildId the ID of the Guild.
-     * @return {@link List<String>} as List with {@link InviteContainer}.
+     * @return {@link List<String>} as List with {@link Invite}.
      */
-    public List<InviteContainer> getInvites(String guildId) {
-        ArrayList<InviteContainer> invites = new ArrayList<>();
-
-        List<Invite> inviteList = getEntityList(new Invite(), "SELECT * FROM Invites WHERE GID=:gid", Map.of("gid", guildId));
-
-        inviteList.stream().map(invite -> new InviteContainer(invite.getUserId(), invite.getGuild(), invite.getCode(), invite.getUses(), false)).forEach(invites::add);
-        return invites;
+    public List<Invite> getInvites(String guildId) {
+        return getEntityList(new Invite(), "SELECT * FROM Invites WHERE GID=:gid", Map.of("gid", guildId));
     }
 
     /**
@@ -1429,15 +1347,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         if (!hasSetting(guildId, "message_join_image"))
             setSetting(new Setting(guildId, "message_join_image", ""));
 
-        // Create Command Settings.
-        for (ICommand command : Main.getInstance().getCommandManager().getCommands()) {
 
-            // Skip the hidden Commands.
-            if (command.getClass().getAnnotation(Command.class).category() == Category.HIDDEN) continue;
-
-            if (!hasSetting(guildId, "command_" + command.getClass().getAnnotation(Command.class).name().toLowerCase()))
-                setSetting(guildId, "command_" + command.getClass().getAnnotation(Command.class).name().toLowerCase(), true);
-        }
 
         // Create Log Settings.
         if (!hasSetting(guildId, "logging_invite")) setSetting(guildId, "logging_invite", true);

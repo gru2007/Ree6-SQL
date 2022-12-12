@@ -1,8 +1,7 @@
 package de.presti.ree6.sql.entities.level;
 
-import de.presti.ree6.utils.data.LevelUtil;
+import de.presti.ree6.sql.util.LevelUtil;
 import jakarta.persistence.*;
-import net.dv8tion.jda.api.entities.User;
 
 /**
  * Base class for the UserLevel.
@@ -29,12 +28,6 @@ public class UserLevel {
      */
     @Column(name = "uid")
     String userId;
-
-    /**
-     * The User.
-     */
-    @Transient
-    User user;
 
     /**
      * The experience of the User.
@@ -110,24 +103,6 @@ public class UserLevel {
      */
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    /**
-     * Get the wanted User.
-     *
-     * @return the User.
-     */
-    public User getUser() {
-        return user;
-    }
-
-    /**
-     * Change the User Entity of the User.
-     *
-     * @param user the new User.
-     */
-    public void setUser(User user) {
-        this.user = user;
     }
 
     /**

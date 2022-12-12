@@ -1,6 +1,6 @@
-package de.presti.ree6.utils.data;
+package de.presti.ree6.sql.util;
 
-import de.presti.ree6.main.Main;
+import de.presti.ree6.sql.SQLSession;
 import de.presti.ree6.sql.entities.level.ChatUserLevel;
 import de.presti.ree6.sql.entities.level.UserLevel;
 import de.presti.ree6.sql.entities.level.VoiceUserLevel;
@@ -89,9 +89,9 @@ public class LevelUtil {
      */
     public static int getCurrentRank(UserLevel userLevel) {
         if (userLevel instanceof ChatUserLevel) {
-            return Main.getInstance().getSqlConnector().getSqlWorker().getAllChatLevelSorted(userLevel.getGuildId()).indexOf(userLevel.getUserId()) + 1;
+            return SQLSession.getSqlConnector().getSqlWorker().getAllChatLevelSorted(userLevel.getGuildId()).indexOf(userLevel.getUserId()) + 1;
         } else if (userLevel instanceof VoiceUserLevel) {
-            return Main.getInstance().getSqlConnector().getSqlWorker().getAllVoiceLevelSorted(userLevel.getGuildId()).indexOf(userLevel.getUserId()) + 1;
+            return SQLSession.getSqlConnector().getSqlWorker().getAllVoiceLevelSorted(userLevel.getGuildId()).indexOf(userLevel.getUserId()) + 1;
         }
 
         return 0;

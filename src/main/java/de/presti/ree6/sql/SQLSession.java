@@ -1,14 +1,17 @@
 package de.presti.ree6.sql;
 
-import de.presti.ree6.bot.BotWorker;
-import de.presti.ree6.main.Main;
+import com.zaxxer.hikari.HikariConfig;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 import java.util.Properties;
 import java.util.Set;
@@ -20,9 +23,30 @@ import java.util.Set;
 public class SQLSession {
 
     /**
-     * The JDBC URL to connect to the Database.1
+     * Various String that keep connection information to use for a connection.
+     */
+    private static String databaseUser,
+            databaseName,
+            databasePassword,
+            databaseServerIP,
+            databasePath;
+
+    /**
+     * The port of the Server.
+     */
+    private static int databaseServerPort;
+
+    /**
+     * The JDBC URL to connect to the Database.
      */
     static String jdbcURL;
+
+    /**
+     * The Database Typ.
+     */
+    @Getter
+    @Setter
+    static DatabaseTyp databaseTyp;
 
     /**
      * The max amount of connections allowed by Hikari.
@@ -35,14 +59,34 @@ public class SQLSession {
     static SessionFactory sessionFactory;
 
     /**
+     * The SQL-Connector used to connect to the Database.
+     */
+    @Getter
+    static SQLConnector sqlConnector;
+
+    public SQLSession(String databaseUser, String databaseName, String databasePassword, String databaseServerIP, int databaseServerPort, String databasePath, DatabaseTyp databaseTyp, int maxPoolSize) {
+        this.databaseUser = databaseUser;
+        this.databaseName = databaseName;
+        this.databasePassword = databasePassword;
+        this.databaseServerIP = databaseServerIP;
+        this.databaseServerPort = databaseServerPort;
+        this.databasePath = databasePath;
+
+        setMaxPoolSize(maxPoolSize);
+        setDatabaseTyp(databaseTyp);
+        setJdbcURL(buildConnectionURL());
+
+        sqlConnector = new SQLConnector();
+    }
+
+    /**
      * Build a new SessionFactory or return the current one.
      *
-     * @param username the username.
-     * @param password the password.
+     * @param debug if we should print debug messages.
      *
      * @return The SessionFactory.
      */
-    public static SessionFactory buildSessionFactory(String username, String password) {
+    public static SessionFactory buildSessionFactory(boolean debug) {
         if (sessionFactory != null) return getSessionFactory();
 
         try {
@@ -51,20 +95,27 @@ public class SQLSession {
             properties.put("hibernate.connection.datasource", "com.zaxxer.hikari.HikariDataSource");
             properties.put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
             properties.put("hibernate.connection.url", jdbcURL);
-            properties.put("hibernate.connection.username", username);
-            properties.put("hibernate.connection.password", password);
+            properties.put("hibernate.connection.username", databaseName);
+            properties.put("hibernate.connection.password", databasePassword);
             properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(maxPoolSize));
-            properties.put("hibernate.dialect", Main.getInstance().getSqlConnector().getDatabaseTyp().getHibernateDialect());
-            if (BotWorker.getVersion().isDebug()) {
+            properties.put("hibernate.dialect", getDatabaseTyp().getHibernateDialect());
+
+            if (debug) {
                 properties.put("hibernate.show_sql", true);
                 properties.put("hibernate.format_sql", true);
             }
+
             properties.put("hibernate.hbm2ddl.auto", "update");
             properties.put("jakarta.persistence.schema-generation.database.action", "update");
 
             configuration.addProperties(properties);
 
-            Set<Class<?>> classSet = new Reflections("de.presti.ree6.sql.entities").getTypesAnnotatedWith(Table.class);
+            Set<Class<?>> classSet = new Reflections(
+                    ConfigurationBuilder
+                            .build()
+                            .forPackage("de.presti.ree6.webinterface.sql.entities", ClasspathHelper.staticClassLoader()))
+                    .getTypesAnnotatedWith(Table.class);
+
             classSet.forEach(configuration::addAnnotatedClass);
 
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
@@ -75,6 +126,35 @@ public class SQLSession {
             log.error("Initial SessionFactory creation failed.", ex);
             throw new ExceptionInInitializerError(ex);
         }
+    }
+
+    /**
+     * Build the Connection URL with the given data.
+     *
+     * @return the Connection URL.
+     */
+    public String buildConnectionURL() {
+        String jdbcUrl;
+
+        switch (getDatabaseTyp()) {
+            case MariaDB -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databaseServerIP,
+                    databaseServerPort,
+                    databaseName);
+
+            default -> jdbcUrl = DatabaseTyp.SQLite.getJdbcURL().formatted(databasePath);
+        }
+        return jdbcUrl;
+    }
+
+    public static HikariConfig buildHikariConfig() {
+        HikariConfig hConfig = new HikariConfig();
+
+        hConfig.setJdbcUrl(getJdbcURL());
+        hConfig.setUsername(databaseUser);
+        hConfig.setPassword(databasePassword);
+        hConfig.setMaximumPoolSize(getMaxPoolSize());
+
+        return hConfig;
     }
 
     /**
@@ -115,9 +195,7 @@ public class SQLSession {
      */
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null)
-            return sessionFactory = buildSessionFactory(
-                    Main.getInstance().getConfig().getConfiguration().getString("hikari.sql.user"),
-                    Main.getInstance().getConfig().getConfiguration().getString("hikari.sql.pw"));
+            return sessionFactory = buildSessionFactory(false);
         return sessionFactory;
     }
 }

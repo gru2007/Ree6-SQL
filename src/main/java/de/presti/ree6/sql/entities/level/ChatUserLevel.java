@@ -1,6 +1,6 @@
 package de.presti.ree6.sql.entities.level;
 
-import de.presti.ree6.main.Main;
+import de.presti.ree6.sql.SQLSession;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -27,7 +27,7 @@ public class ChatUserLevel extends UserLevel {
      * @param experience his XP count.
      */
     public ChatUserLevel(String guildId, String userId, long experience) {
-        super(guildId, userId, experience, Main.getInstance().getSqlConnector().getSqlWorker().getAllChatLevelSorted(guildId).indexOf(userId));
+        super(guildId, userId, experience, SQLSession.getSqlConnector().getSqlWorker().getAllChatLevelSorted(guildId).indexOf(userId));
     }
 
     /**
@@ -39,6 +39,6 @@ public class ChatUserLevel extends UserLevel {
      * @param level      his Level.
      */
     public ChatUserLevel(String guildId, String userId, long experience, long level) {
-        super(guildId, userId, experience, level, Main.getInstance().getSqlConnector().getSqlWorker().getAllChatLevelSorted(guildId).indexOf(userId));
+        super(guildId, userId, experience, level, SQLSession.getSqlConnector().getSqlWorker().getAllChatLevelSorted(guildId).indexOf(userId));
     }
 }

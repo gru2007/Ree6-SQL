@@ -1,10 +1,10 @@
 package de.presti.ree6.sql.migrations;
 
-import de.presti.ree6.main.Main;
 import de.presti.ree6.sql.SQLConnector;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
+import org.reflections.util.ClasspathHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class MigrationUtil {
 
         for (String url : reflections.getResources(".*\\.migration")) {
             if (url.endsWith(".migration")) {
-                try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream(url)) {
+                try (InputStream inputStream = ClasspathHelper.staticClassLoader().getResourceAsStream(url)) {
                     if (inputStream == null) break;
 
                     String migrationContent = new String(inputStream.readAllBytes());
