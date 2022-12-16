@@ -116,8 +116,12 @@ public class SQLSession {
             Set<Class<?>> classSet = new Reflections(
                     ConfigurationBuilder
                             .build()
-                            .forPackage("de.presti.ree6.webinterface.sql.entities", ClasspathHelper.staticClassLoader()))
+                            .forPackage("de.presti.ree6.sql.entities", ClasspathHelper.staticClassLoader()))
                     .getTypesAnnotatedWith(Table.class);
+
+            if (classSet.isEmpty()) {
+                log.error("No Entities found!");
+            }
 
             classSet.forEach(configuration::addAnnotatedClass);
 
