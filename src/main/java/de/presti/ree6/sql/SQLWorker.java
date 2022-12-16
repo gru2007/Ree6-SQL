@@ -1235,15 +1235,18 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Setting} which stores every information needed.
      */
     public Setting getSetting(String guildId, String settingName) {
+        Setting setting =
+                getEntity(new Setting(), "SELECT * FROM Settings WHERE GID = :gid AND NAME = :name",
+                        Map.of("gid", guildId, "name", settingName));
+
         // Check if there is an entry in the database.
-        if (hasSetting(guildId, settingName)) {
-            return getEntity(new Setting(), "SELECT * FROM Settings WHERE GID = :gid AND NAME = :name", Map.of("gid", guildId, "name", settingName));
+        if (setting != null) {
+            return setting;
         } else {
             // Check if everything is alright with the config.
             checkSetting(guildId, settingName);
+            return new Setting(guildId, settingName, true);
         }
-
-        return new Setting(guildId, settingName, true);
     }
 
     /**
@@ -1263,7 +1266,18 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param setting the Setting.
      */
     public void setSetting(Setting setting) {
-        setSetting(setting.getGuild(), setting.getName(), setting.getStringValue());
+
+        // Check if it is null.
+        if (setting.getValue() == null) {
+            Setting defaultSetting = SettingsManager.getDefault(setting.getName());
+            if (defaultSetting != null) {
+                setting.setValue(defaultSetting.getValue());
+            } else {
+                return;
+            }
+        }
+
+        updateEntity(setting);
     }
 
     /**
@@ -1274,11 +1288,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param settingValue the Value of the Setting.
      */
     public void setSetting(String guildId, String settingName, Object settingValue) {
-
-        // Check if it is null.
-        if (settingValue == null) createSettings(guildId);
-
-        updateEntity(new Setting(guildId, settingName, settingValue));
+        setSetting(new Setting(guildId, settingName, settingValue));
     }
 
     /**

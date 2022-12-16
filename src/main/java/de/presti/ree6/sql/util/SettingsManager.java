@@ -51,4 +51,13 @@ public class SettingsManager {
                 new Setting("-1", "logging_messagedelete", true),
                 new Setting("-1", "logging_timeout", true)));
     }
+
+    /**
+     * Retrieve the default Setting by name.
+     * @param settingName The name of the Setting.
+     * @return The Setting.
+     */
+    public static Setting getDefault(String settingName) {
+        return settings.stream().filter(s -> s.getName().equalsIgnoreCase(settingName)).findFirst().orElse(null);
+    }
 }
