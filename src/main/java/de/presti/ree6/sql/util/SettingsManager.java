@@ -4,6 +4,7 @@ import de.presti.ree6.sql.entities.Setting;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +22,9 @@ public class SettingsManager {
      * Constructor called to add all settings to the list.
      */
     public static void loadDefaults() {
+        if (settings == null)
+            settings = new ArrayList<>();
+
         settings.clear();
         settings.addAll(List.of(
                 new Setting("-1","chatprefix", "ree!"),
