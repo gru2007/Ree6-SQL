@@ -115,7 +115,7 @@ public class SQLSession {
 
             Sentry.init(options -> {
                 options.setDsn(finalDsn);
-                options.setRelease(Objects.requireNonNullElse(SQLSession.class.getPackage().getImplementationVersion(), "1.1.4"));
+                options.setRelease(Objects.requireNonNullElse(SQLSession.class.getPackage().getImplementationVersion(), "1.2.0"));
             });
         }
 
