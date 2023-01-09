@@ -94,7 +94,7 @@ public class SQLSession {
 
         String dsn = "";
 
-        String[] resources = reflections.getResources(".*\\application.configuration").toArray(String[]::new);
+        String[] resources = reflections.getResources("application.configuration").toArray(String[]::new);
         if (resources.length > 0) {
 
             try (InputStream inputStream = ClasspathHelper.staticClassLoader().getResourceAsStream(resources[0])) {
