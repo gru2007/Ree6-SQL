@@ -1657,7 +1657,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //region Entity-System
 
-
     /**
      * Update an Entity in the Database.
      *

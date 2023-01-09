@@ -1,7 +1,10 @@
 package de.presti.ree6.sql;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.zaxxer.hikari.HikariConfig;
 import de.presti.ree6.sql.util.SettingsManager;
+import io.sentry.Sentry;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +14,12 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
+import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
@@ -65,6 +71,17 @@ public class SQLSession {
     @Getter
     static SQLConnector sqlConnector;
 
+    /**
+     * Constructor.
+     * @param databaseUser Database Username
+     * @param databaseName Database Name
+     * @param databasePassword Database User password
+     * @param databaseServerIP Database Address
+     * @param databaseServerPort Database Port
+     * @param databasePath Database Path (SQLite)
+     * @param databaseTyp Database Typ ({@link DatabaseTyp})
+     * @param maxPoolSize Max Hiraki-CP Pool Size
+     */
     public SQLSession(String databaseUser, String databaseName, String databasePassword, String databaseServerIP, int databaseServerPort, String databasePath, DatabaseTyp databaseTyp, int maxPoolSize) {
         this.databaseUser = databaseUser;
         this.databaseName = databaseName;
@@ -72,6 +89,35 @@ public class SQLSession {
         this.databaseServerIP = databaseServerIP;
         this.databaseServerPort = databaseServerPort;
         this.databasePath = databasePath;
+
+        Reflections reflections = new Reflections("sql", Scanners.Resources);
+
+        String dsn = "";
+
+        String[] resources = reflections.getResources(".*\\application.configuration").toArray(String[]::new);
+        if (resources.length > 0) {
+
+            try (InputStream inputStream = ClasspathHelper.staticClassLoader().getResourceAsStream(resources[0])) {
+                if (inputStream == null) return;
+
+                String content = new String(inputStream.readAllBytes());
+                JsonObject jsonObject = JsonParser.parseString(content).getAsJsonObject();
+                dsn = jsonObject.get("sentry").getAsJsonPrimitive().getAsString();
+
+            } catch (Exception exception) {
+                log.error("Couldn't load Application configuration!", exception);
+            }
+        }
+
+        // DO NOT OVERWRITE!
+        if (!Sentry.isEnabled()) {
+            String finalDsn = dsn;
+
+            Sentry.init(options -> {
+                options.setDsn(finalDsn);
+                options.setRelease(Objects.requireNonNullElse(SQLSession.class.getPackage().getImplementationVersion(), "1.1.4"));
+            });
+        }
 
         setMaxPoolSize(maxPoolSize);
         setDatabaseTyp(databaseTyp);
