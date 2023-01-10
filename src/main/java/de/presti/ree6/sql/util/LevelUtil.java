@@ -7,6 +7,9 @@ import de.presti.ree6.sql.entities.level.VoiceUserLevel;
 
 /**
  * Utility used to determine data for levels.
+ * The current implementation works using these formulas.
+ * Level: x * root(XP)
+ * XP: (level/x) ^ y
  */
 public class LevelUtil {
 
@@ -17,12 +20,7 @@ public class LevelUtil {
      * @return which Level.
      */
     public static long calculateLevel(UserLevel userLevel) {
-        int i = 0;
-        while (true) {
-            long requiredXP = getTotalExperienceForLevel(i, userLevel);
-            if (userLevel.getExperience() <= requiredXP) return (i == 0 ? 1 : i - 1);
-            i++;
-        }
+        return calculateLevel(userLevel, userLevel.getExperience());
     }
 
     /**
@@ -33,12 +31,8 @@ public class LevelUtil {
      * @return which Level.
      */
     public static long calculateLevel(UserLevel userLevel, long experience) {
-        int i = 0;
-        while (true) {
-            long requiredXP = getTotalExperienceForLevel(i, userLevel);
-            if (experience <= requiredXP) return (i == 0 ? 1 : i - 1);
-            i++;
-        }
+        if (experience == 0) return 0;
+        return (long)(getLevelingValues(userLevel)[0] * Math.sqrt(experience));
     }
 
     /**
@@ -49,11 +43,10 @@ public class LevelUtil {
      * @return the needed Experience.
      */
     public static long getTotalExperienceForLevel(long level, UserLevel userLevel) {
-        long requiredXP = 0;
-        for (int i = 0; i <= level; i++) {
-            requiredXP += getExperienceForLevel(i, userLevel);
-        }
-        return requiredXP;
+        if (level == 0) return 0;
+        float[] values = getLevelingValues(userLevel);
+
+        return (long)((level + 1) / values[0]) ^ (long)values[1];
     }
 
     /**
@@ -63,13 +56,25 @@ public class LevelUtil {
      * @param userLevel the UserLevel.
      * @return the needed Experience.
      */
-    public static long getExperienceForLevel(long level, UserLevel userLevel) {
-        if (userLevel instanceof ChatUserLevel) {
-            return (long) (1000 + (1000 * Math.pow(level, 0.55)));
-        } else if (userLevel instanceof VoiceUserLevel) {
-            return (long) (1000 + (1000 * Math.pow(level, 1.05)));
+    public static long getExperienceNeededForLevel(long level, UserLevel userLevel) {
+        if (level < userLevel.getLevel()) {
+            return userLevel.getExperience() - getTotalExperienceForLevel(level, userLevel);
         }
-        return level;
+        return getTotalExperienceForLevel(level, userLevel) - userLevel.getExperience();
+    }
+
+    /**
+     * Get the Leveling Values for the UserLevel.
+     *
+     * @param userLevel the UserLevel.
+     * @return the Leveling Values.
+     */
+    public static float[] getLevelingValues(UserLevel userLevel) {
+        if (userLevel instanceof ChatUserLevel) {
+            return new float[] { 0.1f, 2 };
+        } else {
+            return new float[] { 0.08f, 2 };
+        }
     }
 
     /**
