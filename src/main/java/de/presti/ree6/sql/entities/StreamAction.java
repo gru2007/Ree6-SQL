@@ -16,6 +16,13 @@ public class StreamAction {
     long guildId;
 
     /**
+     * The related Twitch Auth.
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name="auth_id", nullable=false, updatable=false)
+    TwitchIntegration integration;
+
+    /**
      * Typ of the Listener
      */
     @Column(name = "listener")
