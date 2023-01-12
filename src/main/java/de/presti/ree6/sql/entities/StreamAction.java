@@ -3,7 +3,11 @@ package de.presti.ree6.sql.entities;
 import com.google.gson.JsonElement;
 import de.presti.ree6.sql.converter.JsonAttributeConverter;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "StreamActions")
 public class StreamAction {
