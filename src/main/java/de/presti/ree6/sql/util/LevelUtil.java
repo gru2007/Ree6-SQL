@@ -10,6 +10,9 @@ import de.presti.ree6.sql.entities.level.VoiceUserLevel;
  * The current implementation works using these formulas.
  * Level: x * root(XP)
  * XP: (level/x) ^ y
+ *
+ * Based on the Implementation of <a href="https://gist.github.com/JakeSteam/4d843cc69dff4275acd742b70d4523b6">JakeSteam</a>!
+ * Thanks to his great explanation in his <a href="https://blog.jakelee.co.uk/converting-levels-into-xp-vice-versa">blog post</a>!
  */
 public class LevelUtil {
 
@@ -84,7 +87,13 @@ public class LevelUtil {
      * @return the Progress.
      */
     public static double getProgress(UserLevel userLevel) {
-        return (int)(userLevel.getExperience() / getTotalExperienceForLevel(userLevel.getLevel() + 1, userLevel)) * 100;
+        long currentLevelXP = getTotalExperienceForLevel(userLevel.getLevel(), userLevel);
+        long nextLevelXP = getTotalExperienceForLevel(userLevel.getLevel() + 1, userLevel);
+
+        double neededXP = nextLevelXP - currentLevelXP;
+        double earnedXP = nextLevelXP - userLevel.getExperience();
+
+        return 100 - (int) Math.ceil((earnedXP / neededXP) * 100);
     }
 
     /**
