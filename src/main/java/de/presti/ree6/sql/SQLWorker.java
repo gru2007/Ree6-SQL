@@ -1133,6 +1133,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @return the Message as {@link String}
+     *
+     * @deprecated Please use {@link #getSetting(String, String)} instead. The Settings name is "message_join".
      */
     @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
     public String getMessage(String guildId) {
@@ -1145,6 +1147,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @param content the Join Message.
+     *
+     * @deprecated Please use {@link #setSetting(String, String, Object)} instead. The Settings name is "message_join".
      */
     @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
     public void setMessage(String guildId, String content) {
@@ -1156,6 +1160,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result. If true, then there is an entry in our Database | If false, there is no entry in our Database for that Guild.
+     *
+     * @deprecated Please use {@link #hasSetting(String, Setting)} instead. The Settings name is "message_join".
      */
     @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
     public boolean isMessageSetup(String guildId) {
