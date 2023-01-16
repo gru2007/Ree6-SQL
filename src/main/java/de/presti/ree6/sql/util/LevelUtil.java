@@ -46,7 +46,7 @@ public class LevelUtil {
         if (level == 0) return 0;
         float[] values = getLevelingValues(userLevel);
 
-        return (long)(level / values[0]) ^ (long)values[1];
+        return (long) Math.pow(level / values[0], values[1]);
     }
 
     /**
