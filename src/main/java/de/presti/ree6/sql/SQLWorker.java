@@ -1134,6 +1134,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return the Message as {@link String}
      */
+    @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
     public String getMessage(String guildId) {
         Setting setting = getSetting(guildId, "message_join");
         return setting.getStringValue();
@@ -1145,6 +1146,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param content the Join Message.
      */
+    @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
     public void setMessage(String guildId, String content) {
         setSetting(guildId, "message_join", content);
     }
@@ -1155,6 +1157,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result. If true, then there is an entry in our Database | If false, there is no entry in our Database for that Guild.
      */
+    @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
     public boolean isMessageSetup(String guildId) {
         return getEntity(new Setting(), "SELECT * FROM Settings WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", "message_join")) != null;
     }
