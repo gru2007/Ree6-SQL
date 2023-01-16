@@ -84,7 +84,7 @@ public class LevelUtil {
      * @return the Progress.
      */
     public static double getProgress(UserLevel userLevel) {
-        return (int)(getTotalExperienceForLevel(userLevel.getLevel() + 1, userLevel) / userLevel.getExperience()) * 100;
+        return (int)(userLevel.getExperience() / getTotalExperienceForLevel(userLevel.getLevel() + 1, userLevel)) * 100;
     }
 
     /**
