@@ -46,7 +46,7 @@ public class LevelUtil {
         if (level == 0) return 0;
         float[] values = getLevelingValues(userLevel);
 
-        return (long)((level + 1) / values[0]) ^ (long)values[1];
+        return (long)(level / values[0]) ^ (long)values[1];
     }
 
     /**
@@ -73,7 +73,7 @@ public class LevelUtil {
         if (userLevel instanceof ChatUserLevel) {
             return new float[] { 0.1f, 2 };
         } else {
-            return new float[] { 0.08f, 2 };
+            return new float[] { 0.07f, 2 };
         }
     }
 
@@ -84,7 +84,7 @@ public class LevelUtil {
      * @return the Progress.
      */
     public static double getProgress(UserLevel userLevel) {
-        return (int) ((userLevel.getExperience() * 100) / getTotalExperienceForLevel(userLevel.getLevel() + 1, userLevel));
+        return (int)(getTotalExperienceForLevel(userLevel.getLevel() + 1, userLevel) / userLevel.getExperience()) * 100;
     }
 
     /**
