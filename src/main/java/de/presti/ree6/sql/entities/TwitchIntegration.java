@@ -1,11 +1,11 @@
 package de.presti.ree6.sql.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import de.presti.ree6.sql.converter.ListAttributeConverter;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,4 +22,16 @@ public class TwitchIntegration {
 
     @Column(name = "token")
     String token;
+
+    @Column(name = "refresh")
+    String refresh;
+
+    @Column(name = "channel_name")
+    String name;
+
+    @Column(name = "token")
+    long expiresIn;
+
+    @Convert(converter = ListAttributeConverter.class)
+    List<String> scopes;
 }
