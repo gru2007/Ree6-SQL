@@ -29,8 +29,8 @@ public class TwitchIntegration {
     @Column(name = "channel_name")
     String name;
 
-    @Column(name = "token")
-    long expiresIn;
+    @Column(name = "expires")
+    int expiresIn;
 
     @Convert(converter = ListAttributeConverter.class)
     List<String> scopes;
