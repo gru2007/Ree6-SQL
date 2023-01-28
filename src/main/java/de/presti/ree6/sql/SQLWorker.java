@@ -1133,10 +1133,13 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @return the Message as {@link String}
+     *
+     * @deprecated Please use {@link #getSetting(String, String)} instead. The Settings name is "message_join".
      */
+    @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
     public String getMessage(String guildId) {
-        Setting setting = getEntity(new Setting(), "SELECT * FROM Settings WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", "message_join"));
-        return setting != null ? setting.getStringValue() : "Welcome %user_mention%!\nWe wish you a great stay on %guild_name%";
+        Setting setting = getSetting(guildId, "message_join");
+        return setting.getStringValue();
     }
 
     /**
@@ -1144,9 +1147,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @param content the Join Message.
+     *
+     * @deprecated Please use {@link #setSetting(String, String, Object)} instead. The Settings name is "message_join".
      */
+    @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
     public void setMessage(String guildId, String content) {
-        updateEntity(new Setting(guildId, "message_join", content));
+        setSetting(guildId, "message_join", content);
     }
 
     /**
@@ -1154,7 +1160,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result. If true, then there is an entry in our Database | If false, there is no entry in our Database for that Guild.
+     *
+     * @deprecated Please use {@link #hasSetting(String, Setting)} instead. The Settings name is "message_join".
      */
+    @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
     public boolean isMessageSetup(String guildId) {
         return getEntity(new Setting(), "SELECT * FROM Settings WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", "message_join")) != null;
     }
@@ -1259,7 +1268,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
         return getEntityList(new Setting(), "SELECT * FROM Settings WHERE GID = :gid", Map.of("gid", guildId));
     }
 
-
     /**
      * Set the Setting by its Identifier.
      *
@@ -1277,7 +1285,16 @@ public record SQLWorker(SQLConnector sqlConnector) {
             }
         }
 
-        updateEntity(setting);
+        Setting databaseSetting =
+                getEntity(new Setting(), "SELECT * FROM Settings WHERE GID = :gid AND NAME = :name",
+                        Map.of("gid", setting.getGuild(), "name", setting.getName()));
+
+        if (databaseSetting != null) {
+            databaseSetting.setValue(setting.getValue());
+            updateEntity(databaseSetting);
+        } else {
+            updateEntity(setting);
+        }
     }
 
     /**
