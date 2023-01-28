@@ -48,11 +48,4 @@ public class Tickets {
     @Column(name = "ticketCount")
     @ColumnDefault("0")
     long ticketCount;
-
-    /**
-     * A JsonArray containing a list of all transcripts of the channels.
-     */
-    @Column(name = "transcripts")
-    @Convert(converter = JsonAttributeConverter.class)
-    JsonElement transcripts;
 }
