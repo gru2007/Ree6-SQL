@@ -1,9 +1,8 @@
 package de.presti.ree6.sql.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.google.gson.JsonElement;
+import de.presti.ree6.sql.converter.JsonAttributeConverter;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -37,10 +36,10 @@ public class Tickets {
     long ticketCategory;
 
     /**
-     * The Category ID of the Archive category.
+     * The ID of the channel that is used to send the transcripts to.
      */
-    @Column(name = "archiveCategory")
-    long archiveCategory;
+    @Column(name = "logChannelId")
+    long logChannelId;
 
     /**
      * The Ticket counter.
@@ -49,4 +48,11 @@ public class Tickets {
     @Column(name = "ticketCount")
     @ColumnDefault("0")
     long ticketCount;
+
+    /**
+     * A JsonArray containing a list of all transcripts of the channels.
+     */
+    @Column(name = "transcripts")
+    @Convert(converter = JsonAttributeConverter.class)
+    JsonElement transcripts;
 }
