@@ -95,7 +95,7 @@ public class LevelUtil {
 
         if (neededXP <= 0) return 0;
 
-        return 100 - (int) Math.ceil((earnedXP / neededXP) * 100);
+        return 100 - Math.ceil((earnedXP / neededXP) * 100);
     }
 
     /**
