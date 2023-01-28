@@ -20,6 +20,12 @@ public class StreamAction {
     long guildId;
 
     /**
+     * The name of the action.
+     */
+    @Column(name = "actionName")
+    String actionName;
+
+    /**
      * The related Twitch Auth.
      */
     @ManyToOne(optional = false)
@@ -32,13 +38,11 @@ public class StreamAction {
     @Column(name = "listener")
     StreamListener listener;
 
-
     /**
      * Extra Arguments used on the listeners.
      */
     @Column(name = "argument")
     String argument;
-
 
     /**
      * The Actions that are to be executed.
