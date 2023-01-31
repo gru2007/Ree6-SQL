@@ -39,11 +39,11 @@ public class LevelUtil {
     }
 
     /**
-     * Get the needed Experience for the next Level.
+     * Get the total Experience for the Level.
      *
      * @param level The level.
      * @param userLevel the UserLevel.
-     * @return the needed Experience.
+     * @return the total Experience.
      */
     public static long getTotalExperienceForLevel(long level, UserLevel userLevel) {
         if (level == 0) return 0;
@@ -53,7 +53,7 @@ public class LevelUtil {
     }
 
     /**
-     * Get the needed Experience for the next Level.
+     * Get the needed Experience for the Level.
      *
      * @param level The level.
      * @param userLevel the UserLevel.
