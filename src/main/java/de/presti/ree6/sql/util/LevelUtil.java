@@ -87,13 +87,15 @@ public class LevelUtil {
      * @return the Progress.
      */
     public static double getProgress(UserLevel userLevel) {
-        long currentLevelXP = getTotalExperienceForLevel(userLevel.getLevel(), userLevel);
-        long nextLevelXP = getTotalExperienceForLevel(userLevel.getLevel() + 1, userLevel);
+        double currentLevelXP = (double)getTotalExperienceForLevel(userLevel.getLevel(), userLevel);
+        double nextLevelXP = (double)getTotalExperienceForLevel(userLevel.getLevel() + 1, userLevel);
 
         double neededXP = nextLevelXP - currentLevelXP;
         double earnedXP = nextLevelXP - userLevel.getExperience();
 
-        return 100 - (int) Math.ceil((earnedXP / neededXP) * 100);
+        if (neededXP <= 0) return 0;
+
+        return 100 - Math.ceil((earnedXP / neededXP) * 100);
     }
 
     /**

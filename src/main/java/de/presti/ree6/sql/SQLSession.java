@@ -119,6 +119,15 @@ public class SQLSession {
             });
         }
 
+        if (databaseTyp == DatabaseTyp.SQLite) {
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException e) {
+                // Somehow this fixes Issues?
+                log.error("Couldn't load SQLite Driver!", e);
+            }
+        }
+
         setMaxPoolSize(maxPoolSize);
         setDatabaseTyp(databaseTyp);
         setJdbcURL(buildConnectionURL());
