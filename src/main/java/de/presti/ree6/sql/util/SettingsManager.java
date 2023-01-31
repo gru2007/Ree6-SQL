@@ -26,9 +26,11 @@ public class SettingsManager {
             settings = new ArrayList<>();
 
         settings.clear();
+        // TODO:: create an structure. (configuration_,logging_,message_)
         settings.addAll(List.of(
                 new Setting("-1","chatprefix", "ree!"),
                 new Setting("-1", "level_message", false),
+                new Setting("-1", "configuration_news", true),
                 new Setting("-1","configuration_language", "en-GB"),
                 new Setting("-1", "message_join", "Welcome %user_mention%!\nWe wish you a great stay on %guild_name%"),
                 new Setting("-1", "message_join_image", ""),

@@ -3,6 +3,8 @@ package de.presti.ree6.sql.entities;
 
 import jakarta.persistence.*;
 
+// TODO:: add a display name.
+
 /**
  * File to store Settings information.
  */
