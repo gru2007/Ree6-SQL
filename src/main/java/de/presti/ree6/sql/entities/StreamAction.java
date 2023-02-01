@@ -35,6 +35,7 @@ public class StreamAction {
     /**
      * Typ of the Listener
      */
+    @Enumerated(EnumType.STRING)
     @Column(name = "listener")
     StreamListener listener;
 
