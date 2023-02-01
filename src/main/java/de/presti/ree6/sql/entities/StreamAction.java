@@ -35,9 +35,8 @@ public class StreamAction {
     /**
      * Typ of the Listener
      */
-    @Enumerated(EnumType.STRING)
     @Column(name = "listener")
-    StreamListener listener;
+    int listener;
 
     /**
      * Extra Arguments used on the listeners.
@@ -51,8 +50,4 @@ public class StreamAction {
     @Column(name = "actions")
     @Convert(converter = JsonAttributeConverter.class)
     JsonElement actions;
-
-    public enum StreamListener {
-        REDEMPTION, FOLLOW,
-    }
 }
