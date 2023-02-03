@@ -803,10 +803,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
     /**
      * Set the TwitterNotify in our Database.
      *
-     * @param guildId     the ID of the Guild.
-     * @param webhookId   the ID of the Webhook.
-     * @param authToken   the Auth-token to verify the access.
-     * @param twitterName the Username of the Twitter User.
+     * @param guildId        the ID of the Guild.
+     * @param webhookId      the ID of the Webhook.
+     * @param authToken      the Auth-token to verify the access.
+     * @param twitterName    the Username of the Twitter User.
      * @param messageContent custom message content.
      */
     public void addTwitterWebhook(String guildId, String webhookId, String authToken, String twitterName, String messageContent) {
@@ -975,6 +975,21 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     /**
+     * Remove a Chat Level Reward Role from our Database.
+     *
+     * @param guildId the ID of the Guild.
+     * @param roleId  the ID of the Role.
+     * @param level   the Level required to get this Role.
+     */
+    public void removeChatLevelReward(String guildId, String roleId, long level) {
+        // Check if there is a role in the database.
+        if (isChatLevelRewardSetup(guildId)) {
+            // Add a new entry into the Database.
+            sqlConnector.querySQL(new ChatAutoRole(), "DELETE FROM ChatLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl", Map.of("gid", guildId,"rid", roleId,"lvl", level));
+        }
+    }
+
+    /**
      * Check if a Chat Level Reward has been set in our Database for this Server.
      *
      * @param guildId the ID of the Guild.
@@ -1055,6 +1070,21 @@ public record SQLWorker(SQLConnector sqlConnector) {
         if (isVoiceLevelRewardSetup(guildId)) {
             // Add a new entry into the Database.
             sqlConnector.querySQL(new VoiceAutoRole(), "DELETE FROM VCLevelAutoRoles WHERE GID=:gid AND LVL=:lvl", Map.of("gid", guildId, "lvl", level));
+        }
+    }
+
+    /**
+     * Remove a Voice Level Reward Role from our Database.
+     *
+     * @param guildId the ID of the Guild.
+     * @param roleId  the ID of the Role.
+     * @param level   the Level required to get this Role.
+     */
+    public void removeVoiceLevelReward(String guildId, String roleId, long level) {
+        // Check if there is a role in the database.
+        if (isVoiceLevelRewardSetup(guildId)) {
+            // Add a new entry into the Database.
+            sqlConnector.querySQL(new VoiceAutoRole(), "DELETE FROM VCLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl", Map.of("gid", guildId,"rid", roleId,"lvl", level));
         }
     }
 
