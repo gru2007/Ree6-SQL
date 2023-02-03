@@ -3,25 +3,30 @@ package de.presti.ree6.sql.entities.webhook;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * SQL Entity for the Reddit-Webhooks.
  */
 @Entity
+@NoArgsConstructor
 @Table(name = "RedditNotify")
 public class WebhookReddit extends Webhook {
 
     /**
      * Name of the Channel.
      */
+    @Getter
     @Column(name = "subreddit")
     private String subreddit;
 
     /**
-     * Constructor.
+     * Special message content.
      */
-    public WebhookReddit() {
-    }
+    @Getter
+    @Column(name = "message")
+    private String message;
 
 
     /**
@@ -32,16 +37,9 @@ public class WebhookReddit extends Webhook {
      * @param channelId The channel ID.
      * @param token     The token.
      */
-    public WebhookReddit(String guildId, String subreddit, String channelId, String token) {
+    public WebhookReddit(String guildId, String subreddit, String message, String channelId, String token) {
         super(guildId, channelId, token);
         this.subreddit = subreddit;
-    }
-
-    /**
-     * Get the name of the Subreddit.
-     * @return the subreddit name.
-     */
-    public String getSubreddit() {
-        return subreddit;
+        this.message = message;
     }
 }

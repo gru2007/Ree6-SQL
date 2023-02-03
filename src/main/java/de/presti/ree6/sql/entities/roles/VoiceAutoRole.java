@@ -15,7 +15,7 @@ public class VoiceAutoRole extends Role {
      * The needed level for this AutoRole.
      */
     @Column(name = "lvl")
-    int level;
+    long level;
 
     /**
      * Constructor.
@@ -30,7 +30,7 @@ public class VoiceAutoRole extends Role {
      * @param roleId  the ID of the Role.
      * @param level  the needed level for this AutoRole.
      */
-    public VoiceAutoRole(String guildId, String roleId, int level) {
+    public VoiceAutoRole(String guildId, String roleId, long level) {
         super(guildId, roleId);
         this.level = level;
     }
@@ -40,7 +40,7 @@ public class VoiceAutoRole extends Role {
      *
      * @return the needed level for this AutoRole.
      */
-    public int getLevel() {
+    public long getLevel() {
         return level;
     }
 }

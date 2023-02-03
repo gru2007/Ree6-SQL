@@ -3,25 +3,30 @@ package de.presti.ree6.sql.entities.webhook;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * SQL Entity for the Instagram-Webhooks.
  */
 @Entity
+@NoArgsConstructor
 @Table(name = "InstagramNotify")
 public class WebhookInstagram extends Webhook {
 
     /**
      * Name of the User.
      */
+    @Getter
     @Column(name = "name")
     private String name;
 
     /**
-     * Constructor.
+     * Special message content.
      */
-    public WebhookInstagram() {
-    }
+    @Getter
+    @Column(name = "message")
+    private String message;
 
     /**
      * Constructor.
@@ -31,16 +36,9 @@ public class WebhookInstagram extends Webhook {
      * @param channelId The channel ID.
      * @param token     The token.
      */
-    public WebhookInstagram(String guildId, String name, String channelId, String token) {
+    public WebhookInstagram(String guildId, String name, String message, String channelId, String token) {
         super(guildId, channelId, token);
         this.name = name;
-    }
-
-    /**
-     * Get the name of the user.
-     * @return the username.
-     */
-    public String getName() {
-        return name;
+        this.message = message;
     }
 }

@@ -3,26 +3,30 @@ package de.presti.ree6.sql.entities.webhook;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * SQL Entity for the YouTube-Webhooks.
  */
 @Entity
+@NoArgsConstructor
 @Table(name = "YouTubeNotify")
 public class WebhookYouTube extends Webhook {
 
     /**
      * Name of the Channel.
      */
+    @Getter
     @Column(name = "name")
     private String name;
 
     /**
-     * Constructor.
+     * Special message content.
      */
-    public WebhookYouTube() {
-    }
-
+    @Getter
+    @Column(name = "message")
+    private String message;
 
     /**
      * Constructor.
@@ -32,16 +36,9 @@ public class WebhookYouTube extends Webhook {
      * @param channelId The channel ID.
      * @param token     The token.
      */
-    public WebhookYouTube(String guildId, String name, String channelId, String token) {
+    public WebhookYouTube(String guildId, String name, String message, String channelId, String token) {
         super(guildId, channelId, token);
         this.name = name;
-    }
-
-    /**
-     * Get the name of the Channel.
-     * @return the channel name.
-     */
-    public String getName() {
-        return name;
+        this.message = message;
     }
 }

@@ -348,12 +348,27 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitchName the Username of the Twitch User.
      */
     public void addTwitchWebhook(String guildId, String webhookId, String authToken, String twitchName) {
+        addTwitchWebhook(guildId, webhookId, authToken, twitchName, null);
+    }
+
+    /**
+     * Set the TwitchNotify in our Database.
+     *
+     * @param guildId        the ID of the Guild.
+     * @param webhookId      the ID of the Webhook.
+     * @param authToken      the Auth-token to verify the access.
+     * @param twitchName     the Username of the Twitch User.
+     * @param messageContent custom message content.
+     */
+    public void addTwitchWebhook(String guildId, String webhookId, String authToken, String twitchName, String messageContent) {
+        if (messageContent == null)
+            messageContent = "%name% is now Live on Twitch! Come and join the stream <%url%>!";
 
         // Check if there is already a Webhook set.
         removeTwitchWebhook(guildId, twitchName);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookTwitch(guildId, twitchName, webhookId, authToken));
+        updateEntity(new WebhookTwitch(guildId, twitchName, messageContent, webhookId, authToken));
     }
 
     /**
@@ -445,13 +460,29 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param name      the Name of the Instagram User.
      */
     public void addInstagramWebhook(String guildId, String webhookId, String authToken, String name) {
+        addInstagramWebhook(guildId, webhookId, authToken, name, null);
+    }
+
+    /**
+     * Set the InstagramNotify in our Database.
+     *
+     * @param guildId        the ID of the Guild.
+     * @param webhookId      the ID of the Webhook.
+     * @param authToken      the Auth-token to verify the access.
+     * @param name           the Name of the Instagram User.
+     * @param messageContent custom message content.
+     */
+    public void addInstagramWebhook(String guildId, String webhookId, String authToken, String name, String messageContent) {
+        if (messageContent == null)
+            messageContent = "%name% just posted something on their Instagram!";
 
         // Check if there is already a Webhook set.
         removeInstagramWebhook(guildId, name);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookInstagram(guildId, name, webhookId, authToken));
+        updateEntity(new WebhookInstagram(guildId, name, messageContent, webhookId, authToken));
     }
+
 
     /**
      * Remove an Instagram Notifier entry from our Database.
@@ -542,12 +573,27 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param subreddit the Name of the Subreddit.
      */
     public void addRedditWebhook(String guildId, String webhookId, String authToken, String subreddit) {
+        addRedditWebhook(guildId, webhookId, authToken, subreddit, null);
+    }
+
+    /**
+     * Set the RedditNotify in our Database.
+     *
+     * @param guildId        the ID of the Guild.
+     * @param webhookId      the ID of the Webhook.
+     * @param authToken      the Auth-token to verify the access.
+     * @param subreddit      the Name of the Subreddit.
+     * @param messageContent custom message content.
+     */
+    public void addRedditWebhook(String guildId, String webhookId, String authToken, String subreddit, String messageContent) {
+        if (messageContent == null)
+            messageContent = "%name% got a new post check it out <%url%>!";
 
         // Check if there is already a Webhook set.
         removeRedditWebhook(guildId, subreddit);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookReddit(guildId, subreddit, webhookId, authToken));
+        updateEntity(new WebhookReddit(guildId, subreddit, messageContent, webhookId, authToken));
     }
 
     /**
@@ -639,12 +685,27 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param youtubeChannel the Username of the YouTube channel.
      */
     public void addYouTubeWebhook(String guildId, String webhookId, String authToken, String youtubeChannel) {
+        addYouTubeWebhook(guildId, webhookId, authToken, youtubeChannel, null);
+    }
+
+    /**
+     * Set the YouTubeNotify in our Database.
+     *
+     * @param guildId        the ID of the Guild.
+     * @param webhookId      the ID of the Webhook.
+     * @param authToken      the Auth-token to verify the access.
+     * @param youtubeChannel the Username of the YouTube channel.
+     * @param messageContent custom message content.
+     */
+    public void addYouTubeWebhook(String guildId, String webhookId, String authToken, String youtubeChannel, String messageContent) {
+        if (messageContent == null)
+            messageContent = "%name% just uploaded a new Video! Check it out <%url%>!";
 
         // Check if there is already a Webhook set.
         removeYouTubeWebhook(guildId, youtubeChannel);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookYouTube(guildId, youtubeChannel, webhookId, authToken));
+        updateEntity(new WebhookYouTube(guildId, youtubeChannel, messageContent, webhookId, authToken));
     }
 
     /**
@@ -736,12 +797,27 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitterName the Username of the Twitter User.
      */
     public void addTwitterWebhook(String guildId, String webhookId, String authToken, String twitterName) {
+        addTwitterWebhook(guildId, webhookId, authToken, twitterName, null);
+    }
+
+    /**
+     * Set the TwitterNotify in our Database.
+     *
+     * @param guildId     the ID of the Guild.
+     * @param webhookId   the ID of the Webhook.
+     * @param authToken   the Auth-token to verify the access.
+     * @param twitterName the Username of the Twitter User.
+     * @param messageContent custom message content.
+     */
+    public void addTwitterWebhook(String guildId, String webhookId, String authToken, String twitterName, String messageContent) {
+        if (messageContent == null)
+            messageContent = "%name% tweeted something! Check it out <%url%>!";
 
         // Check if there is already a Webhook set.
         removeTwitterWebhook(guildId, twitterName);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookTwitter(guildId, twitterName, webhookId, authToken));
+        updateEntity(new WebhookTwitter(guildId, twitterName, messageContent, webhookId, authToken));
     }
 
     /**
@@ -858,10 +934,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link HashMap<>} as List with all Role IDs and the needed Level.
      */
-    public Map<Integer, String> getChatLevelRewards(String guildId) {
+    public Map<Long, String> getChatLevelRewards(String guildId) {
 
         // Create a new HashMap to save the Role Ids and their needed level.
-        Map<Integer, String> rewards = new HashMap<>();
+        Map<Long, String> rewards = new HashMap<>();
 
         getEntityList(new ChatAutoRole(), "SELECT * FROM ChatLevelAutoRoles WHERE GID=:gid", Map.of("gid", guildId)).forEach(chatAutoRole -> rewards.put(chatAutoRole.getLevel(), chatAutoRole.getRoleId()));
 
@@ -876,7 +952,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      * @param level   the Level required to get this Role.
      */
-    public void addChatLevelReward(String guildId, String roleId, int level) {
+    public void addChatLevelReward(String guildId, String roleId, long level) {
         // Check if there is a role in the database.
         if (!isChatLevelRewardSetup(guildId, roleId, level)) {
             // Add a new entry into the Database.
@@ -890,7 +966,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param level   the Level required to get this Role.
      */
-    public void removeChatLevelReward(String guildId, int level) {
+    public void removeChatLevelReward(String guildId, long level) {
         // Check if there is a role in the database.
         if (isChatLevelRewardSetup(guildId)) {
             // Add a new entry into the Database.
@@ -927,7 +1003,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level needed to get the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isChatLevelRewardSetup(String guildId, String roleId, int level) {
+    public boolean isChatLevelRewardSetup(String guildId, String roleId, long level) {
         return getEntity(new ChatAutoRole(), "SELECT * FROM ChatLevelAutoRoles WHERE GID=:gid AND RID=:rid AND LVL=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)) != null;
     }
 
@@ -941,10 +1017,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Map<>} as List with all Role IDs and the needed Level.
      */
-    public Map<Integer, String> getVoiceLevelRewards(String guildId) {
+    public Map<Long, String> getVoiceLevelRewards(String guildId) {
 
         // Create a new HashMap to save the Role Ids and their needed level.
-        Map<Integer, String> rewards = new HashMap<>();
+        Map<Long, String> rewards = new HashMap<>();
 
         getEntityList(new VoiceAutoRole(), "SELECT * FROM VoiceLevelAutoRoles WHERE GID=:gid", Map.of("gid", guildId)).forEach(voiceAutoRole -> rewards.put(voiceAutoRole.getLevel(), voiceAutoRole.getRoleId()));
 
@@ -959,7 +1035,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      * @param level   the Level required to get this Role.
      */
-    public void addVoiceLevelReward(String guildId, String roleId, int level) {
+    public void addVoiceLevelReward(String guildId, String roleId, long level) {
 
         // Check if there is a role in the database.
         if (!isVoiceLevelRewardSetup(guildId, roleId, level)) {
@@ -974,7 +1050,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param level   the Level required to get this Role.
      */
-    public void removeVoiceLevelReward(String guildId, int level) {
+    public void removeVoiceLevelReward(String guildId, long level) {
         // Check if there is a role in the database.
         if (isVoiceLevelRewardSetup(guildId)) {
             // Add a new entry into the Database.
@@ -1011,7 +1087,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level needed to get the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isVoiceLevelRewardSetup(String guildId, String roleId, int level) {
+    public boolean isVoiceLevelRewardSetup(String guildId, String roleId, long level) {
         return getEntity(new VoiceAutoRole(), "SELECT * FROM VCLevelAutoRoles WHERE GID=:gid AND RID=:rid AND LVL=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)) != null;
     }
 
@@ -1133,7 +1209,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @return the Message as {@link String}
-     *
      * @deprecated Please use {@link #getSetting(String, String)} instead. The Settings name is "message_join".
      */
     @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
@@ -1147,7 +1222,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @param content the Join Message.
-     *
      * @deprecated Please use {@link #setSetting(String, String, Object)} instead. The Settings name is "message_join".
      */
     @Deprecated(since = "1.3.0-alpha2", forRemoval = true)
@@ -1160,7 +1234,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result. If true, then there is an entry in our Database | If false, there is no entry in our Database for that Guild.
-     *
      * @deprecated Please use {@link #hasSetting(String, Setting)} instead. The Settings name is "message_join".
      */
     @Deprecated(since = "1.3.0-alpha2", forRemoval = true)

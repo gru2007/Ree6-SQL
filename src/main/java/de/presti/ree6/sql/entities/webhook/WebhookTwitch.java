@@ -3,26 +3,31 @@ package de.presti.ree6.sql.entities.webhook;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * SQL Entity for the Twitch-Webhooks.
  */
 @Entity
+@NoArgsConstructor
 @Table(name = "TwitchNotify")
 public class WebhookTwitch extends Webhook {
 
     /**
      * Name of the Channel.
      */
+    @Getter
     @Column(name = "name")
     private String name;
 
     /**
-     * Constructor.
+     * Special message content.
      */
-    public WebhookTwitch() {
-    }
-
+    @Getter
+    @Column(name = "message")
+    private String message;
 
     /**
      * Constructor.
@@ -32,17 +37,9 @@ public class WebhookTwitch extends Webhook {
      * @param channelId The channel ID.
      * @param token     The token.
      */
-    public WebhookTwitch(String guildId, String name, String channelId, String token) {
+    public WebhookTwitch(String guildId, String name, String message, String channelId, String token) {
         super(guildId, channelId, token);
         this.name = name;
-    }
-
-    /**
-     * Get the name of the Channel.
-     *
-     * @return the channel name.
-     */
-    public String getName() {
-        return name;
+        this.message = message;
     }
 }
