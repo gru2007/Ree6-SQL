@@ -20,7 +20,6 @@ public class ReactionRole {
      * The PrimaryKey of the Entity.
      */
     @Id
-    @Getter
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -28,28 +27,24 @@ public class ReactionRole {
     /**
      * The ID of the Guild.
      */
-    @Getter
     @Column(name = "gid")
     private long guildId;
 
     /**
      * The ID of the Emote used as reaction.
      */
-    @Getter
     @Column(name = "emoteId")
     private long emoteId;
 
     /**
      * The ID of the Role used as reaction role.
      */
-    @Getter
     @Column(name = "roleId")
     private long roleId;
 
     /**
      * The ID of the Message used as reaction message.
      */
-    @Getter
     @Column(name = "messageId")
     private long messageId;
 
