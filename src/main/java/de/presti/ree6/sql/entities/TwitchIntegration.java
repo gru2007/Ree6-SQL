@@ -1,8 +1,12 @@
 package de.presti.ree6.sql.entities;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.sql.Timestamp;
 
 /**
  * SQL Entity for the Twitch Integration.
@@ -49,4 +53,11 @@ public class TwitchIntegration {
      */
     @Column(name = "expires")
     int expiresIn;
+
+    /**
+     * Last updated time.
+     */
+    @Setter(AccessLevel.PRIVATE)
+    @UpdateTimestamp
+    Timestamp lastUpdated;
 }

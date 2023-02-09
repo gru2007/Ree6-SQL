@@ -13,9 +13,14 @@ import lombok.Setter;
 public class StreamAction {
 
     /**
-     * The ID of the Guild.
+     * The ID of the entity.
      */
     @Id
+    long id;
+
+    /**
+     * The ID of the Guild.
+     */
     @Column(name = "guildId")
     long guildId;
 
