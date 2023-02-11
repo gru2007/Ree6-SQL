@@ -25,7 +25,7 @@ public class TwitchIntegration {
     String channelId;
 
     /**
-     * The ID of the Discord User its linked to.
+     * The ID of the Discord User It's linked to.
      */
     @Column(name = "user_id")
     long userId;

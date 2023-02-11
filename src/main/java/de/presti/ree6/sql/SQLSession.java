@@ -186,6 +186,7 @@ public class SQLSession {
         } catch (Throwable ex) {
             // Make sure you log the exception, as it might be swallowed
             log.error("Initial SessionFactory creation failed.", ex);
+            Sentry.captureException(ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
