@@ -153,8 +153,11 @@ public class SQLSession {
             properties.put("hibernate.connection.datasource", "com.zaxxer.hikari.HikariDataSource");
             properties.put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
             properties.put("hibernate.connection.url", jdbcURL);
-            properties.put("hibernate.connection.username", databaseName);
-            properties.put("hibernate.connection.password", databasePassword);
+
+            if (databaseTyp.isAuthRequired()) {
+                properties.put("hibernate.connection.username", databaseName);
+                properties.put("hibernate.connection.password", databasePassword);
+            }
             properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(maxPoolSize));
             properties.put("hibernate.dialect", getDatabaseTyp().getHibernateDialect());
 
