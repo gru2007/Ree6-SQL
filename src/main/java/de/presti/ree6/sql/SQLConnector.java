@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.presti.ree6.sql.migrations.MigrationUtil;
 import de.presti.ree6.sql.seed.SeedManager;
+import io.sentry.Sentry;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -139,7 +140,8 @@ public class SQLConnector {
             } else {
                 return preparedStatement.executeUpdate();
             }
-        } catch (Exception ignore) {
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
         }
 
         return null;
@@ -180,6 +182,9 @@ public class SQLConnector {
             session.getTransaction().commit();
 
             return query;
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
+            throw exception;
         }
     }
 

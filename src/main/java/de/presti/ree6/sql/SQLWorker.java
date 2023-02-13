@@ -13,6 +13,7 @@ import de.presti.ree6.sql.entities.stats.GuildCommandStats;
 import de.presti.ree6.sql.entities.stats.Statistics;
 import de.presti.ree6.sql.entities.webhook.*;
 import de.presti.ree6.sql.util.SettingsManager;
+import io.sentry.Sentry;
 import jakarta.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
@@ -1692,7 +1693,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
         try {
             BirthdayWish newBirthday = new BirthdayWish(guildId, channelId, userId, new SimpleDateFormat("dd.MM.yyyy").parse(birthday));
             updateEntity(newBirthday);
-        } catch (ParseException ignore) {
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
         }
     }
 
@@ -1801,6 +1803,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
             session.getTransaction().commit();
 
             return newEntity;
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
+            throw exception;
         }
     }
 
@@ -1825,6 +1830,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
             session.remove(r);
 
             session.getTransaction().commit();
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
+            throw exception;
         }
     }
 
@@ -1856,6 +1864,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
             session.getTransaction().commit();
 
             return query.getResultList();
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
+            throw exception;
         }
     }
 
@@ -1886,6 +1897,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
             session.getTransaction().commit();
 
             return query.setMaxResults(1).getSingleResultOrNull();
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
+            throw exception;
         }
     }
 
