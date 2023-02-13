@@ -123,7 +123,7 @@ public class SQLSession {
             try {
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException e) {
-                // Somehow this fixes Issues?
+                // Somehow this fixes the Issue?
                 log.error("Couldn't load SQLite Driver!", e);
             }
         }
