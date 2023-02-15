@@ -155,7 +155,7 @@ public class SQLSession {
             properties.put("hibernate.connection.url", jdbcURL);
 
             if (databaseTyp.isAuthRequired()) {
-                properties.put("hibernate.connection.username", databaseName);
+                properties.put("hibernate.connection.username", databaseUser);
                 properties.put("hibernate.connection.password", databasePassword);
             }
             properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(maxPoolSize));
