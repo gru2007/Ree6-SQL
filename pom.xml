@@ -7,7 +7,7 @@
     <groupId>de.presti.ree6</groupId>
     <artifactId>Ree6-SQL</artifactId>
     <description>This is the SQL-Module for Ree6!</description>
-    <version>1.4.4</version>
+    <version>1.4.5</version>
 
     <properties>
         <sonar.organization>ree6-applications</sonar.organization>
@@ -25,7 +25,6 @@
 
     <dependencies>
 
-
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
@@ -39,7 +38,6 @@
         </dependency>
 
         <!-- Hikari -->
-
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
@@ -52,7 +50,6 @@
         </dependency>
 
         <!-- Jakarta -->
-
         <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
