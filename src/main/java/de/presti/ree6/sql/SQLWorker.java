@@ -1038,7 +1038,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         // Create a new HashMap to save the Role Ids and their needed level.
         Map<Long, String> rewards = new HashMap<>();
 
-        getEntityList(new VoiceAutoRole(), "SELECT * FROM VoiceLevelAutoRoles WHERE GID=:gid", Map.of("gid", guildId)).forEach(voiceAutoRole -> rewards.put(voiceAutoRole.getLevel(), voiceAutoRole.getRoleId()));
+        getEntityList(new VoiceAutoRole(), "SELECT * FROM VCLevelAutoRoles WHERE GID=:gid", Map.of("gid", guildId)).forEach(voiceAutoRole -> rewards.put(voiceAutoRole.getLevel(), voiceAutoRole.getRoleId()));
 
         // Return the HashMap.
         return rewards;
