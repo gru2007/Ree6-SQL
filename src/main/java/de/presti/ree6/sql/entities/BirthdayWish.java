@@ -42,6 +42,7 @@ public class BirthdayWish {
      * The Birthday.
      */
     @Column(name = "birthday")
+    @Temporal(TemporalType.DATE)
     Date birthdate;
 
     /**
