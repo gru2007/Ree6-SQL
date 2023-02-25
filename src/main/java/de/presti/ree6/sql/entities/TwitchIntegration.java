@@ -57,7 +57,8 @@ public class TwitchIntegration {
     /**
      * Last updated time.
      */
-    @Setter(AccessLevel.PRIVATE)
     @UpdateTimestamp
+    @Setter(AccessLevel.PRIVATE)
+    @Temporal(TemporalType.TIMESTAMP)
     Timestamp lastUpdated;
 }
