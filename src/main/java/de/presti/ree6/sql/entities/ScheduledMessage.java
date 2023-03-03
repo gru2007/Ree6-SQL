@@ -54,6 +54,14 @@ public class ScheduledMessage {
     private WebhookScheduledMessage scheduledMessageWebhook;
 
     /**
+     * Last execute time.
+     */
+    @UpdateTimestamp
+    @Setter(AccessLevel.PRIVATE)
+    @Temporal(TemporalType.TIMESTAMP)
+    Timestamp lastExecute;
+
+    /**
      * Last updated time.
      */
     @UpdateTimestamp
