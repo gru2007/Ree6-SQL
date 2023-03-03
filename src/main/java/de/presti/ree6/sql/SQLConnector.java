@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import de.presti.ree6.sql.migrations.MigrationUtil;
 import de.presti.ree6.sql.seed.SeedManager;
 import io.sentry.Sentry;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -43,6 +44,13 @@ public class SQLConnector {
      * A boolean to keep track if there was at least one valid connection.
      */
     private boolean connectedOnce = false;
+
+
+    /**
+     * A boolean to keep track if there was at least two valid connections.
+     */
+    @Setter
+    private boolean connectedSecond = false;
 
     /**
      * Constructor with the needed data to open an SQL connection.
@@ -246,5 +254,14 @@ public class SQLConnector {
      */
     public boolean connectedOnce() {
         return connectedOnce;
+    }
+
+    /**
+     * Check if there was at least one successful Connection to the Database Server.
+     *
+     * @return boolean If there was at least one successful Connection.
+     */
+    public boolean connectedSecond() {
+        return connectedSecond;
     }
 }

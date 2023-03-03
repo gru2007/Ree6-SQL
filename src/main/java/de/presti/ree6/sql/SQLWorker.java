@@ -14,9 +14,11 @@ import de.presti.ree6.sql.entities.stats.Statistics;
 import de.presti.ree6.sql.entities.webhook.*;
 import de.presti.ree6.sql.util.SettingsManager;
 import io.sentry.Sentry;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.Table;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
+import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.query.NativeQuery;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +27,7 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import javax.annotation.Nonnull;
+import java.sql.SQLNonTransientConnectionException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -1803,6 +1806,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
             session.getTransaction().commit();
 
             return newEntity;
+        } catch (PersistenceException exception) {
+            if (!sqlConnector.connectedSecond()) {
+                if (exception.getCause() instanceof JDBCConnectionException jdbcConnectionException) {
+                    if (jdbcConnectionException.getSQLException() instanceof SQLNonTransientConnectionException) {
+                        sqlConnector.connectToSQLServer();
+                        sqlConnector.setConnectedSecond(true);
+                        return updateEntity(r);
+                    }
+                }
+            } else {
+                sqlConnector.setConnectedSecond(false);
+            }
+
+            throw exception;
         } catch (Exception exception) {
             Sentry.captureException(exception);
             throw exception;
