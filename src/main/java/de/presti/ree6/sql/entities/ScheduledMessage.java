@@ -9,7 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * This class is used to represent a Scheduled Message.
@@ -25,26 +24,25 @@ public class ScheduledMessage {
      */
     @Id
     @GeneratedValue
-    private long Id;
+    long Id;
 
     /**
      * Special message content.
      */
     @Column(name = "message")
-    public String message;
+    String message;
 
-    // TODO:: add options for example hour, day, month, year and specific date.
-
-    @Column(name = "typ")
-    int scheduleTyp;
-
+    /**
+     * The amount of time from the creation/last execution to the next execution.
+     */
     @Column(name = "delay")
-    int delayAmount;
+    long delayAmount;
 
+    /**
+     * If it should be repeated or not.
+     */
     @Column(name = "repeat")
     boolean repeated;
-
-    LocalDateTime scheduleDate;
 
     /**
      * The related ScheduledMessage Webhook.
@@ -56,8 +54,7 @@ public class ScheduledMessage {
     /**
      * Last execute time.
      */
-    @UpdateTimestamp
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PUBLIC)
     @Temporal(TemporalType.TIMESTAMP)
     Timestamp lastExecute;
 
