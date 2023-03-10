@@ -27,6 +27,12 @@ public class ScheduledMessage {
     long Id;
 
     /**
+     * The ID of the Guild.
+     */
+    @Column(name = "guild")
+    long guildId;
+
+    /**
      * Special message content.
      */
     @Column(name = "message")
