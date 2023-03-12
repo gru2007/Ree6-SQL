@@ -47,7 +47,7 @@ public class ScheduledMessage {
     /**
      * If it should be repeated or not.
      */
-    @Column(name = "repeat")
+    @Column(name = "shouldRepeat")
     boolean repeated;
 
     /**
