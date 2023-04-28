@@ -901,7 +901,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         // Check if there is a role in the database.
         if (isAutoRoleSetup(guildId, roleId)) {
             // Add a new entry into the Database.
-            deleteEntity(new AutoRole(guildId, roleId));
+            deleteEntity(getEntity(new AutoRole(), "SELECT * FROM AutoRoles WHERE GID=:gid AND RID=:rid ", Map.of("gid", guildId, "rid", roleId)));
         }
     }
 
