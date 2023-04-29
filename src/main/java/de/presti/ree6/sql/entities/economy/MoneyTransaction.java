@@ -56,7 +56,7 @@ public class MoneyTransaction {
      * The amount of money the user has.
      */
     @Column(name = "amount")
-    private float amount;
+    private double amount;
 
 
     /**

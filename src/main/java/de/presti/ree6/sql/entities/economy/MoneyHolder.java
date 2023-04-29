@@ -39,11 +39,11 @@ public class MoneyHolder {
      * The amount of money the user has.
      */
     @Column(name = "cash")
-    private float amount;
+    private double amount;
 
     /**
      * The amount of money the user has.
      */
     @Column(name = "bank")
-    private float bank_amount;
+    private double bank_amount;
 }
