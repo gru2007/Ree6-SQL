@@ -1,9 +1,9 @@
 package de.presti.ree6.sql.entities.economy;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,7 +11,10 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@MappedSuperclass
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "Money_Holder")
 public class MoneyHolder {
     /**
      * The ID of the entity.
@@ -35,6 +38,12 @@ public class MoneyHolder {
     /**
      * The amount of money the user has.
      */
-    @Column(name = "amount")
+    @Column(name = "cash")
     private float amount;
+
+    /**
+     * The amount of money the user has.
+     */
+    @Column(name = "bank")
+    private float bank_amount;
 }

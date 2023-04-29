@@ -32,29 +32,25 @@ public class MoneyTransaction {
      * The Bank of the user that sends the money.
      */
     @ManyToOne(optional = false)
-    @JoinColumn(name="bankSender", updatable=false)
-    private MoneyBank bankSender;
+    @JoinColumn(name="sender", updatable=false)
+    private MoneyHolder sender;
 
     /**
      * The Bank of the user that receives the money.
      */
     @ManyToOne(optional = false)
-    @JoinColumn(name="bankReceiver", updatable=false)
-    private MoneyBank bankReceiver;
+    @JoinColumn(name="receiver", updatable=false)
+    private MoneyHolder receiver;
 
     /**
-     * The Pocket of the user that sends the money.
+     * If the receiver is a bank or not.
      */
-    @ManyToOne(optional = false)
-    @JoinColumn(name="pocketSender", updatable=false)
-    private MoneyBank pocketSender;
+    private boolean isReceiverBank;
 
     /**
-     * The Pocket of the user that receives the money.
+     * If the sender is a bank or not.
      */
-    @ManyToOne(optional = false)
-    @JoinColumn(name="pocketReceiver", updatable=false)
-    private MoneyBank pocketReceiver;
+    private boolean isSenderBank;
 
     /**
      * The amount of money the user has.
