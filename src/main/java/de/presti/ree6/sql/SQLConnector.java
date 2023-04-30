@@ -1,9 +1,6 @@
 package de.presti.ree6.sql;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import de.presti.ree6.sql.migrations.MigrationUtil;
-import de.presti.ree6.sql.seed.SeedManager;
 import io.sentry.Sentry;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -60,13 +57,6 @@ public class SQLConnector {
 
         connectToSQLServer();
         createTables();
-        try {
-            MigrationUtil.runAllMigrations(this);
-        } catch (Exception exception) {
-            log.error("Error while running Migrations!", exception);
-        }
-
-        SeedManager.runAllSeeds(this);
     }
 
     /**
