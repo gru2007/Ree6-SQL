@@ -2,7 +2,9 @@ package de.presti.ree6.sql.entities.economy;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
@@ -11,6 +13,8 @@ import java.sql.Timestamp;
  * Represents any transaction that has been made between money holder entities.
  */
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Money_Transaction")
@@ -21,6 +25,11 @@ public class MoneyTransaction {
     @jakarta.persistence.Id
     @GeneratedValue
     long transactionId;
+
+    /**
+     * If the payment is made from the System.
+     */
+    private boolean isSystemPayment;
 
     /**
      * The ID of the Guild.
