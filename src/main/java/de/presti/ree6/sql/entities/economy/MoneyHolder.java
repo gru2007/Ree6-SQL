@@ -20,7 +20,7 @@ public class MoneyHolder {
      * The ID of the entity.
      */
     @jakarta.persistence.Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     long Id;
 
     /**

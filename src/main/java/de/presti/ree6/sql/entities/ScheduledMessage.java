@@ -23,7 +23,7 @@ public class ScheduledMessage {
      * The ID of the entity.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     long Id;
 
     /**

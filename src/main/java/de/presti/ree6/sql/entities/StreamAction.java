@@ -16,7 +16,7 @@ public class StreamAction {
      * The ID of the entity.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     long id;
 
     /**

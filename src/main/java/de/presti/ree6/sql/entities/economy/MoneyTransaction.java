@@ -22,8 +22,8 @@ public class MoneyTransaction {
     /**
      * The ID of the entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @jakarta.persistence.Id
+    @GeneratedValue
     long transactionId;
 
     /**
