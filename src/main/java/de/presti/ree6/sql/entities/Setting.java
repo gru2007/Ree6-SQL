@@ -35,7 +35,7 @@ public class Setting {
     /**
      * The value of the Setting.
      */
-    @Column(name = "value")
+    @Column(name = "value", columnDefinition = "LONGTEXT")
     private String value;
 
     /**
