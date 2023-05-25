@@ -1,0 +1,25 @@
+package de.presti.ree6.sql.entities.custom;
+
+public enum CustomEventTyp {
+    MEMBER_JOIN,
+    MEMBER_LEAVE,
+    VOICE_JOIN,
+    VOICE_LEAVE,
+    VOICE_MOVE,
+    MESSAGE,
+    MESSAGE_DELETE,
+    MESSAGE_UPDATE,
+    REACTION_ADD,
+    REACTION_REMOVE,
+    MEMBER_BAN,
+    MEMBER_UNBAN,
+    MEMBER_KICK,
+    ROLE_CREATE,
+    ROLE_DELETE,
+    ROLE_UPDATE,
+    CHANNEL_CREATE,
+    CHANNEL_DELETE,
+    CHANNEL_UPDATE,
+    CHANNEL_PINS_UPDATE,
+    WEBHOOKS_UPDATE,
+}

@@ -1,4 +1,4 @@
-package de.presti.ree6.sql.entities;
+package de.presti.ree6.sql.entities.custom;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,7 +24,9 @@ public class CustomEventAction {
     @Column(name = "eventName")
     private String name;
 
-    // TODO:: add some sort of a enum to store the type of the event.
+    @Enumerated(EnumType.STRING)
+    private CustomEventTyp event;
 
     // TODO:: maybe use a json based action system like the streamtools one?
+
 }

@@ -1,4 +1,4 @@
-package de.presti.ree6.sql.entities;
+package de.presti.ree6.sql.entities.custom;
 
 import com.google.gson.JsonElement;
 import de.presti.ree6.sql.converter.JsonAttributeConverter;
