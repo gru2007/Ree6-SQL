@@ -197,7 +197,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Webhook} with all the needed data.
      */
-    public Webhook getLogWebhook(String guildId) {
+    public WebhookLog getLogWebhook(String guildId) {
         return getEntity(new WebhookLog(), "SELECT * FROM LogWebhooks WHERE GID=:gid", Map.of("gid", guildId));
     }
 
@@ -327,7 +327,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     /**
      * Get the all Twitch-Notifier.
      *
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllTwitchNames() {
         return getEntityList(new WebhookTwitch(), "SELECT * FROM TwitchNotify", null).stream().map(WebhookTwitch::getName).toList();
@@ -337,10 +337,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get every Twitch-Notifier that has been set up for the given Guild.
      *
      * @param guildId the ID of the Guild.
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllTwitchNames(String guildId) {
-        return getEntityList(new WebhookTwitch(), "SELECT * FROM TwitchNotify WHERE GID=:gid", Map.of("gid", guildId)).stream().map(WebhookTwitch::getName).toList();
+        return getAllTwitchWebhooks(guildId).stream().map(WebhookTwitch::getName).toList();
+    }
+
+    /**
+     * Get every Twitch-Notifier that has been set up for the given Guild.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link List<>} the entry.
+     */
+    public List<WebhookTwitch> getAllTwitchWebhooks(String guildId) {
+        return getEntityList(new WebhookTwitch(), "SELECT * FROM TwitchNotify WHERE GID=:gid", Map.of("gid", guildId));
     }
 
     /**
@@ -439,7 +449,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     /**
      * Get the all Instagram-Notifier.
      *
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllInstagramUsers() {
         return getEntityList(new WebhookInstagram(), "SELECT * FROM InstagramNotify", null).stream().map(WebhookInstagram::getName).toList();
@@ -449,10 +459,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get every Instagram-Notifier that has been set up for the given Guild.
      *
      * @param guildId the ID of the Guild.
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllInstagramUsers(String guildId) {
-        return getEntityList(new WebhookInstagram(), "SELECT * FROM InstagramNotify WHERE GID=:gid", Map.of("gid", guildId)).stream().map(WebhookInstagram::getName).toList();
+        return getAllInstagramWebhooks(guildId).stream().map(WebhookInstagram::getName).toList();
+    }
+
+    /**
+     * Get every Instagram-Notifier that has been set up for the given Guild.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link List<>} the entry.
+     */
+    public List<WebhookInstagram> getAllInstagramWebhooks(String guildId) {
+        return getEntityList(new WebhookInstagram(), "SELECT * FROM InstagramNotify WHERE GID=:gid", Map.of("gid", guildId));
     }
 
     /**
@@ -552,7 +572,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     /**
      * Get the all Reddit-Notifier.
      *
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllSubreddits() {
         return getEntityList(new WebhookReddit(), "SELECT * FROM RedditNotify", null).stream().map(WebhookReddit::getSubreddit).toList();
@@ -562,10 +582,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get every Reddit-Notifier that has been set up for the given Guild.
      *
      * @param guildId the ID of the Guild.
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllSubreddits(String guildId) {
-        return getEntityList(new WebhookReddit(), "SELECT * FROM RedditNotify WHERE GID=:gid", Map.of("gid", guildId)).stream().map(WebhookReddit::getSubreddit).toList();
+        return getAllRedditWebhooks(guildId).stream().map(WebhookReddit::getSubreddit).toList();
+    }
+
+    /**
+     * Get every Reddit-Notifier that has been set up for the given Guild.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link List<>} the entry.
+     */
+    public List<WebhookReddit> getAllRedditWebhooks(String guildId) {
+        return getEntityList(new WebhookReddit(), "SELECT * FROM RedditNotify WHERE GID=:gid", Map.of("gid", guildId));
     }
 
     /**
@@ -664,7 +694,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     /**
      * Get the all YouTube-Notifier.
      *
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllYouTubeChannels() {
         return getEntityList(new WebhookYouTube(), "SELECT * FROM YouTubeNotify", null).stream().map(WebhookYouTube::getName).toList();
@@ -674,10 +704,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get every YouTube-Notifier that has been set up for the given Guild.
      *
      * @param guildId the ID of the Guild.
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllYouTubeChannels(String guildId) {
-        return getEntityList(new WebhookYouTube(), "SELECT * FROM YouTubeNotify WHERE GID=:gid", Map.of("gid", guildId)).stream().map(WebhookYouTube::getName).toList();
+        return getAllYouTubeWebhooks(guildId).stream().map(WebhookYouTube::getName).toList();
+    }
+
+    /**
+     * Get every YouTube-Notifier that has been set up for the given Guild.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link List<>} the entry.
+     */
+    public List<WebhookYouTube> getAllYouTubeWebhooks(String guildId) {
+        return getEntityList(new WebhookYouTube(), "SELECT * FROM YouTubeNotify WHERE GID=:gid", Map.of("gid", guildId));
     }
 
     /**
@@ -776,7 +816,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     /**
      * Get the all Twitter-Notifier.
      *
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllTwitterNames() {
         return getEntityList(new WebhookTwitter(), "SELECT * FROM TwitterNotify", null).stream().map(WebhookTwitter::getName).toList();
@@ -786,10 +826,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get every Twitter-Notifier that has been set up for the given Guild.
      *
      * @param guildId the ID of the Guild.
-     * @return {@link List<>} in the first index is the Webhook ID and in the second the Auth-Token.
+     * @return {@link List<>} the entry.
      */
     public List<String> getAllTwitterNames(String guildId) {
-        return getEntityList(new WebhookTwitter(), "SELECT * FROM TwitterNotify WHERE GID=:gid", Map.of("gid", guildId)).stream().map(WebhookTwitter::getName).toList();
+        return getAllTwitterWebhooks(guildId).stream().map(WebhookTwitter::getName).toList();
+    }
+
+    /**
+     * Get every Twitter-Notifier that has been set up for the given Guild.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link List<>} the entry.
+     */
+    public List<WebhookTwitter> getAllTwitterWebhooks(String guildId) {
+        return getEntityList(new WebhookTwitter(), "SELECT * FROM TwitterNotify WHERE GID=:gid", Map.of("gid", guildId));
     }
 
     /**
