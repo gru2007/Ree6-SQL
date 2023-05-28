@@ -2,6 +2,10 @@ package de.presti.ree6.sql.entities;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 // TODO:: add a display name.
 
@@ -9,6 +13,10 @@ import jakarta.persistence.*;
  * File to store Settings information.
  */
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "Settings")
 public class Setting {
 
@@ -32,17 +40,15 @@ public class Setting {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "displayname")
+    private String displayName;
+
     /**
      * The value of the Setting.
      */
     @Column(name = "value", columnDefinition = "LONGTEXT")
     private String value;
 
-    /**
-     * Constructor.
-     */
-    public Setting() {
-    }
 
     /**
      * Constructor for the Setting.
@@ -51,9 +57,10 @@ public class Setting {
      * @param name    the Name / Identifier of the Setting.
      * @param value   the Value of the Setting.
      */
-    public Setting(String guildId, String name, Object value) {
+    public Setting(String guildId, String name, String displayName, Object value) {
         this.guildId = guildId;
         this.name = name;
+        this.displayName = displayName;
         this.value = String.valueOf(value);
     }
 
@@ -91,32 +98,6 @@ public class Setting {
         return "";
     }
 
-    /**
-     * Get the Guild.
-     *
-     * @return the Guild ID.
-     */
-    public String getGuild() {
-        return guildId;
-    }
-
-    /**
-     * The Name / Identifier of the Setting.
-     *
-     * @return {@link String} which is the Name / Identifier.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Change the Name / Identifier of the Setting.
-     *
-     * @param name new Name / Identifier as {@link String}.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
 
     /**
      * Get the Value as Object.

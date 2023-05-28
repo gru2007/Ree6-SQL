@@ -28,38 +28,39 @@ public class SettingsManager {
         settings.clear();
         // TODO:: create an structure. (configuration_,logging_,message_)
         settings.addAll(List.of(
-                new Setting("-1","chatprefix", "ree!"),
-                new Setting("-1", "level_message", false),
-                new Setting("-1", "configuration_news", true),
-                new Setting("-1","configuration_language", "en-GB"),
-                new Setting("-1", "message_join", "Welcome %user_mention%!\nWe wish you a great stay on %guild_name%"),
-                new Setting("-1", "message_join_image", ""),
-                new Setting("-1", "logging_invite", true),
-                new Setting("-1", "logging_memberjoin", true),
-                new Setting("-1", "logging_memberleave", true),
-                new Setting("-1", "logging_memberban", true),
-                new Setting("-1", "logging_memberunban", true),
-                new Setting("-1", "logging_nickname", true),
-                new Setting("-1", "logging_voicejoin", true),
-                new Setting("-1", "logging_voicemove", true),
-                new Setting("-1", "logging_voiceleave", true),
-                new Setting("-1", "logging_roleadd", true),
-                new Setting("-1", "logging_roleremove", true),
-                new Setting("-1", "logging_voicechannel", true),
-                new Setting("-1", "logging_textchannel", true),
-                new Setting("-1", "logging_rolecreate", true),
-                new Setting("-1", "logging_roledelete", true),
-                new Setting("-1", "logging_rolename", true),
-                new Setting("-1", "logging_rolemention", true),
-                new Setting("-1", "logging_rolehoisted", true),
-                new Setting("-1", "logging_rolepermission", true),
-                new Setting("-1", "logging_rolecolor", true),
-                new Setting("-1", "logging_messagedelete", true),
-                new Setting("-1", "logging_timeout", true)));
+                new Setting("-1", "chatprefix", "Prefix", "ree!"),
+                new Setting("-1", "level_message", "Send Levelup Message", false),
+                new Setting("-1", "configuration_news", "Receive News", true),
+                new Setting("-1", "configuration_language", "Language", "en-GB"),
+                new Setting("-1", "message_join", "Welcome Message", "Welcome %user_mention%!\nWe wish you a great stay on %guild_name%"),
+                new Setting("-1", "message_join_image", "Welcome Image", ""),
+                new Setting("-1", "logging_invite", "Log Invites", true),
+                new Setting("-1", "logging_memberjoin", "Log Member joins", true),
+                new Setting("-1", "logging_memberleave", "Log Member leave", true),
+                new Setting("-1", "logging_memberban", "Log Member ban", true),
+                new Setting("-1", "logging_memberunban", "Log Member unban", true),
+                new Setting("-1", "logging_nickname", "Log Member Nickname change", true),
+                new Setting("-1", "logging_voicejoin", "Log Member voice channel join", true),
+                new Setting("-1", "logging_voicemove", "Log Member voice channel move", true),
+                new Setting("-1", "logging_voiceleave", "Log Member voice channel leave", true),
+                new Setting("-1", "logging_roleadd", "Log Member role receive", true),
+                new Setting("-1", "logging_roleremove", "Log Member role removed", true),
+                new Setting("-1", "logging_voicechannel", "Log voice channel changes", true),
+                new Setting("-1", "logging_textchannel", "Log text channel changes", true),
+                new Setting("-1", "logging_rolecreate", "Log role creation", true),
+                new Setting("-1", "logging_roledelete", "Log role deletion", true),
+                new Setting("-1", "logging_rolename", "Log role name changing", true),
+                new Setting("-1", "logging_rolemention", "Log role mention changing", true),
+                new Setting("-1", "logging_rolehoisted", "Log role hoisted changing", true),
+                new Setting("-1", "logging_rolepermission", "Log role permission changing", true),
+                new Setting("-1", "logging_rolecolor", "Log role color changing", true),
+                new Setting("-1", "logging_messagedelete", "Log message delete", true),
+                new Setting("-1", "logging_timeout", "Log Member timeouts", true)));
     }
 
     /**
      * Retrieve the default Setting by name.
+     *
      * @param settingName The name of the Setting.
      * @return The Setting.
      */
