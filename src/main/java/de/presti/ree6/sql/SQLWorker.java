@@ -1366,6 +1366,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         // Check if there is an entry in the database.
         if (setting != null) {
+            if (setting.getDisplayName() == null) {
+                setting.setDisplayName(settingName);
+                updateEntity(setting);
+            }
             return setting;
         } else {
             // Check if everything is alright with the config.
