@@ -244,7 +244,7 @@ public class SQLSession {
                 }
 
                 if (databasePath.endsWith(".db")) {
-                    databasePath = databaseName.replace(".db", "");
+                    databasePath = databasePath.replace(".db", "");
                 }
 
                 jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath);
