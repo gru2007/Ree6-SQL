@@ -234,6 +234,18 @@ public class SQLSession {
 
             case H2_Server -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databaseServerIP, databasePath);
 
+            case H2 -> {
+                if (!databasePath.startsWith(".") && !databasePath.startsWith("/") && !databasePath.startsWith("~")) {
+                    databasePath = "./" + databasePath;
+                }
+
+                if (databasePath.endsWith(".db")) {
+                    databasePath = databaseName.replace(".db", "");
+                }
+
+                jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath);
+            }
+
             default -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath);
         }
         return jdbcUrl;
