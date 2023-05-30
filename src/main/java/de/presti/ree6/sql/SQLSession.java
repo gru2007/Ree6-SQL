@@ -185,6 +185,7 @@ public class SQLSession {
                 properties.put("hibernate.connection.username", databaseUser);
                 properties.put("hibernate.connection.password", databasePassword);
             }
+
             properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(maxPoolSize));
             properties.put("hibernate.dialect", getDatabaseTyp().getHibernateDialect());
 
@@ -255,8 +256,15 @@ public class SQLSession {
         HikariConfig hConfig = new HikariConfig();
 
         hConfig.setJdbcUrl(getJdbcURL());
-        hConfig.setUsername(databaseUser);
-        hConfig.setPassword(databasePassword);
+
+        if (!databaseTyp.isAuthRequired() && databaseUser.equalsIgnoreCase("root") && databasePassword.equalsIgnoreCase("yourpw")) {
+            hConfig.setUsername("");
+            hConfig.setPassword("");
+        } else {
+            hConfig.setUsername(databaseUser);
+            hConfig.setPassword(databasePassword);
+        }
+
         hConfig.setMaximumPoolSize(getMaxPoolSize());
 
         return hConfig;
