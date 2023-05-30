@@ -247,7 +247,7 @@ public class SQLSession {
                     databasePath = databasePath.replace(".db", "");
                 }
 
-                jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath);
+                jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath) + ";MODE=MySQL;NON_KEYWORDS=DAY,VALUE;";
             }
 
             default -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath);
