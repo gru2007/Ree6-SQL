@@ -99,7 +99,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<ChatUserLevel>} as container of the User IDs.
      */
     public List<ChatUserLevel> getTopChat(String guildId, int limit) {
-        return getEntityList(new ChatUserLevel(), "SELECT * FROM Level WHERE GID=:gid ORDER BY cast(xp as unsigned) DESC LIMIT :limit", Map.of("gid", guildId, "limit", limit));
+        return getEntityList(new ChatUserLevel(), "SELECT * FROM Level WHERE GID=:gid ORDER BY xp DESC LIMIT :limit", Map.of("gid", guildId, "limit", limit));
     }
 
     /**
@@ -109,7 +109,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<String>} as container of the User IDs.
      */
     public List<String> getAllChatLevelSorted(String guildId) {
-        return getEntityList(new ChatUserLevel(), "SELECT * FROM Level WHERE GID=:gid ORDER BY cast(xp as unsigned) DESC", Map.of("gid", guildId)).stream().map(UserLevel::getUserId).toList();
+        return getEntityList(new ChatUserLevel(), "SELECT * FROM Level WHERE GID=:gid ORDER BY xp DESC", Map.of("gid", guildId)).stream().map(UserLevel::getUserId).toList();
     }
 
     //endregion
@@ -169,7 +169,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public List<VoiceUserLevel> getTopVoice(String guildId, int limit) {
         // Return the list.
         return getEntityList(new VoiceUserLevel(),
-                "SELECT * FROM VCLevel WHERE GID=:gid ORDER BY cast(xp as unsigned) DESC LIMIT :limit", Map.of("gid", guildId, "limit", limit));
+                "SELECT * FROM VCLevel WHERE GID=:gid ORDER BY xp DESC LIMIT :limit", Map.of("gid", guildId, "limit", limit));
     }
 
     /**
@@ -180,7 +180,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public List<String> getAllVoiceLevelSorted(String guildId) {
         // Creating a SQL Statement to get the Entries from the Level Table by the GuildID.
-        return getEntityList(new VoiceUserLevel(), "SELECT * FROM VCLevel WHERE GID=:gid ORDER BY cast(xp as unsigned) DESC", Map.of("gid", guildId)).stream().map(VoiceUserLevel::getUserId).toList();
+        return getEntityList(new VoiceUserLevel(), "SELECT * FROM VCLevel WHERE GID=:gid ORDER BY xp DESC", Map.of("gid", guildId)).stream().map(VoiceUserLevel::getUserId).toList();
     }
 
     //endregion
