@@ -22,8 +22,10 @@ public class Webhook {
     @Column(name = "gid")
     private String guildId;
 
+    // TODO:: fix this by renaming the column to wid and adding the actual channel id to the column cid
+
     /**
-     * The ChannelID of the Webhook.
+     * The Webhook Id of the Webhook.
      */
     @Column(name = "cid")
     private String channelId;
