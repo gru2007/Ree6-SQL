@@ -26,10 +26,9 @@ public class H2DatabaseServer implements IDatabaseServer {
 
     /**
      * Destroy the server.
-     * @throws Exception If something goes wrong.
      */
     @Override
-    public void destroyServer() throws Exception {
+    public void destroyServer() {
         server.stop();
     }
 }
