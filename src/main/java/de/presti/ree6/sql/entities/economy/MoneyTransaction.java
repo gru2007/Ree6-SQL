@@ -10,7 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.sql.Timestamp;
 
 /**
- * Represents any transaction that has been made between money holder entities.
+ * Represents any transaction that has been made between money holders.
  */
 @Entity
 @Getter
@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Table(name = "Money_Transaction")
 public class MoneyTransaction {
+
     /**
      * The ID of the entity.
      */

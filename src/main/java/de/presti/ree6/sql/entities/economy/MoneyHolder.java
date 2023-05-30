@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Masterclass of any Money holding Object.
+ * Class representing the MoneyHolder.
  */
 @Getter
 @Setter
@@ -16,6 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "Money_Holder")
 public class MoneyHolder {
+
     /**
      * The ID of the entity.
      */

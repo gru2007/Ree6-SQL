@@ -40,6 +40,9 @@ public class Setting {
     @Column(name = "name")
     private String name;
 
+    /**
+     * The Display Name of the Setting.
+     */
     @Column(name = "displayname")
     private String displayName;
 

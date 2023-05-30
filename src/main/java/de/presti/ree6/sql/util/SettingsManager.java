@@ -67,4 +67,22 @@ public class SettingsManager {
     public static Setting getDefault(String settingName) {
         return settings.stream().filter(s -> s.getName().equalsIgnoreCase(settingName)).findFirst().orElse(null);
     }
+
+    /**
+     * Retrieve the default value of the Setting by name.
+     * @param settingName The name of the Setting.
+     * @return The value of the Setting.
+     */
+    public static Object getDefaultValue(String settingName) {
+        return getDefault(settingName).getValue();
+    }
+
+    /**
+     * Retrieve the default display name of the Setting by name.
+     * @param settingName The name of the Setting.
+     * @return The display name of the Setting.
+     */
+    public static String getDefaultDisplayName(String settingName) {
+        return getDefault(settingName).getDisplayName();
+    }
 }
