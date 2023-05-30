@@ -3,7 +3,9 @@ package de.presti.ree6.sql;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.zaxxer.hikari.HikariConfig;
+import de.presti.ree6.sql.util.IDatabaseServer;
 import de.presti.ree6.sql.util.SettingsManager;
+import de.presti.ree6.sql.util.server.H2DatabaseServer;
 import io.sentry.Sentry;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -72,23 +74,30 @@ public class SQLSession {
     static SQLConnector sqlConnector;
 
     /**
-     * Constructor.
-     * @param databaseUser Database Username
-     * @param databaseName Database Name
-     * @param databasePassword Database User password
-     * @param databaseServerIP Database Address
-     * @param databaseServerPort Database Port
-     * @param databasePath Database Path (SQLite)
-     * @param databaseTyp Database Typ ({@link DatabaseTyp})
-     * @param maxPoolSize Max Hiraki-CP Pool Size
+     * Internal class used to manage embedded Databases.
      */
-    public SQLSession(String databaseUser, String databaseName, String databasePassword, String databaseServerIP, int databaseServerPort, String databasePath, DatabaseTyp databaseTyp, int maxPoolSize) {
-        this.databaseUser = databaseUser;
-        this.databaseName = databaseName;
-        this.databasePassword = databasePassword;
-        this.databaseServerIP = databaseServerIP;
-        this.databaseServerPort = databaseServerPort;
-        this.databasePath = databasePath;
+    private IDatabaseServer embeddedDatabaseServer;
+
+    /**
+     * Constructor.
+     *
+     * @param databaseUser         Database Username
+     * @param databaseName         Database Name
+     * @param databasePassword     Database User password
+     * @param databaseServerIP     Database Address
+     * @param databaseServerPort   Database Port
+     * @param databasePath         Database Path (SQLite)
+     * @param databaseTyp          Database Typ ({@link DatabaseTyp})
+     * @param maxPoolSize          Max Hiraki-CP Pool Size
+     * @param createEmbeddedServer If an embedded Database should be created, should be false if it being created by another instance.
+     */
+    public SQLSession(String databaseUser, String databaseName, String databasePassword, String databaseServerIP, int databaseServerPort, String databasePath, DatabaseTyp databaseTyp, int maxPoolSize, boolean createEmbeddedServer) {
+        SQLSession.databaseUser = databaseUser;
+        SQLSession.databaseName = databaseName;
+        SQLSession.databasePassword = databasePassword;
+        SQLSession.databaseServerIP = databaseServerIP;
+        SQLSession.databaseServerPort = databaseServerPort;
+        SQLSession.databasePath = databasePath;
 
         Reflections reflections = new Reflections("sql", Scanners.Resources);
 
@@ -118,14 +127,33 @@ public class SQLSession {
                 options.setRelease(Objects.requireNonNullElse(SQLSession.class.getPackage().getImplementationVersion(), "1.2.0"));
             });
         }
+        try {
+            Class.forName(databaseTyp.getDriverClass());
+        } catch (ClassNotFoundException e) {
+            // Somehow this fixes the Issue?
+            log.warn("Couldn't load " + databaseTyp.name() + " Driver!\nThis could lead to errors!", e);
+        }
 
-        if (databaseTyp == DatabaseTyp.SQLite) {
-            try {
-                Class.forName("org.sqlite.JDBC");
-            } catch (ClassNotFoundException e) {
-                // Somehow this fixes the Issue?
-                log.error("Couldn't load SQLite Driver!", e);
+        if (createEmbeddedServer) {
+            if (databaseTyp == DatabaseTyp.H2) {
+                try {
+                    embeddedDatabaseServer = new H2DatabaseServer();
+                    embeddedDatabaseServer.createServer();
+                } catch (Exception exception) {
+                    log.error("Couldn't start embedded H2 Database!", exception);
+                }
             }
+
+            // TODO:: check if there is a better way, how about a method that users have to call themselves?
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                if (embeddedDatabaseServer != null) {
+                    try {
+                        embeddedDatabaseServer.destroyServer();
+                    } catch (Exception e) {
+                        log.error("Couldn't stop embedded Database!", e);
+                    }
+                }
+            }));
         }
 
         setMaxPoolSize(maxPoolSize);
@@ -141,7 +169,6 @@ public class SQLSession {
      * Build a new SessionFactory or return the current one.
      *
      * @param debug if we should print debug messages.
-     *
      * @return The SessionFactory.
      */
     public static SessionFactory buildSessionFactory(boolean debug) {
@@ -161,10 +188,8 @@ public class SQLSession {
             properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(maxPoolSize));
             properties.put("hibernate.dialect", getDatabaseTyp().getHibernateDialect());
 
-            if (debug) {
-                properties.put("hibernate.show_sql", true);
-                properties.put("hibernate.format_sql", true);
-            }
+            properties.put("hibernate.show_sql", debug);
+            properties.put("hibernate.format_sql", debug);
 
             properties.put("hibernate.hbm2ddl.auto", "update");
             properties.put("jakarta.persistence.schema-generation.database.action", "update");
@@ -203,11 +228,13 @@ public class SQLSession {
         String jdbcUrl;
 
         switch (getDatabaseTyp()) {
-            case MariaDB -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databaseServerIP,
+            case MariaDB, PostgreSQL -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databaseServerIP,
                     databaseServerPort,
                     databaseName);
 
-            default -> jdbcUrl = DatabaseTyp.SQLite.getJdbcURL().formatted(databasePath);
+            case H2_Server -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databaseServerIP, databasePath);
+
+            default -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath);
         }
         return jdbcUrl;
     }
@@ -225,6 +252,7 @@ public class SQLSession {
 
     /**
      * Set the JDBC URL used to connect to the Database.
+     *
      * @param jdbcURL The JDBC URL.
      */
     public static void setJdbcURL(String jdbcURL) {
@@ -233,6 +261,7 @@ public class SQLSession {
 
     /**
      * Set the max amount of connections allowed by Hikari.
+     *
      * @param maxPoolSize The max amount of connections.
      */
     public static void setMaxPoolSize(int maxPoolSize) {
@@ -241,6 +270,7 @@ public class SQLSession {
 
     /**
      * Get the JDBC URL used to connect to the Database.
+     *
      * @return The JDBC URL.
      */
     public static String getJdbcURL() {
@@ -249,6 +279,7 @@ public class SQLSession {
 
     /**
      * Get the max amount of connections allowed by Hikari.
+     *
      * @return The max amount of connections.
      */
     public static int getMaxPoolSize() {
@@ -257,6 +288,7 @@ public class SQLSession {
 
     /**
      * Get the current SessionFactory.
+     *
      * @return The SessionFactory.
      */
     public static SessionFactory getSessionFactory() {
