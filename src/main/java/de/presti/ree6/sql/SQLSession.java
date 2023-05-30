@@ -181,7 +181,10 @@ public class SQLSession {
             properties.put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
             properties.put("hibernate.connection.url", jdbcURL);
 
-            if (databaseTyp.isAuthRequired()) {
+            if (!databaseTyp.isAuthRequired() && databaseUser.equalsIgnoreCase("root") && databasePassword.equalsIgnoreCase("yourpw")) {
+                properties.put("hibernate.connection.username", "");
+                properties.put("hibernate.connection.password", "");
+            } else {
                 properties.put("hibernate.connection.username", databaseUser);
                 properties.put("hibernate.connection.password", databasePassword);
             }
