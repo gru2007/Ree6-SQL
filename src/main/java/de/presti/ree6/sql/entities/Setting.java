@@ -24,7 +24,7 @@ public class Setting {
      * The PrimaryKey of the Entity.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "id")
     private int id;
 
