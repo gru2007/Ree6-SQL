@@ -5,11 +5,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Class used to store information about the temporal Voice-Channel.
  */
 @Entity
+@Getter
+@Setter
 @Table(name = "TemporalVoicechannel")
 public class TemporalVoicechannel {
 
@@ -41,23 +45,5 @@ public class TemporalVoicechannel {
     public TemporalVoicechannel(String guildId, String voiceChannelId) {
         this.guildId = guildId;
         this.voiceChannelId = voiceChannelId;
-    }
-
-    /**
-     * Get the ID of the Guild.
-     *
-     * @return the ID of the Guild.
-     */
-    public String getGuildId() {
-        return guildId;
-    }
-
-    /**
-     * Get the ID of the Voice-channel.
-     *
-     * @return the ID of the Voice-channel.
-     */
-    public String getVoiceChannelId() {
-        return voiceChannelId;
     }
 }
