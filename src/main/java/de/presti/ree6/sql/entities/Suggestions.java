@@ -1,11 +1,15 @@
 package de.presti.ree6.sql.entities;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Class used to store information about the Suggestions.
  */
 @Entity
+@Getter
+@Setter
 @Table(name = "Suggestions")
 public class Suggestions {
 
@@ -36,33 +40,6 @@ public class Suggestions {
      */
     public Suggestions(long guildId, long channelId) {
         this.guildId = guildId;
-        this.channelId = channelId;
-    }
-
-    /**
-     * Get the ID of the Guild.
-     *
-     * @return the ID of the Guild.
-     */
-    public long getGuildId() {
-        return guildId;
-    }
-
-    /**
-     * Get the ID of the Channel.
-     *
-     * @return the ID of the Channel.
-     */
-    public long getChannelId() {
-        return channelId;
-    }
-
-    /**
-     * Set the ID of the Channel.
-     *
-     * @param channelId the ID of the Channel.
-     */
-    public void setChannelId(long channelId) {
         this.channelId = channelId;
     }
 }
