@@ -32,11 +32,14 @@ public class Webhook {
 
     // TODO:: fix this by renaming the column to wid and adding the actual channel id to the column cid
 
+    @Column(name = "channel")
+    private long channelId;
+
     /**
      * The Webhook Id of the Webhook.
      */
     @Column(name = "cid")
-    private String channelId;
+    private String webhookId;
 
     /**
      * The Token of the Webhook.
@@ -49,11 +52,13 @@ public class Webhook {
      *
      * @param guildId   The GuildID of the Webhook.
      * @param channelId The ChannelID of the Webhook.
+     * @param webhookId The WebhookId of the Webhook.
      * @param token     The Token of the Webhook.
      */
-    public Webhook(String guildId, String channelId, String token) {
+    public Webhook(String guildId, long channelId, String webhookId, String token) {
         this.guildId = guildId;
         this.channelId = channelId;
+        this.webhookId = webhookId;
         this.token = token;
     }
 }
