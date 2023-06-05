@@ -5,11 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * SQL Entity for the Twitter-Webhooks.
  */
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "TwitterNotify")
 public class WebhookTwitter extends Webhook {
@@ -17,14 +20,12 @@ public class WebhookTwitter extends Webhook {
     /**
      * Name of the User.
      */
-    @Getter
     @Column(name = "name")
     private String name;
 
     /**
      * Special message content.
      */
-    @Getter
     @Column(name = "message")
     private String message;
 

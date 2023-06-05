@@ -5,11 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * SQL Entity for the Reddit-Webhooks.
  */
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "RedditNotify")
 public class WebhookReddit extends Webhook {
@@ -17,14 +20,12 @@ public class WebhookReddit extends Webhook {
     /**
      * Name of the Channel.
      */
-    @Getter
     @Column(name = "subreddit")
     private String subreddit;
 
     /**
      * Special message content.
      */
-    @Getter
     @Column(name = "message")
     private String message;
 
