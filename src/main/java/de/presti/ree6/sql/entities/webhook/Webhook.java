@@ -32,7 +32,7 @@ public class Webhook {
 
 
     @Column(name = "channel", nullable = false)
-    private long channelId;
+    private long channelId = 0;
 
     /**
      * The Webhook Id of the Webhook.
