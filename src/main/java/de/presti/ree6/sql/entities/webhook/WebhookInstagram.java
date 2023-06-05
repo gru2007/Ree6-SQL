@@ -34,10 +34,12 @@ public class WebhookInstagram extends Webhook {
      * @param guildId   The guild ID.
      * @param name      The name of the User.
      * @param channelId The channel ID.
+     * @param webhookId The webhook ID.
+     * @param message   The message.
      * @param token     The token.
      */
-    public WebhookInstagram(String guildId, String name, String message, String channelId, String token) {
-        super(guildId, channelId, token);
+    public WebhookInstagram(String guildId, String name, String message, long channelId, String webhookId, String token) {
+        super(guildId, channelId, webhookId, token);
         this.name = name;
         this.message = message;
     }

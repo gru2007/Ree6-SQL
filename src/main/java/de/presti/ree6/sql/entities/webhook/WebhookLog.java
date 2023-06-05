@@ -19,7 +19,7 @@ public class WebhookLog extends Webhook {
     /**
      * @inheritDoc
      */
-    public WebhookLog(String guildId, String channelId, String token) {
-        super(guildId, channelId, token);
+    public WebhookLog(String guildId, long channelId, String webhookId, String token) {
+        super(guildId, channelId, webhookId, token);
     }
 }

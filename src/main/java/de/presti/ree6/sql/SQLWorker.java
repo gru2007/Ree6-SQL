@@ -205,10 +205,11 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the LogWebhook in our Database.
      *
      * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      */
-    public void setLogWebhook(String guildId, String webhookId, String authToken) {
+    public void setLogWebhook(String guildId, long channelId, String webhookId, String authToken) {
 
         // Check if there is already a Webhook set.
         if (isLogSetup(guildId)) {
@@ -216,7 +217,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             sqlConnector.querySQL("DELETE FROM LogWebhooks WHERE GID=?", guildId);
         }
 
-        updateEntity(new WebhookLog(guildId, webhookId, authToken));
+        updateEntity(new WebhookLog(guildId, channelId, webhookId, authToken));
     }
 
     /**
@@ -274,10 +275,11 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the WelcomeWebhooks in our Database.
      *
      * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      */
-    public void setWelcomeWebhook(String guildId, String webhookId, String authToken) {
+    public void setWelcomeWebhook(String guildId, long channelId, String webhookId, String authToken) {
 
         // Check if there is already a Webhook set.
         if (isWelcomeSetup(guildId)) {
@@ -285,7 +287,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             sqlConnector.querySQL("DELETE FROM WelcomeWebhooks WHERE GID=?", guildId);
         }
 
-        updateEntity(new WebhookWelcome(guildId, webhookId, authToken));
+        updateEntity(new WebhookWelcome(guildId, channelId, webhookId, authToken));
 
     }
 
@@ -357,24 +359,26 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the TwitchNotify in our Database.
      *
      * @param guildId    the ID of the Guild.
+     * @param channelId  the ID of the Channel.
      * @param webhookId  the ID of the Webhook.
      * @param authToken  the Auth-token to verify the access.
      * @param twitchName the Username of the Twitch User.
      */
-    public void addTwitchWebhook(String guildId, String webhookId, String authToken, String twitchName) {
-        addTwitchWebhook(guildId, webhookId, authToken, twitchName, null);
+    public void addTwitchWebhook(String guildId, long channelId, String webhookId, String authToken, String twitchName) {
+        addTwitchWebhook(guildId, channelId, webhookId, authToken, twitchName, null);
     }
 
     /**
      * Set the TwitchNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param twitchName     the Username of the Twitch User.
      * @param messageContent custom message content.
      */
-    public void addTwitchWebhook(String guildId, String webhookId, String authToken, String twitchName, String messageContent) {
+    public void addTwitchWebhook(String guildId, long channelId, String webhookId, String authToken, String twitchName, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% is now Live on Twitch! Come and join the stream <%url%>!";
 
@@ -382,7 +386,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         removeTwitchWebhook(guildId, twitchName);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookTwitch(guildId, twitchName, messageContent, webhookId, authToken));
+        updateEntity(new WebhookTwitch(guildId, twitchName, messageContent, channelId, webhookId, authToken));
     }
 
     /**
@@ -479,24 +483,26 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the InstagramNotify in our Database.
      *
      * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      * @param name      the Name of the Instagram User.
      */
-    public void addInstagramWebhook(String guildId, String webhookId, String authToken, String name) {
-        addInstagramWebhook(guildId, webhookId, authToken, name, null);
+    public void addInstagramWebhook(String guildId, long channelId, String webhookId, String authToken, String name) {
+        addInstagramWebhook(guildId, channelId, webhookId, authToken, name, null);
     }
 
     /**
      * Set the InstagramNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param name           the Name of the Instagram User.
      * @param messageContent custom message content.
      */
-    public void addInstagramWebhook(String guildId, String webhookId, String authToken, String name, String messageContent) {
+    public void addInstagramWebhook(String guildId, long channelId, String webhookId, String authToken, String name, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% just posted something on their Instagram!";
 
@@ -504,7 +510,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         removeInstagramWebhook(guildId, name);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookInstagram(guildId, name, messageContent, webhookId, authToken));
+        updateEntity(new WebhookInstagram(guildId, name, messageContent, channelId, webhookId, authToken));
     }
 
 
@@ -602,24 +608,26 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the RedditNotify in our Database.
      *
      * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      * @param subreddit the Name of the Subreddit.
      */
-    public void addRedditWebhook(String guildId, String webhookId, String authToken, String subreddit) {
-        addRedditWebhook(guildId, webhookId, authToken, subreddit, null);
+    public void addRedditWebhook(String guildId, long channelId, String webhookId, String authToken, String subreddit) {
+        addRedditWebhook(guildId, channelId, webhookId, authToken, subreddit, null);
     }
 
     /**
      * Set the RedditNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param subreddit      the Name of the Subreddit.
      * @param messageContent custom message content.
      */
-    public void addRedditWebhook(String guildId, String webhookId, String authToken, String subreddit, String messageContent) {
+    public void addRedditWebhook(String guildId, long channelId, String webhookId, String authToken, String subreddit, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% got a new post check it out <%url%>!";
 
@@ -627,7 +635,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         removeRedditWebhook(guildId, subreddit);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookReddit(guildId, subreddit, messageContent, webhookId, authToken));
+        updateEntity(new WebhookReddit(guildId, subreddit, messageContent, channelId, webhookId, authToken));
     }
 
     /**
@@ -724,24 +732,26 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the YouTubeNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param youtubeChannel the Username of the YouTube channel.
      */
-    public void addYouTubeWebhook(String guildId, String webhookId, String authToken, String youtubeChannel) {
-        addYouTubeWebhook(guildId, webhookId, authToken, youtubeChannel, null);
+    public void addYouTubeWebhook(String guildId, long channelId, String webhookId, String authToken, String youtubeChannel) {
+        addYouTubeWebhook(guildId, channelId, webhookId, authToken, youtubeChannel, null);
     }
 
     /**
      * Set the YouTubeNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param youtubeChannel the Username of the YouTube channel.
      * @param messageContent custom message content.
      */
-    public void addYouTubeWebhook(String guildId, String webhookId, String authToken, String youtubeChannel, String messageContent) {
+    public void addYouTubeWebhook(String guildId, long channelId, String webhookId, String authToken, String youtubeChannel, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% just uploaded a new Video! Check it out <%url%>!";
 
@@ -749,7 +759,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         removeYouTubeWebhook(guildId, youtubeChannel);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookYouTube(guildId, youtubeChannel, messageContent, webhookId, authToken));
+        updateEntity(new WebhookYouTube(guildId, youtubeChannel, messageContent, channelId, webhookId, authToken));
     }
 
     /**
@@ -846,24 +856,26 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the TwitterNotify in our Database.
      *
      * @param guildId     the ID of the Guild.
+     * @param channelId   the ID of the Channel.
      * @param webhookId   the ID of the Webhook.
      * @param authToken   the Auth-token to verify the access.
      * @param twitterName the Username of the Twitter User.
      */
-    public void addTwitterWebhook(String guildId, String webhookId, String authToken, String twitterName) {
-        addTwitterWebhook(guildId, webhookId, authToken, twitterName, null);
+    public void addTwitterWebhook(String guildId, long channelId, String webhookId, String authToken, String twitterName) {
+        addTwitterWebhook(guildId, channelId, webhookId, authToken, twitterName, null);
     }
 
     /**
      * Set the TwitterNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param twitterName    the Username of the Twitter User.
      * @param messageContent custom message content.
      */
-    public void addTwitterWebhook(String guildId, String webhookId, String authToken, String twitterName, String messageContent) {
+    public void addTwitterWebhook(String guildId, long channelId, String webhookId, String authToken, String twitterName, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% tweeted something! Check it out <%url%>!";
 
@@ -871,7 +883,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         removeTwitterWebhook(guildId, twitterName);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookTwitter(guildId, twitterName, messageContent, webhookId, authToken));
+        updateEntity(new WebhookTwitter(guildId, twitterName, messageContent, channelId, webhookId, authToken));
     }
 
     /**
@@ -1039,7 +1051,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         // Check if there is a role in the database.
         if (isChatLevelRewardSetup(guildId)) {
             // Add a new entry into the Database.
-            sqlConnector.querySQL(new ChatAutoRole(), "DELETE FROM ChatLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl", Map.of("gid", guildId,"rid", roleId,"lvl", level));
+            sqlConnector.querySQL(new ChatAutoRole(), "DELETE FROM ChatLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level));
         }
     }
 
@@ -1138,7 +1150,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         // Check if there is a role in the database.
         if (isVoiceLevelRewardSetup(guildId)) {
             // Add a new entry into the Database.
-            sqlConnector.querySQL(new VoiceAutoRole(), "DELETE FROM VCLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl", Map.of("gid", guildId,"rid", roleId,"lvl", level));
+            sqlConnector.querySQL(new VoiceAutoRole(), "DELETE FROM VCLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level));
         }
     }
 

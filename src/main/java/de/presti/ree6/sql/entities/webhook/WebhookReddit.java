@@ -33,12 +33,14 @@ public class WebhookReddit extends Webhook {
      * Constructor.
      *
      * @param guildId   The guild ID.
-     * @param subreddit      The name of the Subreddit.
+     * @param subreddit The name of the Subreddit.
      * @param channelId The channel ID.
+     * @param webhookId The webhook ID.
+     * @param message   The message.
      * @param token     The token.
      */
-    public WebhookReddit(String guildId, String subreddit, String message, String channelId, String token) {
-        super(guildId, channelId, token);
+    public WebhookReddit(String guildId, String subreddit, String message, long channelId, String webhookId, String token) {
+        super(guildId, channelId, webhookId, token);
         this.subreddit = subreddit;
         this.message = message;
     }

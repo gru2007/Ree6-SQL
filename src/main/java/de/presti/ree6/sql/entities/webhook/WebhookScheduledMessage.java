@@ -17,4 +17,11 @@ public class WebhookScheduledMessage extends Webhook {
      */
     public WebhookScheduledMessage() {
     }
+
+    /**
+     * @inheritDoc
+     */
+    public WebhookScheduledMessage(String guildId, long channelId, String webhookId, String token) {
+        super(guildId, channelId, webhookId, token);
+    }
 }
