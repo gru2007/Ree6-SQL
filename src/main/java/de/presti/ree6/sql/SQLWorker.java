@@ -1412,12 +1412,19 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         // Check if it is null.
         if (setting.getValue() == null) {
-            Setting defaultSetting = SettingsManager.getDefault(setting.getName());
-            if (defaultSetting != null) {
-                setting.setValue(defaultSetting.getValue());
-            } else {
-                return;
-            }
+            Object defaultValue = SettingsManager.getDefaultValue(setting.getName());
+
+            if (defaultValue == null) return;
+
+            setting.setValue(defaultValue);
+        }
+
+        if (setting.getDisplayName() == null) {
+            String defaultDisplayName = SettingsManager.getDefaultDisplayName(setting.getName());
+
+            if (defaultDisplayName == null) return;
+
+            setting.setDisplayName(defaultDisplayName);
         }
 
         Setting databaseSetting =
