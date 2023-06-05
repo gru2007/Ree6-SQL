@@ -27,24 +27,23 @@ public class Webhook {
     /**
      * The GuildID of the Webhook.
      */
-    @Column(name = "gid")
+    @Column(name = "gid", nullable = false)
     private String guildId;
 
-    // TODO:: fix this by renaming the column to wid and adding the actual channel id to the column cid
 
-    @Column(name = "channel")
+    @Column(name = "channel", nullable = false)
     private long channelId;
 
     /**
      * The Webhook Id of the Webhook.
      */
-    @Column(name = "cid")
+    @Column(name = "cid", nullable = false)
     private String webhookId;
 
     /**
      * The Token of the Webhook.
      */
-    @Column(name = "token")
+    @Column(name = "token", nullable = false)
     private String token;
 
     /**
