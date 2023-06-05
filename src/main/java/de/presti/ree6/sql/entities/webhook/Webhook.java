@@ -1,11 +1,19 @@
 package de.presti.ree6.sql.entities.webhook;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * SQL Entity for the Webhooks.
  */
+@Getter
+@Setter
 @MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
 public class Webhook {
 
     /**
@@ -38,12 +46,6 @@ public class Webhook {
 
     /**
      * Constructor.
-     */
-    public Webhook() {
-    }
-
-    /**
-     * Constructor.
      *
      * @param guildId   The GuildID of the Webhook.
      * @param channelId The ChannelID of the Webhook.
@@ -53,32 +55,5 @@ public class Webhook {
         this.guildId = guildId;
         this.channelId = channelId;
         this.token = token;
-    }
-
-    /**
-     * Get the GuildID of the Webhook.
-     *
-     * @return {@link String} as GuildID.
-     */
-    public String getGuildId() {
-        return guildId;
-    }
-
-    /**
-     * Get the ChannelID of the Webhook.
-     *
-     * @return {@link String} as ChannelID.
-     */
-    public String getChannelId() {
-        return channelId;
-    }
-
-    /**
-     * Get the Token of the Webhook.
-     *
-     * @return {@link String} as Token.
-     */
-    public String getToken() {
-        return token;
     }
 }
