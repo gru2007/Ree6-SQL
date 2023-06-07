@@ -1,6 +1,7 @@
 package de.presti.ree6.sql.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class Punishments {
      * The id of the punishment.
      */
     @Id
+    @GeneratedValue
     long id;
 
     /**
