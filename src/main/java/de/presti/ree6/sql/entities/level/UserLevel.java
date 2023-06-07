@@ -2,10 +2,14 @@ package de.presti.ree6.sql.entities.level;
 
 import de.presti.ree6.sql.util.LevelUtil;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Base class for the UserLevel.
  */
+@Getter
+@Setter
 @MappedSuperclass
 public class UserLevel {
 
@@ -88,42 +92,6 @@ public class UserLevel {
     }
 
     /**
-     * Get the ID of the wanted User.
-     *
-     * @return the ID.
-     */
-    public String getUserId() {
-        return userId;
-    }
-
-    /**
-     * Change the ID of the User.
-     *
-     * @param userId the new ID.
-     */
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    /**
-     * Get the XP count of the User.
-     *
-     * @return the XP count.
-     */
-    public long getExperience() {
-        return experience;
-    }
-
-    /**
-     * Change the XP count.
-     *
-     * @param experience new XP count.
-     */
-    public void setExperience(long experience) {
-        this.experience = experience;
-    }
-
-    /**
      * Get the Level of the User.
      *
      * @return the level.
@@ -135,14 +103,6 @@ public class UserLevel {
         return level;
     }
 
-    /**
-     * Change the Level of the User.
-     *
-     * @param level the new level.
-     */
-    public void setLevel(long level) {
-        this.level = level;
-    }
 
     /**
      * Get the current Rank of the User.
@@ -155,14 +115,6 @@ public class UserLevel {
         }
 
         return rank;
-    }
-
-    /**
-     * Get the GuildId.
-     * @return the GuildId.
-     */
-    public String getGuildId() {
-        return guildId;
     }
 
     /**
@@ -236,15 +188,15 @@ public class UserLevel {
         String end;
 
         if (experience >= 1000000000000L) {
-            end = ((experience / 1000000000000L) + "").replace("l", "") + "mil";
+            end = (String.valueOf(experience / 1000000000000L)).replace("l", "") + "mil";
         } else if (experience >= 1000000000) {
-            end = ((experience / 1000000000) + "").replace("l", "") + "mil";
+            end = (String.valueOf(experience / 1000000000)).replace("l", "") + "mil";
         } else if (experience >= 1000000) {
-            end = ((experience / 1000000) + "").replace("l", "") + "mio";
+            end = (String.valueOf(experience / 1000000)).replace("l", "") + "mio";
         } else if (experience >= 1000) {
-            end = ((experience / 1000) + "").replace("l", "") + "k";
+            end = (String.valueOf(experience / 1000)).replace("l", "") + "k";
         } else {
-            end = "" + getExperience();
+            end = String.valueOf(getExperience());
         }
 
         return end;

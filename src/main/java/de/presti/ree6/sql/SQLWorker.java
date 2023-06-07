@@ -57,12 +57,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Long} as XP Count.
      */
     public ChatUserLevel getChatLevelData(String guildId, String userId) {
-        ChatUserLevel chatUserLevel = null;
-        if (existsInChatLevel(guildId, userId)) {
-            // Return a new UserLevel if there was an error OR if the user isn't in the database.
-            chatUserLevel = getEntity(new ChatUserLevel(), "SELECT * FROM Level WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userId));
+        ChatUserLevel chatUserLevel =
+                getEntity(new ChatUserLevel(), "SELECT * FROM Level WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userId));
+
+        if (chatUserLevel == null) {
+            chatUserLevel = new ChatUserLevel(guildId, userId, 0);
         }
-        return chatUserLevel == null ? new ChatUserLevel(guildId, userId, 0) : chatUserLevel;
+
+        return chatUserLevel;
     }
 
     /**
@@ -86,6 +88,17 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         if (isOptOut(guildId, userLevel.getUserId())) {
             return;
+        }
+
+        if (userLevel.getId() == 0) {
+            ChatUserLevel oldUser =
+                    getEntity(new ChatUserLevel(), "SELECT * FROM VCLevel WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userLevel.getUserId()));
+
+            if (oldUser != null) {
+                oldUser.setExperience(userLevel.getExperience());
+                updateEntity(oldUser);
+                return;
+            }
         }
 
         updateEntity(userLevel);
@@ -124,13 +137,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link VoiceUserLevel} with information about the User Level.
      */
     public VoiceUserLevel getVoiceLevelData(String guildId, String userId) {
-        VoiceUserLevel voiceUserLevel = null;
-        if (existsInVoiceLevel(guildId, userId)) {
-            // Return 0 if there was an error OR if the user isn't in the database.
-            voiceUserLevel = getEntity(new VoiceUserLevel(), "SELECT * FROM VCLevel WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userId));
+        VoiceUserLevel voiceUserLevel =
+                getEntity(new VoiceUserLevel(), "SELECT * FROM VCLevel WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userId));
+
+        if (voiceUserLevel == null) {
+            voiceUserLevel = new VoiceUserLevel(guildId, userId, 0);
         }
 
-        return voiceUserLevel == null ? new VoiceUserLevel(guildId, userId, 0) : voiceUserLevel;
+        return voiceUserLevel;
     }
 
     /**
@@ -154,6 +168,17 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         if (isOptOut(guildId, voiceUserLevel.getUserId())) {
             return;
+        }
+
+        if (voiceUserLevel.getId() == 0) {
+            VoiceUserLevel oldUser =
+                    getEntity(new VoiceUserLevel(), "SELECT * FROM VCLevel WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", voiceUserLevel.getUserId()));
+
+            if (oldUser != null) {
+                oldUser.setExperience(voiceUserLevel.getExperience());
+                updateEntity(oldUser);
+                return;
+            }
         }
 
         updateEntity(voiceUserLevel);
@@ -205,18 +230,22 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the LogWebhook in our Database.
      *
      * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      */
-    public void setLogWebhook(String guildId, String webhookId, String authToken) {
-
-        // Check if there is already a Webhook set.
-        if (isLogSetup(guildId)) {
-            // Delete the entry.
-            sqlConnector.querySQL("DELETE FROM LogWebhooks WHERE GID=?", guildId);
+    public void setLogWebhook(String guildId, long channelId, String webhookId, String authToken) {
+        WebhookLog webhookLog = getLogWebhook(guildId);
+        if (webhookLog == null) {
+            webhookLog = new WebhookLog();
+            webhookLog.setGuildId(guildId);
         }
 
-        updateEntity(new WebhookLog(guildId, webhookId, authToken));
+        webhookLog.setChannelId(channelId);
+        webhookLog.setWebhookId(webhookId);
+        webhookLog.setToken(authToken);
+
+        updateEntity(webhookLog);
     }
 
     /**
@@ -247,13 +276,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken the Auth-Token of the Webhook.
      */
     public void deleteLogWebhook(long webhookId, String authToken) {
-        // Check if there is a Webhook with this data.
-        if (existsLogData(webhookId, authToken)) {
+        WebhookLog webhookLog =
+                getEntity(new WebhookLog(), "SELECT * FROM LogWebhooks WHERE CID=:cid AND TOKEN=:token", Map.of("cid", webhookId, "token", authToken));
 
-            // Delete if so.
-            sqlConnector.querySQL("DELETE FROM LogWebhooks WHERE CID=? AND TOKEN=?", webhookId, authToken);
+        if (webhookLog != null) {
+            deleteEntity(webhookLog);
         }
-
     }
 
     //endregion
@@ -274,19 +302,22 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the WelcomeWebhooks in our Database.
      *
      * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      */
-    public void setWelcomeWebhook(String guildId, String webhookId, String authToken) {
-
-        // Check if there is already a Webhook set.
-        if (isWelcomeSetup(guildId)) {
-            // Delete the entry.
-            sqlConnector.querySQL("DELETE FROM WelcomeWebhooks WHERE GID=?", guildId);
+    public void setWelcomeWebhook(String guildId, long channelId, String webhookId, String authToken) {
+        WebhookWelcome webhookWelcome = getWelcomeWebhook(guildId);
+        if (webhookWelcome == null) {
+            webhookWelcome = new WebhookWelcome();
+            webhookWelcome.setGuildId(guildId);
         }
 
-        updateEntity(new WebhookWelcome(guildId, webhookId, authToken));
+        webhookWelcome.setChannelId(channelId);
+        webhookWelcome.setWebhookId(webhookId);
+        webhookWelcome.setToken(authToken);
 
+        updateEntity(webhookWelcome);
     }
 
     /**
@@ -357,32 +388,44 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the TwitchNotify in our Database.
      *
      * @param guildId    the ID of the Guild.
+     * @param channelId  the ID of the Channel.
      * @param webhookId  the ID of the Webhook.
      * @param authToken  the Auth-token to verify the access.
      * @param twitchName the Username of the Twitch User.
      */
-    public void addTwitchWebhook(String guildId, String webhookId, String authToken, String twitchName) {
-        addTwitchWebhook(guildId, webhookId, authToken, twitchName, null);
+    public void addTwitchWebhook(String guildId, long channelId, String webhookId, String authToken, String twitchName) {
+        addTwitchWebhook(guildId, channelId, webhookId, authToken, twitchName, null);
     }
 
     /**
      * Set the TwitchNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param twitchName     the Username of the Twitch User.
      * @param messageContent custom message content.
      */
-    public void addTwitchWebhook(String guildId, String webhookId, String authToken, String twitchName, String messageContent) {
+    public void addTwitchWebhook(String guildId, long channelId, String webhookId, String authToken, String twitchName, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% is now Live on Twitch! Come and join the stream <%url%>!";
 
-        // Check if there is already a Webhook set.
-        removeTwitchWebhook(guildId, twitchName);
+        WebhookTwitch webhookTwitch = getTwitchWebhook(guildId, twitchName);
+
+        if (webhookTwitch == null) {
+            webhookTwitch = new WebhookTwitch();
+            webhookTwitch.setGuildId(guildId);
+        }
+
+        webhookTwitch.setChannelId(channelId);
+        webhookTwitch.setWebhookId(webhookId);
+        webhookTwitch.setToken(authToken);
+        webhookTwitch.setName(twitchName);
+        webhookTwitch.setMessage(messageContent);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookTwitch(guildId, twitchName, messageContent, webhookId, authToken));
+        updateEntity(webhookTwitch);
     }
 
     /**
@@ -393,10 +436,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void removeTwitchWebhook(String guildId, String twitchName) {
 
+        WebhookTwitch webhook = getTwitchWebhook(guildId, twitchName);
+
         // Check if there is a Webhook set.
-        if (isTwitchSetup(guildId, twitchName)) {
+        if (webhook != null) {
             // Delete the entry.
-            sqlConnector.querySQL("DELETE FROM TwitchNotify WHERE GID=? AND NAME=?", guildId, twitchName);
+            deleteEntity(webhook);
         }
     }
 
@@ -479,32 +524,45 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the InstagramNotify in our Database.
      *
      * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      * @param name      the Name of the Instagram User.
      */
-    public void addInstagramWebhook(String guildId, String webhookId, String authToken, String name) {
-        addInstagramWebhook(guildId, webhookId, authToken, name, null);
+    public void addInstagramWebhook(String guildId, long channelId, String webhookId, String authToken, String name) {
+        addInstagramWebhook(guildId, channelId, webhookId, authToken, name, null);
     }
 
     /**
      * Set the InstagramNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param name           the Name of the Instagram User.
      * @param messageContent custom message content.
      */
-    public void addInstagramWebhook(String guildId, String webhookId, String authToken, String name, String messageContent) {
+    public void addInstagramWebhook(String guildId, long channelId, String webhookId, String authToken, String name, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% just posted something on their Instagram!";
 
         // Check if there is already a Webhook set.
-        removeInstagramWebhook(guildId, name);
+        WebhookInstagram webhook = getInstagramWebhook(guildId, name);
+
+        if (webhook == null) {
+            webhook = new WebhookInstagram();
+            webhook.setGuildId(guildId);
+        }
+
+        webhook.setChannelId(channelId);
+        webhook.setWebhookId(webhookId);
+        webhook.setToken(authToken);
+        webhook.setName(name);
+        webhook.setMessage(messageContent);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookInstagram(guildId, name, messageContent, webhookId, authToken));
+        updateEntity(webhook);
     }
 
 
@@ -516,10 +574,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void removeInstagramWebhook(String guildId, String name) {
 
+        WebhookInstagram webhook = getInstagramWebhook(guildId, name);
+
         // Check if there is a Webhook set.
-        if (isInstagramSetup(guildId, name)) {
+        if (webhook != null) {
             // Delete the entry.
-            sqlConnector.querySQL("DELETE FROM InstagramNotify WHERE GID=? AND NAME=?", guildId, name);
+            deleteEntity(webhook);
         }
     }
 
@@ -602,32 +662,45 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the RedditNotify in our Database.
      *
      * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      * @param subreddit the Name of the Subreddit.
      */
-    public void addRedditWebhook(String guildId, String webhookId, String authToken, String subreddit) {
-        addRedditWebhook(guildId, webhookId, authToken, subreddit, null);
+    public void addRedditWebhook(String guildId, long channelId, String webhookId, String authToken, String subreddit) {
+        addRedditWebhook(guildId, channelId, webhookId, authToken, subreddit, null);
     }
 
     /**
      * Set the RedditNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param subreddit      the Name of the Subreddit.
      * @param messageContent custom message content.
      */
-    public void addRedditWebhook(String guildId, String webhookId, String authToken, String subreddit, String messageContent) {
+    public void addRedditWebhook(String guildId, long channelId, String webhookId, String authToken, String subreddit, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% got a new post check it out <%url%>!";
 
         // Check if there is already a Webhook set.
-        removeRedditWebhook(guildId, subreddit);
+        WebhookReddit webhook = getRedditWebhook(guildId, subreddit);
+
+        if (webhook == null) {
+            webhook = new WebhookReddit();
+            webhook.setGuildId(guildId);
+        }
+
+        webhook.setChannelId(channelId);
+        webhook.setWebhookId(webhookId);
+        webhook.setToken(authToken);
+        webhook.setSubreddit(subreddit);
+        webhook.setMessage(messageContent);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookReddit(guildId, subreddit, messageContent, webhookId, authToken));
+        updateEntity(webhook);
     }
 
     /**
@@ -638,10 +711,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void removeRedditWebhook(String guildId, String subreddit) {
 
+        WebhookReddit webhook = getRedditWebhook(guildId, subreddit);
+
         // Check if there is a Webhook set.
-        if (isRedditSetup(guildId, subreddit)) {
+        if (webhook != null) {
             // Delete the entry.
-            sqlConnector.querySQL("DELETE FROM RedditNotify WHERE GID=? AND SUBREDDIT=?", guildId, subreddit);
+            deleteEntity(webhook);
         }
     }
 
@@ -724,32 +799,45 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the YouTubeNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param youtubeChannel the Username of the YouTube channel.
      */
-    public void addYouTubeWebhook(String guildId, String webhookId, String authToken, String youtubeChannel) {
-        addYouTubeWebhook(guildId, webhookId, authToken, youtubeChannel, null);
+    public void addYouTubeWebhook(String guildId, long channelId, String webhookId, String authToken, String youtubeChannel) {
+        addYouTubeWebhook(guildId, channelId, webhookId, authToken, youtubeChannel, null);
     }
 
     /**
      * Set the YouTubeNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param youtubeChannel the Username of the YouTube channel.
      * @param messageContent custom message content.
      */
-    public void addYouTubeWebhook(String guildId, String webhookId, String authToken, String youtubeChannel, String messageContent) {
+    public void addYouTubeWebhook(String guildId, long channelId, String webhookId, String authToken, String youtubeChannel, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% just uploaded a new Video! Check it out <%url%>!";
 
         // Check if there is already a Webhook set.
-        removeYouTubeWebhook(guildId, youtubeChannel);
+        WebhookYouTube webhook = getYouTubeWebhook(guildId, youtubeChannel);
+
+        if (webhook == null) {
+            webhook = new WebhookYouTube();
+            webhook.setGuildId(guildId);
+        }
+
+        webhook.setChannelId(channelId);
+        webhook.setWebhookId(webhookId);
+        webhook.setToken(authToken);
+        webhook.setName(youtubeChannel);
+        webhook.setMessage(messageContent);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookYouTube(guildId, youtubeChannel, messageContent, webhookId, authToken));
+        updateEntity(webhook);
     }
 
     /**
@@ -760,10 +848,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void removeYouTubeWebhook(String guildId, String youtubeChannel) {
 
+        WebhookYouTube webhook = getYouTubeWebhook(guildId, youtubeChannel);
+
         // Check if there is a Webhook set.
-        if (isYouTubeSetup(guildId, youtubeChannel)) {
+        if (webhook != null) {
             // Delete the entry.
-            sqlConnector.querySQL("DELETE FROM YouTubeNotify WHERE GID=? AND NAME=?", guildId, youtubeChannel);
+            deleteEntity(webhook);
         }
     }
 
@@ -790,7 +880,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //endregion
 
-    //region Twitter Notifer
+    //region Twitter Notifier
 
     /**
      * Get the Twitter-Notify data.
@@ -846,32 +936,45 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Set the TwitterNotify in our Database.
      *
      * @param guildId     the ID of the Guild.
+     * @param channelId   the ID of the Channel.
      * @param webhookId   the ID of the Webhook.
      * @param authToken   the Auth-token to verify the access.
      * @param twitterName the Username of the Twitter User.
      */
-    public void addTwitterWebhook(String guildId, String webhookId, String authToken, String twitterName) {
-        addTwitterWebhook(guildId, webhookId, authToken, twitterName, null);
+    public void addTwitterWebhook(String guildId, long channelId, String webhookId, String authToken, String twitterName) {
+        addTwitterWebhook(guildId, channelId, webhookId, authToken, twitterName, null);
     }
 
     /**
      * Set the TwitterNotify in our Database.
      *
      * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
      * @param webhookId      the ID of the Webhook.
      * @param authToken      the Auth-token to verify the access.
      * @param twitterName    the Username of the Twitter User.
      * @param messageContent custom message content.
      */
-    public void addTwitterWebhook(String guildId, String webhookId, String authToken, String twitterName, String messageContent) {
+    public void addTwitterWebhook(String guildId, long channelId, String webhookId, String authToken, String twitterName, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% tweeted something! Check it out <%url%>!";
 
         // Check if there is already a Webhook set.
-        removeTwitterWebhook(guildId, twitterName);
+        WebhookTwitter webhook = getTwitterWebhook(guildId, twitterName);
+
+        if (webhook == null) {
+            webhook = new WebhookTwitter();
+            webhook.setGuildId(guildId);
+        }
+
+        webhook.setChannelId(channelId);
+        webhook.setWebhookId(webhookId);
+        webhook.setToken(authToken);
+        webhook.setName(twitterName);
+        webhook.setMessage(messageContent);
 
         // Add a new entry into the Database.
-        updateEntity(new WebhookTwitter(guildId, twitterName, messageContent, webhookId, authToken));
+        updateEntity(webhook);
     }
 
     /**
@@ -881,10 +984,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitterName the Name of the Twitter User.
      */
     public void removeTwitterWebhook(String guildId, String twitterName) {
+        WebhookTwitter webhook = getTwitterWebhook(guildId, twitterName);
+
         // Check if there is a Webhook set.
-        if (isTwitterSetup(guildId, twitterName)) {
+        if (webhook != null) {
             // Delete the entry.
-            sqlConnector.querySQL(new WebhookTwitter(), "DELETE FROM TwitterNotify WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", twitterName));
+            deleteEntity(webhook);
         }
     }
 
@@ -948,10 +1053,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      */
     public void removeAutoRole(String guildId, String roleId) {
+        AutoRole autoRole = getEntity(new AutoRole(), "SELECT * FROM AutoRoles WHERE GID=:gid AND RID=:rid ", Map.of("gid", guildId, "rid", roleId));
+
         // Check if there is a role in the database.
-        if (isAutoRoleSetup(guildId, roleId)) {
+        if (autoRole != null) {
             // Add a new entry into the Database.
-            deleteEntity(getEntity(new AutoRole(), "SELECT * FROM AutoRoles WHERE GID=:gid AND RID=:rid ", Map.of("gid", guildId, "rid", roleId)));
+            deleteEntity(autoRole);
         }
     }
 
@@ -1021,10 +1128,13 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeChatLevelReward(String guildId, long level) {
+        ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "SELECT FROM ChatLevelAutoRoles WHERE GID=:gid AND LVL=:lvl",
+                Map.of("gid", guildId, "lvl", level));
+
         // Check if there is a role in the database.
-        if (isChatLevelRewardSetup(guildId)) {
+        if (chatAutoRole != null) {
             // Add a new entry into the Database.
-            sqlConnector.querySQL(new ChatAutoRole(), "DELETE FROM ChatLevelAutoRoles WHERE GID=:gid AND LVL=:lvl", Map.of("gid", guildId, "lvl", level));
+            deleteEntity(chatAutoRole);
         }
     }
 
@@ -1036,10 +1146,13 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeChatLevelReward(String guildId, String roleId, long level) {
+        ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "SELECT FROM ChatLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl",
+                Map.of("gid", guildId, "rid", roleId, "lvl", level));
+
         // Check if there is a role in the database.
-        if (isChatLevelRewardSetup(guildId)) {
+        if (chatAutoRole != null) {
             // Add a new entry into the Database.
-            sqlConnector.querySQL(new ChatAutoRole(), "DELETE FROM ChatLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl", Map.of("gid", guildId,"rid", roleId,"lvl", level));
+            deleteEntity(chatAutoRole);
         }
     }
 
@@ -1120,10 +1233,13 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeVoiceLevelReward(String guildId, long level) {
+        VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "SELECT FROM VCLevelAutoRoles WHERE GID=:gid AND LVL=:lvl",
+                Map.of("gid", guildId, "lvl", level));
+
         // Check if there is a role in the database.
-        if (isVoiceLevelRewardSetup(guildId)) {
+        if (voiceAutoRole != null) {
             // Add a new entry into the Database.
-            sqlConnector.querySQL(new VoiceAutoRole(), "DELETE FROM VCLevelAutoRoles WHERE GID=:gid AND LVL=:lvl", Map.of("gid", guildId, "lvl", level));
+            deleteEntity(voiceAutoRole);
         }
     }
 
@@ -1135,10 +1251,13 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeVoiceLevelReward(String guildId, String roleId, long level) {
+        VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "SELECT FROM VCLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl",
+                Map.of("gid", guildId, "rid", roleId, "lvl", level));
+
         // Check if there is a role in the database.
-        if (isVoiceLevelRewardSetup(guildId)) {
+        if (voiceAutoRole != null) {
             // Add a new entry into the Database.
-            sqlConnector.querySQL(new VoiceAutoRole(), "DELETE FROM VCLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl", Map.of("gid", guildId,"rid", roleId,"lvl", level));
+            deleteEntity(voiceAutoRole);
         }
     }
 
@@ -1212,7 +1331,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode the Code of the Invite.
      */
     public void removeInvite(String guildId, String inviteCode) {
-        sqlConnector.querySQL(new Invite(), "DELETE FROM Invites WHERE GID=:gid AND CODE=:code", Map.of("gid", guildId, "code", inviteCode));
+        deleteEntity(getInvite(guildId, inviteCode));
     }
 
     /**
@@ -1251,6 +1370,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     /**
+     * Get the Invite from our Database.
+     *
+     * @param guildId       the ID of the Guild.
+     * @param inviteCreator the ID of the Invite Creator.
+     * @param inviteCode    the Code of the Invite.
+     * @param inviteUsage   the Usage count of the Invite.
+     * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
+     */
+    public Invite getInvite(String guildId, String inviteCreator, String inviteCode, String inviteUsage) {
+        return getEntity(new Invite(), "SELECT * FROM Invites WHERE GID=:gid AND UID=:uid AND CODE=:code AND USES=:uses",
+                Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode, "uses", inviteUsage));
+    }
+
+    /**
      * Remove an entry from our Database.
      *
      * @param guildId       the ID of the Guild.
@@ -1270,7 +1403,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteUsage   the usage count of the Invite.
      */
     public void removeInvite(String guildId, String inviteCreator, String inviteCode, int inviteUsage) {
-        deleteEntity(new Invite(guildId, inviteCreator, inviteUsage, inviteCode));
+        deleteEntity(getInvite(guildId, inviteCreator, inviteCode, String.valueOf(inviteUsage)));
     }
 
     /**
@@ -1279,7 +1412,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      */
     public void clearInvites(String guildId) {
-        sqlConnector.querySQL(new Invite(), "DELETE FROM Invites WHERE GID=:gid", Map.of("gid", guildId));
+        getInvites(guildId).forEach(this::deleteEntity);
     }
 
     //endregion
@@ -1341,11 +1474,15 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param word    the Word to be removed.
      */
     public void removeChatProtectorWord(String guildId, String word) {
+        Blacklist blacklist =
+                getEntity(new Blacklist(), "SELECT * FROM ChatProtector WHERE GID = :gid AND WORD = :word",
+                        Map.of("gid", guildId, "word", word));
+
         // Check if there is no entry for it.
-        if (!isChatProtectorSetup(guildId, word)) return;
+        if (blacklist == null) return;
 
         // If so then delete it.
-        deleteEntity(new Blacklist(guildId, word));
+        deleteEntity(blacklist);
     }
 
     //endregion
@@ -1400,12 +1537,19 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         // Check if it is null.
         if (setting.getValue() == null) {
-            Setting defaultSetting = SettingsManager.getDefault(setting.getName());
-            if (defaultSetting != null) {
-                setting.setValue(defaultSetting.getValue());
-            } else {
-                return;
-            }
+            Object defaultValue = SettingsManager.getDefaultValue(setting.getName());
+
+            if (defaultValue == null) return;
+
+            setting.setValue(defaultValue);
+        }
+
+        if (setting.getDisplayName() == null) {
+            String defaultDisplayName = SettingsManager.getDefaultDisplayName(setting.getName());
+
+            if (defaultDisplayName == null) return;
+
+            setting.setDisplayName(defaultDisplayName);
         }
 
         Setting databaseSetting =
@@ -1691,8 +1835,11 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      */
     public void optIn(String guildId, String userId) {
-        if (isOptOut(guildId, userId)) {
-            sqlConnector.querySQL(new OptOut(), "DELETE FROM Opt_out WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userId));
+        OptOut optOut = getEntity(new OptOut(), "SELECT * FROM Opt_out WHERE GID=:gid AND UID=:uid",
+                Map.of("gid", guildId, "uid", userId));
+
+        if (optOut != null) {
+            deleteEntity(optOut);
         }
     }
 
@@ -1724,8 +1871,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      */
     public void removeBirthday(String guildId, String userId) {
-        if (isBirthdaySaved(guildId, userId)) {
-            sqlConnector.querySQL(new BirthdayWish(), "DELETE FROM BirthdayWish WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userId));
+        BirthdayWish birthdayWish = getEntity(new BirthdayWish(), "SELECT * FROM BirthdayWish WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userId));
+        if (birthdayWish != null) {
+            deleteEntity(birthdayWish);
         }
     }
 
@@ -1767,7 +1915,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List} of {@link BirthdayWish} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
     public List<BirthdayWish> getBirthdays() {
-        return getEntityList(new BirthdayWish(), "SELECT * FROM BirthdayWish", null);
+        return getEntityList(new BirthdayWish(), "SELECT * FROM BirthdayWish", Map.of());
     }
 
     //endregion

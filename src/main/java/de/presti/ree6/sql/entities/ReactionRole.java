@@ -2,6 +2,7 @@ package de.presti.ree6.sql.entities;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "ReactionRole")
 public class ReactionRole {
 
@@ -37,6 +39,18 @@ public class ReactionRole {
     private long emoteId;
 
     /**
+     * The formatted Emote.
+     */
+    @Column(name = "formattedEmote")
+    private String formattedEmote = "";
+
+    /**
+     * The ID of the Channel.
+     */
+    @Column(name = "channelId")
+    private long channelId = 0;
+
+    /**
      * The ID of the Role used as reaction role.
      */
     @Column(name = "roleId")
@@ -55,7 +69,7 @@ public class ReactionRole {
      * @param roleId the Role ID.
      * @param messageId the Message ID.
      */
-    public ReactionRole(long guildId, long emoteId, long roleId, long messageId) {
+    public ReactionRole(long guildId, long emoteId, String formattedEmote, long roleId, long messageId) {
         this.guildId = guildId;
         this.emoteId = emoteId;
         this.roleId = roleId;

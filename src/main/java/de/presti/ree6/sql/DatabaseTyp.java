@@ -13,7 +13,7 @@ public enum DatabaseTyp {
     /**
      * The MariaDB Database Information.
      */
-    MariaDB("jdbc:mariadb://%s:%s/%s", "org.hibernate.dialect.MariaDBDialect", "com.mysql.jdbc.Driver",true),
+    MariaDB("jdbc:mariadb://%s:%s/%s", "org.hibernate.dialect.MariaDBDialect", "org.mariadb.jdbc.Driver",true),
 
     /**
      * The SQLite Database Information.

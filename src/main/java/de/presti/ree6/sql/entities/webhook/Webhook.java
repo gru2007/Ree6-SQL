@@ -1,11 +1,19 @@
 package de.presti.ree6.sql.entities.webhook;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * SQL Entity for the Webhooks.
  */
+@Getter
+@Setter
 @MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
 public class Webhook {
 
     /**
@@ -19,66 +27,37 @@ public class Webhook {
     /**
      * The GuildID of the Webhook.
      */
-    @Column(name = "gid")
+    @Column(name = "gid", nullable = false)
     private String guildId;
 
-    // TODO:: fix this by renaming the column to wid and adding the actual channel id to the column cid
+
+    @Column(name = "channel", nullable = false)
+    private long channelId = 0;
 
     /**
      * The Webhook Id of the Webhook.
      */
-    @Column(name = "cid")
-    private String channelId;
+    @Column(name = "cid", nullable = false)
+    private String webhookId;
 
     /**
      * The Token of the Webhook.
      */
-    @Column(name = "token")
+    @Column(name = "token", nullable = false)
     private String token;
-
-    /**
-     * Constructor.
-     */
-    public Webhook() {
-    }
 
     /**
      * Constructor.
      *
      * @param guildId   The GuildID of the Webhook.
      * @param channelId The ChannelID of the Webhook.
+     * @param webhookId The WebhookId of the Webhook.
      * @param token     The Token of the Webhook.
      */
-    public Webhook(String guildId, String channelId, String token) {
+    public Webhook(String guildId, long channelId, String webhookId, String token) {
         this.guildId = guildId;
         this.channelId = channelId;
+        this.webhookId = webhookId;
         this.token = token;
-    }
-
-    /**
-     * Get the GuildID of the Webhook.
-     *
-     * @return {@link String} as GuildID.
-     */
-    public String getGuildId() {
-        return guildId;
-    }
-
-    /**
-     * Get the ChannelID of the Webhook.
-     *
-     * @return {@link String} as ChannelID.
-     */
-    public String getChannelId() {
-        return channelId;
-    }
-
-    /**
-     * Get the Token of the Webhook.
-     *
-     * @return {@link String} as Token.
-     */
-    public String getToken() {
-        return token;
     }
 }
