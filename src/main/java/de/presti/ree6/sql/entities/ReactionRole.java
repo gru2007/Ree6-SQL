@@ -37,10 +37,16 @@ public class ReactionRole {
     private long emoteId;
 
     /**
+     * The formatted Emote.
+     */
+    @Column(name = "formattedEmote")
+    private String formattedEmote = "";
+
+    /**
      * The ID of the Channel.
      */
     @Column(name = "channelId")
-    private long channelId;
+    private long channelId = 0;
 
     /**
      * The ID of the Role used as reaction role.
