@@ -37,6 +37,12 @@ public class ReactionRole {
     private long emoteId;
 
     /**
+     * The ID of the Channel.
+     */
+    @Column(name = "channelId")
+    private long channelId;
+
+    /**
      * The ID of the Role used as reaction role.
      */
     @Column(name = "roleId")
