@@ -41,10 +41,17 @@ public class Tickets {
     @Column(name = "logChannelId")
     long logChannelId;
 
+
+    /**
+     * The ID for the Webhook.
+     */
+    @Column(name = "logChannelWebhookToken")
+    long logChannelWebhookId;
+
     /**
      * The Token for the Webhook.
      */
-    @Column(name = "logChannelToken")
+    @Column(name = "logChannelWebhookToken")
     String logChannelWebhookToken;
 
 
