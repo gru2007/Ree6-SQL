@@ -92,7 +92,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         if (userLevel.getId() == 0) {
             ChatUserLevel oldUser =
-                    getEntity(new ChatUserLevel(), "SELECT * FROM VCLevel WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userLevel.getUserId()));
+                    getEntity(new ChatUserLevel(), "SELECT * FROM Level WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userLevel.getUserId()));
 
             if (oldUser != null) {
                 oldUser.setExperience(userLevel.getExperience());
