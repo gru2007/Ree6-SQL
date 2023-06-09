@@ -2043,7 +2043,33 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return The mapped entity.
      */
     public <R> List<R> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery) {
-        return createQuery(r, sqlQuery, parameters, useNativeQuery).getResultList();
+        sqlQuery = sqlQuery.isEmpty() ? (useNativeQuery ? "SELECT * FROM " : "FROM ") + r.getClass().getSimpleName() : sqlQuery;
+
+        try (Session session = SQLSession.getSessionFactory().openSession()) {
+
+            session.beginTransaction();
+
+            Query<R> query;
+
+            if (useNativeQuery) {
+                query = (Query<R>) session.createNativeQuery(sqlQuery, r.getClass());
+            } else {
+                query = (Query<R>) session.createQuery(sqlQuery, r.getClass());
+            }
+
+            if (parameters != null) {
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    query.setParameter(entry.getKey(), entry.getValue());
+                }
+            }
+
+            session.getTransaction().commit();
+
+            return query.getResultList();
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
+            throw exception;
+        }
     }
 
     /**
@@ -2070,20 +2096,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return The mapped Version of the given Class-Entity.
      */
     public <R> R getEntity(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery) {
-        return createQuery(r, sqlQuery, parameters, useNativeQuery).setMaxResults(1).getSingleResultOrNull();
-    }
-
-    /**
-     * Constructs a query for the given Class-Entity, using the given SQL-Query to allow further use.
-     *
-     * @param r              The Class-Entity to get.
-     * @param sqlQuery       The query to use.
-     * @param parameters     The arguments to use.
-     * @param useNativeQuery Whether to use a native query or not.
-     * @param <R>            The Class-Entity.
-     * @return The query.
-     */
-    public <R> Query<R> createQuery(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery) {
         sqlQuery = sqlQuery.isEmpty() ? (useNativeQuery ? "SELECT * FROM " : "FROM ") + r.getClass().getSimpleName() : sqlQuery;
 
         try (Session session = SQLSession.getSessionFactory().openSession()) {
@@ -2106,7 +2118,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
             session.getTransaction().commit();
 
-            return query;
+            return query.setMaxResults(1).getSingleResultOrNull();
         } catch (Exception exception) {
             Sentry.captureException(exception);
             throw exception;
