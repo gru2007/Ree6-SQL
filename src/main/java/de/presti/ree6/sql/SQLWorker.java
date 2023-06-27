@@ -755,7 +755,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link WebhookYouTube} with all the needed data.
      */
     public WebhookYouTube getYouTubeWebhook(String guildId, String youtubeChannel) {
-        return getEntity(new WebhookYouTube(), "SELECT * FROM YouTubeNotify WHERE GID=:gid NAME=:name", Map.of("gid", guildId, "name", youtubeChannel));
+        return getEntity(new WebhookYouTube(), "SELECT * FROM YouTubeNotify WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", youtubeChannel));
     }
 
     /**
@@ -1956,6 +1956,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return the new update entity.
      */
     public <R> R updateEntity(R r) {
+        if (r == null) return null;
+
         if (!sqlConnector.isConnected()) {
             if (sqlConnector.connectedOnce()) {
                 sqlConnector.connectToSQLServer();
@@ -1999,6 +2001,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param r   The Class-Entity to delete.
      */
     public <R> void deleteEntity(R r) {
+        if (r == null) return;
+
         if (!sqlConnector.isConnected()) {
             if (sqlConnector.connectedOnce()) {
                 sqlConnector.connectToSQLServer();
