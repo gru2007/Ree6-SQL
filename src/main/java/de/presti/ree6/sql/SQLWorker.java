@@ -92,7 +92,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
         if (userLevel.getId() == 0) {
             ChatUserLevel oldUser =
-                    getEntity(new ChatUserLevel(), "SELECT * FROM VCLevel WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userLevel.getUserId()));
+                    getEntity(new ChatUserLevel(), "SELECT * FROM Level WHERE GID=:gid AND UID=:uid", Map.of("gid", guildId, "uid", userLevel.getUserId()));
 
             if (oldUser != null) {
                 oldUser.setExperience(userLevel.getExperience());
@@ -1128,7 +1128,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeChatLevelReward(String guildId, long level) {
-        ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "SELECT FROM ChatLevelAutoRoles WHERE GID=:gid AND LVL=:lvl",
+        ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "SELECT * FROM ChatLevelAutoRoles WHERE GID=:gid AND LVL=:lvl",
                 Map.of("gid", guildId, "lvl", level));
 
         // Check if there is a role in the database.
@@ -1146,7 +1146,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeChatLevelReward(String guildId, String roleId, long level) {
-        ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "SELECT FROM ChatLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl",
+        ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "SELECT * FROM ChatLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl",
                 Map.of("gid", guildId, "rid", roleId, "lvl", level));
 
         // Check if there is a role in the database.
@@ -1233,7 +1233,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeVoiceLevelReward(String guildId, long level) {
-        VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "SELECT FROM VCLevelAutoRoles WHERE GID=:gid AND LVL=:lvl",
+        VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "SELECT * FROM VCLevelAutoRoles WHERE GID=:gid AND LVL=:lvl",
                 Map.of("gid", guildId, "lvl", level));
 
         // Check if there is a role in the database.
@@ -1251,7 +1251,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeVoiceLevelReward(String guildId, String roleId, long level) {
-        VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "SELECT FROM VCLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl",
+        VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "SELECT * FROM VCLevelAutoRoles WHERE GID=:gid AND RID=:roleId AND LVL=:lvl",
                 Map.of("gid", guildId, "rid", roleId, "lvl", level));
 
         // Check if there is a role in the database.
