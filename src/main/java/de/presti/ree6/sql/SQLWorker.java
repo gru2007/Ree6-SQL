@@ -1506,7 +1506,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         // Check if there is an entry in the database.
         if (setting != null) {
             if (setting.getDisplayName() == null) {
-                setting.setDisplayName(settingName);
+                setting.setDisplayName(SettingsManager.getDefault(settingName).getDisplayName());
                 updateEntity(setting);
             }
             return setting;
