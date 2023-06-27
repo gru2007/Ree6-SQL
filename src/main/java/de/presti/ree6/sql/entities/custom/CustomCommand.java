@@ -23,7 +23,7 @@ public class CustomCommand {
      * The ID of the entity.
      */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

@@ -39,12 +39,19 @@ public class Tickets {
      * The ID of the channel that is used to send the transcripts to.
      */
     @Column(name = "logChannelId")
-    long logChannelId;
+    long logChannelId = 0L;
+
+
+    /**
+     * The ID for the Webhook.
+     */
+    @Column(name = "logChannelWebhookId")
+    long logChannelWebhookId = 0L;
 
     /**
      * The Token for the Webhook.
      */
-    @Column(name = "logChannelToken")
+    @Column(name = "logChannelWebhookToken")
     String logChannelWebhookToken;
 
 
