@@ -10,7 +10,7 @@ import de.presti.ree6.sql.entities.level.VoiceUserLevel;
  * The current implementation works using these formulas.
  * Level: x * root(XP)
  * XP: (level/x) ^ y
- *
+ * <p>
  * Based on the Implementation of <a href="https://gist.github.com/JakeSteam/4d843cc69dff4275acd742b70d4523b6">JakeSteam</a>!
  * Thanks to his great explanation in his <a href="https://blog.jakelee.co.uk/converting-levels-into-xp-vice-versa">blog post</a>!
  */

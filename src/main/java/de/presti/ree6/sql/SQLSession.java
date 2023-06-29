@@ -88,7 +88,7 @@ public class SQLSession {
      * @param databaseServerPort   Database Port
      * @param databasePath         Database Path (SQLite)
      * @param databaseTyp          Database Typ ({@link DatabaseTyp})
-     * @param maxPoolSize          Max Hiraki-CP Pool Size
+     * @param maxPoolSize          Max Hikari-CP Pool Size
      * @param createEmbeddedServer If an embedded Database should be created, should be false if it being created by another instance.
      */
     public SQLSession(String databaseUser, String databaseName, String databasePassword, String databaseServerIP, int databaseServerPort, String databasePath, DatabaseTyp databaseTyp, int maxPoolSize, boolean createEmbeddedServer) {

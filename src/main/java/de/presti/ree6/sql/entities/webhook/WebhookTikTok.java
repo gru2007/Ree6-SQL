@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * SQL Entity for the Twitter-Webhooks.
+ * SQL Entity for the TikTok-Webhooks.
  */
 @Entity
 @Getter

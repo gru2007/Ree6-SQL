@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A Entity representing the warnings a user has received on a specific guild.
+ * An Entity representing the warnings a user has received on a specific guild.
  */
 @Getter
 @Setter

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Supported Database Typs.
+ * Supported Database Types.
  */
 @Getter
 @AllArgsConstructor
