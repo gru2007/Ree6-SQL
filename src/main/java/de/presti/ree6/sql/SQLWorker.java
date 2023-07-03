@@ -1018,6 +1018,142 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //endregion
 
+    //region TikTok Notifier
+
+    /**
+     * Get the TikTok-Notify data.
+     *
+     * @param guildId  the ID of the Guild.
+     * @param tiktokId the ID of the Twitter User.
+     * @return {@link WebhookTwitter} with all the needed data.
+     */
+    public WebhookTikTok getTikTokWebhook(String guildId, String tiktokId) {
+        return getEntity(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", tiktokId));
+    }
+
+    /**
+     * Get the TikTokNotify data.
+     *
+     * @param tiktokId the ID of the Twitter User.
+     * @return {@link List<WebhookTikTok>} with all the needed data.
+     */
+    public List<WebhookTikTok> getTikTokWebhooksByName(String tiktokId) {
+        return getEntityList(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE NAME=:name", Map.of("name", tiktokId));
+    }
+
+    /**
+     * Get the all TikTok-Notifier.
+     *
+     * @return {@link List<>} the entry.
+     */
+    public List<String> getAllTikTokNames() {
+        return getEntityList(new WebhookTikTok(), "SELECT * FROM TikTokNotify", null).stream().map(WebhookTikTok::getName).toList();
+    }
+
+    /**
+     * Get every TikTok-Notifier that has been set up for the given Guild.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link List<>} the entry.
+     */
+    public List<String> getAllTikTokNames(String guildId) {
+        return getAllTikTokWebhooks(guildId).stream().map(WebhookTikTok::getName).toList();
+    }
+
+    /**
+     * Get every TikTok-Notifier that has been set up for the given Guild.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link List<>} the entry.
+     */
+    public List<WebhookTikTok> getAllTikTokWebhooks(String guildId) {
+        return getEntityList(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid", Map.of("gid", guildId));
+    }
+
+    /**
+     * Set the TikTokNotify in our Database.
+     *
+     * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
+     * @param webhookId the ID of the Webhook.
+     * @param authToken the Auth-token to verify the access.
+     * @param tiktokId  the ID of the TikTok User.
+     */
+    public void addTikTokWebhook(String guildId, long channelId, String webhookId, String authToken, String tiktokId) {
+        addTwitterWebhook(guildId, channelId, webhookId, authToken, tiktokId, null);
+    }
+
+    /**
+     * Set the TikTokNotify in our Database.
+     *
+     * @param guildId        the ID of the Guild.
+     * @param channelId      the ID of the Channel.
+     * @param webhookId      the ID of the Webhook.
+     * @param authToken      the Auth-token to verify the access.
+     * @param tiktokId       the ID of the TikTok User.
+     * @param messageContent custom message content.
+     */
+    public void addTikTokWebhook(String guildId, long channelId, String webhookId, String authToken, String tiktokId, String messageContent) {
+        if (messageContent == null)
+            messageContent = "%name% just posted something new on TikTok!";
+
+        // Check if there is already a Webhook set.
+        WebhookTikTok webhook = getTikTokWebhook(guildId, tiktokId);
+
+        if (webhook == null) {
+            webhook = new WebhookTikTok();
+            webhook.setGuildId(guildId);
+        }
+
+        webhook.setChannelId(channelId);
+        webhook.setWebhookId(webhookId);
+        webhook.setToken(authToken);
+        webhook.setName(tiktokId);
+        webhook.setMessage(messageContent);
+
+        // Add a new entry into the Database.
+        updateEntity(webhook);
+    }
+
+    /**
+     * Remove a TikTok Notifier entry from our Database.
+     *
+     * @param guildId  the ID of the Guild.
+     * @param tiktokId the ID of the TikTok User.
+     */
+    public void removeTikTokWebhook(String guildId, String tiktokId) {
+        WebhookTikTok webhook = getTikTokWebhook(guildId, tiktokId);
+
+        // Check if there is a Webhook set.
+        if (webhook != null) {
+            // Delete the entry.
+            deleteEntity(webhook);
+        }
+    }
+
+    /**
+     * Check if the TikTok Webhook has been set in our Database for this Server.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
+     */
+    public boolean isTikTokSetup(String guildId) {
+        return getEntity(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid", Map.of("gid", guildId)) != null;
+    }
+
+    /**
+     * Check if the TikTok Webhook has been set for the given User in our Database for this Server.
+     *
+     * @param guildId  the ID of the Guild.
+     * @param tiktokId the ID of the TikTok User.
+     * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
+     */
+    public boolean isTikTokSetup(String guildId, String tiktokId) {
+        return getEntity(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", tiktokId)) != null;
+    }
+
+    //endregion
+
     //endregion
 
     //region Roles
