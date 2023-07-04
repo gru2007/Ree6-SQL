@@ -1024,8 +1024,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get the TikTok-Notify data.
      *
      * @param guildId  the ID of the Guild.
-     * @param tiktokId the ID of the Twitter User.
-     * @return {@link WebhookTwitter} with all the needed data.
+     * @param tiktokId the ID of the TikTok User.
+     * @return {@link WebhookTikTok} with all the needed data.
      */
     public WebhookTikTok getTikTokWebhook(String guildId, String tiktokId) {
         return getEntity(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", tiktokId));
@@ -1034,7 +1034,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     /**
      * Get the TikTokNotify data.
      *
-     * @param tiktokId the ID of the Twitter User.
+     * @param tiktokId the ID of the TikTok User.
      * @return {@link List<WebhookTikTok>} with all the needed data.
      */
     public List<WebhookTikTok> getTikTokWebhooksByName(String tiktokId) {
@@ -1150,6 +1150,124 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public boolean isTikTokSetup(String guildId, String tiktokId) {
         return getEntity(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", tiktokId)) != null;
+    }
+
+    //endregion
+
+    //region RSS Notifier
+
+    /**
+     * Get the RSS-Feed data.
+     *
+     * @param guildId the ID of the Guild.
+     * @param url     the Url of the RSS-Feed.
+     * @return {@link RSSFeed} with all the needed data.
+     */
+    public RSSFeed getRSSWebhook(String guildId, String url) {
+        return getEntity(new RSSFeed(), "SELECT * FROM RSSFeed WHERE GID=:gid AND URL=:url", Map.of("gid", guildId, "url", url));
+    }
+
+    /**
+     * Get the RSS-Feed data.
+     *
+     * @param url the Url of the RSS-Feed.
+     * @return {@link List<RSSFeed>} with all the needed data.
+     */
+    public List<RSSFeed> getRSSWebhooksByUrl(String url) {
+        return getEntityList(new RSSFeed(), "SELECT * FROM RSSFeed WHERE URL=:url", Map.of("url", url));
+    }
+
+    /**
+     * Get the all RSS-Feeds.
+     *
+     * @return {@link List<>} the entry.
+     */
+    public List<String> getAllRSSUrls() {
+        return getEntityList(new RSSFeed(), "SELECT * FROM RSSFeed", null).stream().map(RSSFeed::getUrl).toList();
+    }
+
+    /**
+     * Get every RSS-Feed that has been set up for the given Guild.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link List<>} the entry.
+     */
+    public List<String> getAllRSSUrls(String guildId) {
+        return getAllRSSWebhooks(guildId).stream().map(RSSFeed::getUrl).toList();
+    }
+
+    /**
+     * Get every RSS-Feed that has been set up for the given Guild.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link List<>} the entry.
+     */
+    public List<RSSFeed> getAllRSSWebhooks(String guildId) {
+        return getEntityList(new RSSFeed(), "SELECT * FROM RSSFeed WHERE GID=:gid", Map.of("gid", guildId));
+    }
+
+    /**
+     * Set the RSS-Feed in our Database.
+     *
+     * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
+     * @param webhookId the ID of the Webhook.
+     * @param authToken the Auth-token to verify the access.
+     * @param url       the Url of the RSS-Feed.
+     */
+    public void addRSSWebhook(String guildId, long channelId, String webhookId, String authToken, String url) {
+        // Check if there is already a Webhook set.
+        RSSFeed webhook = getRSSWebhook(guildId, url);
+
+        if (webhook == null) {
+            webhook = new RSSFeed();
+            webhook.setGuildId(guildId);
+        }
+
+        webhook.setChannelId(channelId);
+        webhook.setWebhookId(webhookId);
+        webhook.setToken(authToken);
+        webhook.setUrl(url);
+
+        // Add a new entry into the Database.
+        updateEntity(webhook);
+    }
+
+    /**
+     * Remove an RSS-Feed entry from our Database.
+     *
+     * @param guildId the ID of the Guild.
+     * @param url     the Url of the RSS-Feed.
+     */
+    public void removeRSSWebhook(String guildId, String url) {
+        RSSFeed webhook = getRSSWebhook(guildId, url);
+
+        // Check if there is a Webhook set.
+        if (webhook != null) {
+            // Delete the entry.
+            deleteEntity(webhook);
+        }
+    }
+
+    /**
+     * Check if the RSS-Feed has been set in our Database for this Server.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
+     */
+    public boolean isRSSSetup(String guildId) {
+        return getEntity(new RSSFeed(), "SELECT * FROM RSSFeed WHERE GID=:gid", Map.of("gid", guildId)) != null;
+    }
+
+    /**
+     * Check if the RSS-Feed has been set for the given Url in our Database for this Server.
+     *
+     * @param guildId the ID of the Guild.
+     * @param url     the Url of the RSS-Feed.
+     * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
+     */
+    public boolean isRSSSetup(String guildId, String url) {
+        return getEntity(new RSSFeed(), "SELECT * FROM RSSFeed WHERE GID=:gid AND URL=:url", Map.of("gid", guildId, "url", url)) != null;
     }
 
     //endregion
