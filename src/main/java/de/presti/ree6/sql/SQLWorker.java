@@ -1080,7 +1080,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param tiktokId  the ID of the TikTok User.
      */
     public void addTikTokWebhook(String guildId, long channelId, String webhookId, String authToken, String tiktokId) {
-        addTwitterWebhook(guildId, channelId, webhookId, authToken, tiktokId, null);
+        addTikTokWebhook(guildId, channelId, webhookId, authToken, tiktokId, null);
     }
 
     /**
