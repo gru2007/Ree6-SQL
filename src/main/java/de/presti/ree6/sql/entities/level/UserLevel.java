@@ -179,6 +179,15 @@ public class UserLevel {
     }
 
     /**
+     * Get the needed Experience but formatted.
+     *
+     * @return a formatted version of the needed Experience.
+     */
+    public String getFormattedNeededExperience() {
+        return getFormattedExperience(getTotalExperienceForNextLevel());
+    }
+
+    /**
      * Get the Experience but formatted.
      *
      * @param experience the Experience that should be formatted.

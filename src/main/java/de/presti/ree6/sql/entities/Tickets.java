@@ -1,8 +1,9 @@
 package de.presti.ree6.sql.entities;
 
-import com.google.gson.JsonElement;
-import de.presti.ree6.sql.converter.JsonAttributeConverter;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;

@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * SQL Entity for the RSS Feed Notifications.
+ */
 @Getter
 @Setter
 @Entity
