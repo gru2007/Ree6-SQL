@@ -55,7 +55,21 @@ public class SettingsManager {
                 new Setting("-1", "logging_rolepermission", "Log role permission changing", true),
                 new Setting("-1", "logging_rolecolor", "Log role color changing", true),
                 new Setting("-1", "logging_messagedelete", "Log message delete", true),
-                new Setting("-1", "logging_timeout", "Log Member timeouts", true)));
+                new Setting("-1", "logging_timeout", "Log Member timeouts", true),
+                new Setting("-1", "configuration_rewards_blackjack_win", "Payment Amount on BlackJack win", 200.0),
+                new Setting("-1", "configuration_rewards_musicquiz_win", "Payment Amount on Music Quiz win", 200.0),
+                new Setting("-1", "configuration_rewards_musicquiz_feature", "Payment Amount on Music Quiz Feature guess", 100.0),
+                new Setting("-1", "configuration_rewards_musicquiz_artist", "Payment Amount on Music Quiz Feature guess", 50.0),
+                new Setting("-1", "configuration_rewards_musicquiz_title", "Payment Amount on Music Quiz Title guess", 25.0),
+                new Setting("-1", "configuration_work_min", "Minimum received Payment for work", 10.0),
+                new Setting("-1", "configuration_work_max", "Maximum received Payment for work", 50.0),
+                new Setting("-1", "configuration_work_delay", "Delay between each work", 5L),
+                new Setting("-1", "configuration_steal_delay", "Delay between each steal", 5L),
+                new Setting("-1", "message_ticket_menu", "Message that should display in the Ticket Menu.", "By clicking on the Button below you can open a Ticket!"),
+                new Setting("-1", "message_ticket_open", "Message that should display when a Ticket is opened.", "Welcome to your Ticket!"),
+                new Setting("-1", "message_suggestion_menu", "Message that should display in the Suggestion Menu.", "Suggest something"),
+                new Setting("-1", "configuration_autopublish", "Automatically publish News messages.", false)
+                ));
     }
 
     /**
