@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.sql.Types;
 
 // TODO:: add a display name.
 
@@ -49,7 +52,8 @@ public class Setting {
     /**
      * The value of the Setting.
      */
-    @Column(name = "value", columnDefinition = "LONGVARCHAR")
+    @Column(name = "value")
+    @JdbcTypeCode(value = Types.LONGNVARCHAR)
     private String value;
 
 

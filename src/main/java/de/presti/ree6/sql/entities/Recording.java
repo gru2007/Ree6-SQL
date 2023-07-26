@@ -5,8 +5,12 @@ import com.google.gson.JsonElement;
 import de.presti.ree6.sql.converter.ByteAttributeConverter;
 import de.presti.ree6.sql.converter.JsonAttributeConverter;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 
 import java.security.SecureRandom;
+import java.sql.Types;
 import java.util.Base64;
 
 /**
@@ -44,8 +48,9 @@ public class Recording {
     /**
      * The WAV-File bytes.
      */
+    @JdbcTypeCode(value = Types.LONGNVARCHAR)
     @Convert(converter = ByteAttributeConverter.class)
-    @Column(name = "recording", columnDefinition = "LONGVARCHAR")
+    @Column(name = "recording")
     byte[] recording;
 
     /**
