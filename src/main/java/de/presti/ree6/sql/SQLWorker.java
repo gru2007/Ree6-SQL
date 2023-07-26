@@ -1015,7 +1015,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isTwitterSetup(String guildId, String twitterName) {
-        return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildId=:gid AND NAME=:name", Map.of("gid", guildId, "name", twitterName)) != null;
+        return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitterName)) != null;
     }
 
     //endregion
@@ -1030,7 +1030,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link WebhookTikTok} with all the needed data.
      */
     public WebhookTikTok getTikTokWebhook(String guildId, String tiktokId) {
-        return getEntity(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", tiktokId));
+        return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", tiktokId));
     }
 
     /**
@@ -1040,7 +1040,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<WebhookTikTok>} with all the needed data.
      */
     public List<WebhookTikTok> getTikTokWebhooksByName(String tiktokId) {
-        return getEntityList(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE NAME=:name", Map.of("name", tiktokId));
+        return getEntityList(new WebhookTikTok(), "FROM WebhookTikTok WHERE name=:name", Map.of("name", tiktokId));
     }
 
     /**
@@ -1049,7 +1049,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<>} the entry.
      */
     public List<String> getAllTikTokNames() {
-        return getEntityList(new WebhookTikTok(), "SELECT * FROM TikTokNotify", null).stream().map(WebhookTikTok::getName).toList();
+        return getEntityList(new WebhookTikTok(), "FROM WebhookTikTok", null).stream().map(WebhookTikTok::getName).toList();
     }
 
     /**
@@ -1069,7 +1069,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<>} the entry.
      */
     public List<WebhookTikTok> getAllTikTokWebhooks(String guildId) {
-        return getEntityList(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid", Map.of("gid", guildId));
+        return getEntityList(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
     /**
@@ -1140,7 +1140,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isTikTokSetup(String guildId) {
-        return getEntity(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid", Map.of("gid", guildId)) != null;
+        return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1151,7 +1151,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isTikTokSetup(String guildId, String tiktokId) {
-        return getEntity(new WebhookTikTok(), "SELECT * FROM TikTokNotify WHERE GID=:gid AND NAME=:name", Map.of("gid", guildId, "name", tiktokId)) != null;
+        return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", tiktokId)) != null;
     }
 
     //endregion
@@ -1166,7 +1166,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link RSSFeed} with all the needed data.
      */
     public RSSFeed getRSSWebhook(String guildId, String url) {
-        return getEntity(new RSSFeed(), "SELECT * FROM RSSFeed WHERE GID=:gid AND URL=:url", Map.of("gid", guildId, "url", url));
+        return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildId=:gid AND url=:url", Map.of("gid", guildId, "url", url));
     }
 
     /**
@@ -1176,7 +1176,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<RSSFeed>} with all the needed data.
      */
     public List<RSSFeed> getRSSWebhooksByUrl(String url) {
-        return getEntityList(new RSSFeed(), "SELECT * FROM RSSFeed WHERE URL=:url", Map.of("url", url));
+        return getEntityList(new RSSFeed(), "FROM RSSFeed WHERE url=:url", Map.of("url", url));
     }
 
     /**
@@ -1185,7 +1185,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<>} the entry.
      */
     public List<String> getAllRSSUrls() {
-        return getEntityList(new RSSFeed(), "SELECT * FROM RSSFeed", null).stream().map(RSSFeed::getUrl).toList();
+        return getEntityList(new RSSFeed(), "FROM RSSFeed", null).stream().map(RSSFeed::getUrl).toList();
     }
 
     /**
@@ -1205,7 +1205,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<>} the entry.
      */
     public List<RSSFeed> getAllRSSWebhooks(String guildId) {
-        return getEntityList(new RSSFeed(), "SELECT * FROM RSSFeed WHERE GID=:gid", Map.of("gid", guildId));
+        return getEntityList(new RSSFeed(), "FROM RSSFeed WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
     /**
@@ -1258,7 +1258,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isRSSSetup(String guildId) {
-        return getEntity(new RSSFeed(), "SELECT * FROM RSSFeed WHERE GID=:gid", Map.of("gid", guildId)) != null;
+        return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1269,7 +1269,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isRSSSetup(String guildId, String url) {
-        return getEntity(new RSSFeed(), "SELECT * FROM RSSFeed WHERE GID=:gid AND URL=:url", Map.of("gid", guildId, "url", url)) != null;
+        return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildId=:gid AND url=:url", Map.of("gid", guildId, "url", url)) != null;
     }
 
     //endregion
