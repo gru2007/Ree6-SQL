@@ -45,7 +45,7 @@ public class Recording {
      * The WAV-File bytes.
      */
     @Convert(converter = ByteAttributeConverter.class)
-    @Column(name = "recording", columnDefinition = "LONGTEXT")
+    @Column(name = "recording", columnDefinition = "LONGVARCHAR")
     byte[] recording;
 
     /**

@@ -49,7 +49,7 @@ public class Setting {
     /**
      * The value of the Setting.
      */
-    @Column(name = "value", columnDefinition = "LONGTEXT")
+    @Column(name = "value", columnDefinition = "LONGVARCHAR")
     private String value;
 
 
