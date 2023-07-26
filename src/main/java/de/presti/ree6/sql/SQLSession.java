@@ -78,7 +78,6 @@ public class SQLSession {
      */
     IDatabaseServer embeddedDatabaseServer;
 
-
     /**
      * If the debug mode is enabled.
      */
