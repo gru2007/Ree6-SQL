@@ -34,7 +34,7 @@ public class SQLSession {
     /**
      * Various String that keep connection information to use for a connection.
      */
-    private static String databaseUser,
+    static String databaseUser,
             databaseName,
             databasePassword,
             databaseServerIP,
@@ -43,7 +43,7 @@ public class SQLSession {
     /**
      * The port of the Server.
      */
-    private static int databaseServerPort;
+    static int databaseServerPort;
 
     /**
      * The JDBC URL to connect to the Database.
@@ -76,7 +76,13 @@ public class SQLSession {
     /**
      * Internal class used to manage embedded Databases.
      */
-    private IDatabaseServer embeddedDatabaseServer;
+    IDatabaseServer embeddedDatabaseServer;
+
+
+    /**
+     * If the debug mode is enabled.
+     */
+    private static boolean debug;
 
     /**
      * Constructor.
@@ -90,14 +96,17 @@ public class SQLSession {
      * @param databaseTyp          Database Typ ({@link DatabaseTyp})
      * @param maxPoolSize          Max Hikari-CP Pool Size
      * @param createEmbeddedServer If an embedded Database should be created, should be false if it being created by another instance.
+     * @param debug                If debug mode should be enabled.
      */
-    public SQLSession(String databaseUser, String databaseName, String databasePassword, String databaseServerIP, int databaseServerPort, String databasePath, DatabaseTyp databaseTyp, int maxPoolSize, boolean createEmbeddedServer) {
+    public SQLSession(String databaseUser, String databaseName, String databasePassword, String databaseServerIP, int databaseServerPort, String databasePath, DatabaseTyp databaseTyp, int maxPoolSize, boolean createEmbeddedServer, boolean debug) {
         SQLSession.databaseUser = databaseUser;
         SQLSession.databaseName = databaseName;
         SQLSession.databasePassword = databasePassword;
         SQLSession.databaseServerIP = databaseServerIP;
         SQLSession.databaseServerPort = databaseServerPort;
         SQLSession.databasePath = databasePath;
+
+        SQLSession.debug = debug;
 
         Reflections reflections = new Reflections("sql", Scanners.Resources);
 
@@ -127,6 +136,7 @@ public class SQLSession {
                 options.setRelease(Objects.requireNonNullElse(SQLSession.class.getPackage().getImplementationVersion(), "1.2.0"));
             });
         }
+
         try {
             Class.forName(databaseTyp.getDriverClass());
         } catch (ClassNotFoundException e) {
@@ -309,14 +319,13 @@ public class SQLSession {
         return maxPoolSize;
     }
 
-    /**
-     * Get the current SessionFactory.
-     *
-     * @return The SessionFactory.
-     */
+    public static boolean isDebug() {
+        return debug;
+    }
+
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null)
-            return sessionFactory = buildSessionFactory(false);
+            return sessionFactory = buildSessionFactory(isDebug());
         return sessionFactory;
     }
 }
