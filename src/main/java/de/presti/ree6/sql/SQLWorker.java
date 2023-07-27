@@ -270,7 +270,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean existsLogData(long webhookId, String authToken) {
-        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND TOKEN=:token", Map.of("cid", webhookId, "token", authToken)) != null;
+        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", webhookId, "token", authToken)) != null;
     }
 
     /**
@@ -281,7 +281,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void deleteLogWebhook(long webhookId, String authToken) {
         WebhookLog webhookLog =
-                getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND TOKEN=:token", Map.of("cid", webhookId, "token", authToken));
+                getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", webhookId, "token", authToken));
 
         if (webhookLog != null) {
             deleteEntity(webhookLog);
@@ -346,7 +346,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link WebhookTwitch} with all the needed data.
      */
     public WebhookTwitch getTwitchWebhook(String guildId, String twitchName) {
-        return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildId=:gid AND NAME=:name", Map.of("gid", guildId, "name", twitchName));
+        return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitchName));
     }
 
     /**
@@ -356,7 +356,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<WebhookTwitch>} with all the needed data.
      */
     public List<WebhookTwitch> getTwitchWebhooksByName(String twitchName) {
-        return getEntityList(new WebhookTwitch(), "FROM WebhookTwitch WHERE NAME=:name", Map.of("name", twitchName));
+        return getEntityList(new WebhookTwitch(), "FROM WebhookTwitch WHERE name=:name", Map.of("name", twitchName));
     }
 
     /**
@@ -467,7 +467,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isTwitchSetup(String guildId, String twitchName) {
-        return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildId=:gid AND NAME=:name", Map.of("gid", guildId, "name", twitchName)) != null;
+        return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitchName)) != null;
     }
 
     //endregion
@@ -482,7 +482,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link WebhookInstagram} with all the needed data.
      */
     public WebhookInstagram getInstagramWebhook(String guildId, String name) {
-        return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildId=:gid AND NAME=:name", Map.of("gid", guildId, "name", name));
+        return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", name));
     }
 
     /**
@@ -492,7 +492,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<WebhookInstagram>} with all the needed data.
      */
     public List<WebhookInstagram> getInstagramWebhookByName(String name) {
-        return getEntityList(new WebhookInstagram(), "FROM WebhookInstagram WHERE NAME=:name", Map.of("name", name));
+        return getEntityList(new WebhookInstagram(), "FROM WebhookInstagram WHERE name=:name", Map.of("name", name));
     }
 
     /**
@@ -605,7 +605,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isInstagramSetup(String guildId, String name) {
-        return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildId=:gid AND NAME=:name", Map.of("gid", guildId, "name", name)) != null;
+        return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", name)) != null;
     }
 
     //endregion
@@ -757,7 +757,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link WebhookYouTube} with all the needed data.
      */
     public WebhookYouTube getYouTubeWebhook(String guildId, String youtubeChannel) {
-        return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildId=:gid AND NAME=:name", Map.of("gid", guildId, "name", youtubeChannel));
+        return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", youtubeChannel));
     }
 
     /**
@@ -767,7 +767,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<WebhookYouTube>} with all the needed data.
      */
     public List<WebhookYouTube> getYouTubeWebhooksByName(String youtubeChannel) {
-        return getEntityList(new WebhookYouTube(), "FROM WebhookYouTube WHERE NAME=:name", Map.of("name", youtubeChannel));
+        return getEntityList(new WebhookYouTube(), "FROM WebhookYouTube WHERE name=:name", Map.of("name", youtubeChannel));
     }
 
     /**
@@ -879,7 +879,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isYouTubeSetup(String guildId, String youtubeChannel) {
-        return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildId=:gid AND NAME=:name", Map.of("gid", guildId, "name", youtubeChannel)) != null;
+        return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", youtubeChannel)) != null;
     }
 
     //endregion
@@ -894,7 +894,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link WebhookTwitter} with all the needed data.
      */
     public WebhookTwitter getTwitterWebhook(String guildId, String twitterName) {
-        return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildId=:gid AND NAME=:name", Map.of("gid", guildId, "name", twitterName));
+        return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitterName));
     }
 
     /**
@@ -904,7 +904,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<WebhookTwitter>} with all the needed data.
      */
     public List<WebhookTwitter> getTwitterWebhooksByName(String twitterName) {
-        return getEntityList(new WebhookTwitter(), "FROM WebhookTwitter WHERE NAME=:name", Map.of("name", twitterName));
+        return getEntityList(new WebhookTwitter(), "FROM WebhookTwitter WHERE name=:name", Map.of("name", twitterName));
     }
 
     /**
