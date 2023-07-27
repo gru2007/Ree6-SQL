@@ -4,18 +4,15 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.sentry.Sentry;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.reflections.util.ClasspathHelper;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,7 +53,7 @@ public class SQLConnector {
         sqlWorker = new SQLWorker(this);
 
         connectToSQLServer();
-        createTables();
+        runMigrations();
     }
 
     /**
@@ -87,24 +84,15 @@ public class SQLConnector {
     }
 
     /**
-     * Create Tables in the Database if they aren't already set.
+     * Run the Migrations to create the needed Tables.
      */
-    public void createTables() {
+    public void runMigrations() {
 
         // Check if there is an open Connection if not, skip.
         if (!isConnected()) return;
 
-        try (InputStream inputStream = ClasspathHelper.staticClassLoader().getResourceAsStream("sql/schema.sql")) {
-            if (inputStream == null) return;
-            List<String> queries = Arrays.stream(new String(inputStream.readAllBytes()).split(";")).filter(s -> !s.isEmpty()).toList();
-            for (String query : queries) {
-                log.debug("\t\t[*] Executing query {}/{}", queries.indexOf(query) + 1, queries.size());
-                log.debug("\t\t[*] Executing query: {}", query);
-                querySQL(query);
-            }
-        } catch (Exception exception) {
-            log.error("Couldn't create Tables!", exception);
-        }
+        Flyway flyway = Flyway.configure().dataSource(getDataSource()).load();
+        flyway.migrate();
     }
 
     //region Utility
