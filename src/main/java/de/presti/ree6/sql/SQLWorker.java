@@ -1965,7 +1965,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return the Stats of the Command.
      */
     public GuildCommandStats getStatsCommand(String guildId, String command) {
-        return getEntity(new GuildCommandStats(), "FROM GuildStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command));
+        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command));
     }
 
     /**
@@ -1975,7 +1975,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return all the Command-Stats related to the given Guild.
      */
     public List<GuildCommandStats> getStats(String guildId) {
-        return getEntityList(new GuildCommandStats(), "FROM GuildStats WHERE guildId=:gid ORDER BY uses DESC", Map.of("gid", guildId), 5);
+        return getEntityList(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId=:gid ORDER BY uses DESC", Map.of("gid", guildId), 5);
     }
 
     /**
@@ -1994,7 +1994,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
     public boolean isStatsSaved(String guildId) {
-        return getEntity(new GuildCommandStats(), "FROM GuildStats WHERE guildId = :gid ", Map.of("gid", guildId)) != null;
+        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid ", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -2005,7 +2005,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
     public boolean isStatsSaved(String guildId, String command) {
-        return getEntity(new GuildCommandStats(), "FROM GuildStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command)) != null;
+        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command)) != null;
     }
 
     /**
@@ -2194,8 +2194,15 @@ public record SQLWorker(SQLConnector sqlConnector) {
         for (Class<?> clazz : classSet) {
             if (clazz.isAnnotationPresent(Table.class)) {
                 Table table = clazz.getAnnotation(Table.class);
-                sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GID=?", guildId);
-                sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GUILDID=?", guildId);
+                try {
+                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GID=?", guildId);
+                } catch (Exception ignore) {
+                }
+
+                try {
+                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GUILDID=?", guildId);
+                } catch (Exception ignore) {
+                }
             }
         }
     }
