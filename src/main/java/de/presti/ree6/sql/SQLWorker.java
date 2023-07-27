@@ -620,7 +620,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link WebhookReddit} with all the needed data.
      */
     public WebhookReddit getRedditWebhook(String guildId, String subreddit) {
-        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND SUBREDDIT=:name", Map.of("gid", guildId, "name", subreddit));
+        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND subreddit=:name", Map.of("gid", guildId, "name", subreddit));
     }
 
     /**
@@ -630,7 +630,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<WebhookReddit>} with all the needed data.
      */
     public List<WebhookReddit> getRedditWebhookBySub(String subreddit) {
-        return getEntityList(new WebhookReddit(), "FROM WebhookReddit WHERE SUBREDDIT=:name", Map.of("name", subreddit));
+        return getEntityList(new WebhookReddit(), "FROM WebhookReddit WHERE subreddit=:name", Map.of("name", subreddit));
     }
 
     /**
@@ -742,7 +742,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isRedditSetup(String guildId, String subreddit) {
-        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND SUBREDDIT=:name", Map.of("gid", guildId, "name", subreddit)) != null;
+        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND subreddit=:name", Map.of("gid", guildId, "name", subreddit)) != null;
     }
 
     //endregion
