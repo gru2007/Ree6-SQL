@@ -205,7 +205,7 @@ public class SQLSession {
             properties.put("hibernate.format_sql", debug);
 
             //properties.put("hibernate.hbm2ddl.auto", "update");
-            properties.put("jakarta.persistence.schema-generation.database.action", "update");
+            //properties.put("jakarta.persistence.schema-generation.database.action", "update");
 
             configuration.addProperties(properties);
 
