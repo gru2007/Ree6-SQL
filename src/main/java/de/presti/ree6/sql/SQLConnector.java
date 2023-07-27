@@ -91,7 +91,7 @@ public class SQLConnector {
         // Check if there is an open Connection if not, skip.
         if (!isConnected()) return;
 
-        Flyway flyway = Flyway.configure().dataSource(getDataSource()).load();
+        Flyway flyway = Flyway.configure().dataSource(getDataSource()).baselineOnMigrate(true).load();
         flyway.migrate();
     }
 
