@@ -331,7 +331,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isWelcomeSetup(String guildId) {
-        return getEntity(new WebhookWelcome(), "WebhookWelcome WHERE guildId=:gid", Map.of("gid", guildId)) != null;
+        return getEntity(new WebhookWelcome(), "FROM WebhookWelcome WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     //endregion
