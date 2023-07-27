@@ -270,7 +270,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean existsLogData(long webhookId, String authToken) {
-        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", webhookId, "token", authToken)) != null;
+        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken)) != null;
     }
 
     /**
@@ -281,7 +281,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void deleteLogWebhook(long webhookId, String authToken) {
         WebhookLog webhookLog =
-                getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", webhookId, "token", authToken));
+                getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken));
 
         if (webhookLog != null) {
             deleteEntity(webhookLog);
