@@ -205,7 +205,7 @@ public class UserLevel {
         } else if (experience >= 1000) {
             end = (String.valueOf(experience / 1000)).replace("l", "") + "k";
         } else {
-            end = String.valueOf(getExperience());
+            end = String.valueOf(experience);
         }
 
         return end;
