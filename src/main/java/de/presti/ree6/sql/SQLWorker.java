@@ -1762,8 +1762,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
         // Check if there is an entry in the database.
         if (setting != null) {
             if (setting.getDisplayName() == null) {
-                setting.setDisplayName(SettingsManager.getDefault(settingName).getDisplayName());
-                updateEntity(setting);
+                Setting defaultSetting = SettingsManager.getDefault(settingName);
+
+                if (defaultSetting == null) {
+                    log.info("Missing default for " + settingName + " in SettingsManager.");
+                } else {
+                    setting.setDisplayName(defaultSetting.getDisplayName());
+                    updateEntity(setting);
+                }
             }
             return setting;
         } else {
@@ -1771,6 +1777,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
             checkSetting(guildId, settingName);
 
             Setting defaultSetting = SettingsManager.getDefault(settingName);
+
+            if (defaultSetting == null) {
+                log.info("Missing default for " + settingName + " in SettingsManager.");
+                return null;
+            }
+
             defaultSetting.setGuildId(guildId);
             return defaultSetting;
         }
