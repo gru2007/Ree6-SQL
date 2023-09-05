@@ -38,9 +38,9 @@ public class Giveaway {
     public long channelId;
 
     /**
-     * The Price set by the creator.
+     * The Prize set by the creator.
      */
-    public String price;
+    public String prize;
 
     /**
      * The amount of possible winners.
