@@ -236,7 +236,7 @@ public class SQLSession {
         }
     }
 
-    public void runMigrations() {
+    public static void runMigrations() {
         Reflections reflections = new Reflections("sql/migrations", Scanners.Resources);
 
         String[] resources = reflections.getResources(databaseTyp.name().toLowerCase() + ".sql").toArray(String[]::new);
