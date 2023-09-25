@@ -45,7 +45,7 @@ public class Giveaway {
     /**
      * The amount of possible winners.
      */
-    public int winners;
+    public long winners;
 
     /**
      * Timestamp of the creation date.
@@ -57,4 +57,16 @@ public class Giveaway {
      * Timestamp of the ending date.
      */
     public Timestamp ending;
+
+    /**
+     * Constructor with the needed data.
+     */
+    public Giveaway(long messageId, long guildId, long channelId, String prize, long winners, Timestamp ending) {
+        this.messageId = messageId;
+        this.guildId = guildId;
+        this.channelId = channelId;
+        this.prize = prize;
+        this.winners = winners;
+        this.ending = ending;
+    }
 }
