@@ -270,7 +270,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean existsLogData(long webhookId, String authToken) {
-        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", webhookId, "token", authToken)) != null;
+        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken)) != null;
     }
 
     /**
@@ -281,7 +281,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void deleteLogWebhook(long webhookId, String authToken) {
         WebhookLog webhookLog =
-                getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", webhookId, "token", authToken));
+                getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken));
 
         if (webhookLog != null) {
             deleteEntity(webhookLog);
@@ -620,7 +620,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link WebhookReddit} with all the needed data.
      */
     public WebhookReddit getRedditWebhook(String guildId, String subreddit) {
-        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND SUBREDDIT=:name", Map.of("gid", guildId, "name", subreddit));
+        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND subreddit=:name", Map.of("gid", guildId, "name", subreddit));
     }
 
     /**
@@ -630,7 +630,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<WebhookReddit>} with all the needed data.
      */
     public List<WebhookReddit> getRedditWebhookBySub(String subreddit) {
-        return getEntityList(new WebhookReddit(), "FROM WebhookReddit WHERE SUBREDDIT=:name", Map.of("name", subreddit));
+        return getEntityList(new WebhookReddit(), "FROM WebhookReddit WHERE subreddit=:name", Map.of("name", subreddit));
     }
 
     /**
@@ -742,7 +742,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
     public boolean isRedditSetup(String guildId, String subreddit) {
-        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND SUBREDDIT=:name", Map.of("gid", guildId, "name", subreddit)) != null;
+        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND subreddit=:name", Map.of("gid", guildId, "name", subreddit)) != null;
     }
 
     //endregion
@@ -1762,8 +1762,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
         // Check if there is an entry in the database.
         if (setting != null) {
             if (setting.getDisplayName() == null) {
-                setting.setDisplayName(SettingsManager.getDefault(settingName).getDisplayName());
-                updateEntity(setting);
+                Setting defaultSetting = SettingsManager.getDefault(settingName);
+
+                if (defaultSetting == null) {
+                    log.info("Missing default for " + settingName + " in SettingsManager.");
+                } else {
+                    setting.setDisplayName(defaultSetting.getDisplayName());
+                    updateEntity(setting);
+                }
             }
             return setting;
         } else {
@@ -1771,6 +1777,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
             checkSetting(guildId, settingName);
 
             Setting defaultSetting = SettingsManager.getDefault(settingName);
+
+            if (defaultSetting == null) {
+                log.info("Missing default for " + settingName + " in SettingsManager.");
+                return null;
+            }
+
             defaultSetting.setGuildId(guildId);
             return defaultSetting;
         }
@@ -1965,7 +1977,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return the Stats of the Command.
      */
     public GuildCommandStats getStatsCommand(String guildId, String command) {
-        return getEntity(new GuildCommandStats(), "FROM GuildStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command));
+        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command));
     }
 
     /**
@@ -1975,7 +1987,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return all the Command-Stats related to the given Guild.
      */
     public List<GuildCommandStats> getStats(String guildId) {
-        return getEntityList(new GuildCommandStats(), "FROM GuildStats WHERE guildId=:gid ORDER BY uses DESC", Map.of("gid", guildId), 5);
+        return getEntityList(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId=:gid ORDER BY uses DESC", Map.of("gid", guildId), 5);
     }
 
     /**
@@ -1994,7 +2006,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
     public boolean isStatsSaved(String guildId) {
-        return getEntity(new GuildCommandStats(), "FROM GuildStats WHERE guildId = :gid ", Map.of("gid", guildId)) != null;
+        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid ", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -2005,7 +2017,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
     public boolean isStatsSaved(String guildId, String command) {
-        return getEntity(new GuildCommandStats(), "FROM GuildStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command)) != null;
+        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command)) != null;
     }
 
     /**
@@ -2194,8 +2206,15 @@ public record SQLWorker(SQLConnector sqlConnector) {
         for (Class<?> clazz : classSet) {
             if (clazz.isAnnotationPresent(Table.class)) {
                 Table table = clazz.getAnnotation(Table.class);
-                sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GID=?", guildId);
-                sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GUILDID=?", guildId);
+                try {
+                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GID=?", guildId);
+                } catch (Exception ignore) {
+                }
+
+                try {
+                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GUILDID=?", guildId);
+                } catch (Exception ignore) {
+                }
             }
         }
     }

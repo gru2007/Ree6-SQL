@@ -47,7 +47,9 @@ public class SQLSession {
 
     /**
      * The JDBC URL to connect to the Database.
+
      */
+    @Getter
     static String jdbcURL;
 
     /**
@@ -60,6 +62,7 @@ public class SQLSession {
     /**
      * The max amount of connections allowed by Hikari.
      */
+    @Getter
     static int maxPoolSize;
 
     /**
@@ -81,6 +84,7 @@ public class SQLSession {
     /**
      * If the debug mode is enabled.
      */
+    @Getter
     private static boolean debug;
 
     /**
@@ -232,6 +236,24 @@ public class SQLSession {
         }
     }
 
+    public static void runMigrations() {
+        Reflections reflections = new Reflections("sql/migrations", Scanners.Resources);
+
+        String[] resources = reflections.getResources(databaseTyp.name().toLowerCase() + ".sql").toArray(String[]::new);
+        if (resources.length > 0) {
+
+            try (InputStream inputStream = ClasspathHelper.staticClassLoader().getResourceAsStream(resources[0])) {
+                if (inputStream == null) return;
+
+                String content = new String(inputStream.readAllBytes());
+                sqlConnector.querySQL(content);
+
+            } catch (Exception exception) {
+                log.error("Couldn't load Migrations!", exception);
+            }
+        }
+    }
+
     /**
      * Build the Connection URL with the given data.
      *
@@ -298,28 +320,6 @@ public class SQLSession {
      */
     public static void setMaxPoolSize(int maxPoolSize) {
         SQLSession.maxPoolSize = maxPoolSize;
-    }
-
-    /**
-     * Get the JDBC URL used to connect to the Database.
-     *
-     * @return The JDBC URL.
-     */
-    public static String getJdbcURL() {
-        return jdbcURL;
-    }
-
-    /**
-     * Get the max amount of connections allowed by Hikari.
-     *
-     * @return The max amount of connections.
-     */
-    public static int getMaxPoolSize() {
-        return maxPoolSize;
-    }
-
-    public static boolean isDebug() {
-        return debug;
     }
 
     public static SessionFactory getSessionFactory() {
