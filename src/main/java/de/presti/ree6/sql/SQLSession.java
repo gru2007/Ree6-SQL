@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -208,8 +209,8 @@ public class SQLSession {
             properties.put("hibernate.show_sql", debug);
             properties.put("hibernate.format_sql", debug);
 
-            //properties.put("hibernate.hbm2ddl.auto", "update");
-            //properties.put("jakarta.persistence.schema-generation.database.action", "update");
+            //properties.put("hibernate.hbm2ddl.auto", "validate");
+            properties.put("jakarta.persistence.schema-generation.database.action", "validate");
 
             configuration.addProperties(properties);
 
@@ -237,21 +238,12 @@ public class SQLSession {
     }
 
     public static void runMigrations() {
-        Reflections reflections = new Reflections("sql/migrations", Scanners.Resources);
 
-        String[] resources = reflections.getResources(databaseTyp.name().toLowerCase() + ".sql").toArray(String[]::new);
-        if (resources.length > 0) {
+        // Check if there is an open Connection if not, skip.
+        if (!getSqlConnector().isConnected()) return;
 
-            try (InputStream inputStream = ClasspathHelper.staticClassLoader().getResourceAsStream(resources[0])) {
-                if (inputStream == null) return;
-
-                String content = new String(inputStream.readAllBytes());
-                sqlConnector.querySQL(content);
-
-            } catch (Exception exception) {
-                log.error("Couldn't load Migrations!", exception);
-            }
-        }
+        Flyway flyway = Flyway.configure().dataSource(getSqlConnector().getDataSource()).load();
+        flyway.migrate();
     }
 
     /**
