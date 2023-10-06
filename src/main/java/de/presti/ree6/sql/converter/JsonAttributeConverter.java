@@ -48,7 +48,7 @@ public class JsonAttributeConverter implements AttributeConverter<JsonElement, B
         } catch (Exception ignore) {
         }
 
-        if (content.length() == 0)
+        if (content.isEmpty())
             return JsonNull.INSTANCE;
 
         return JsonParser.parseString(content.toString());

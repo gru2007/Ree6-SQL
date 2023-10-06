@@ -68,7 +68,7 @@ CREATE TABLE CustomCommands
     command         VARCHAR(255)          NULL,
     responseChannel BIGINT                NULL,
     responseMessage VARCHAR(255)          NULL,
-    responseEmbed   BLOB                  NULL,
+    responseEmbed   MEDIUMBLOB            NULL,
     CONSTRAINT pk_customcommands PRIMARY KEY (id)
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE CustomEvents
     guild     BIGINT                NULL,
     eventName VARCHAR(255)          NULL,
     eventTyp  VARCHAR(255)          NULL,
-    actions   BLOB                  NULL,
+    actions   MEDIUMBLOB            NULL,
     CONSTRAINT pk_customevents PRIMARY KEY (id)
 );
 
@@ -206,7 +206,7 @@ CREATE TABLE Recording
     vid          VARCHAR(255) NULL,
     creator      VARCHAR(255) NULL,
     recording    TEXT         NULL,
-    participants BLOB         NULL,
+    participants MEDIUMBLOB   NULL,
     created      BIGINT       NULL,
     CONSTRAINT pk_recording PRIMARY KEY (id)
 );
@@ -263,7 +263,7 @@ CREATE TABLE Statistics
     day   INT                NULL,
     month INT                NULL,
     year  INT                NULL,
-    stats BLOB               NULL,
+    stats MEDIUMBLOB         NULL,
     CONSTRAINT pk_statistics PRIMARY KEY (id)
 );
 
@@ -275,7 +275,7 @@ CREATE TABLE StreamActions
     auth_id    VARCHAR(255)          NOT NULL,
     listener   INT                   NULL,
     argument   VARCHAR(255)          NULL,
-    actions    BLOB                  NULL,
+    actions    MEDIUMBLOB            NULL,
     CONSTRAINT pk_streamactions PRIMARY KEY (id)
 );
 

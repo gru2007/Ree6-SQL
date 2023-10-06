@@ -5,14 +5,17 @@ import io.sentry.Sentry;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.MigrationInfo;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.reflections.util.ClasspathHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -91,7 +94,24 @@ public class SQLConnector {
         // Check if there is an open Connection if not, skip.
         if (!isConnected()) return;
 
-        Flyway flyway = Flyway.configure().dataSource(getDataSource()).locations("sql/migrations").load();
+        Flyway flyway = Flyway
+                .configure(ClasspathHelper.staticClassLoader())
+                .dataSource(getDataSource())
+                .locations("sql/migrations")
+                .installedBy("Ree6-SQL").load();
+
+        MigrationInfo[] migrationInfo = flyway.info().pending();
+
+        if (migrationInfo.length != 0) {
+            log.info("Found " + migrationInfo.length + " pending migrations.");
+            log.info("The pending migrations are: " + String.join(", ",
+                    Arrays.stream(migrationInfo).map(MigrationInfo::getDescription).toArray(String[]::new)));
+
+            log.info("Running Flyway Migrations.");
+        } else {
+            log.info("No pending migrations found.");
+        }
+
         flyway.migrate();
     }
 

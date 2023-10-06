@@ -210,7 +210,7 @@ public class SQLSession {
             properties.put("hibernate.format_sql", debug);
 
             //properties.put("hibernate.hbm2ddl.auto", "validate");
-            //properties.put("jakarta.persistence.schema-generation.database.action", "validate");
+            properties.put("jakarta.persistence.schema-generation.database.action", "validate");
 
             configuration.addProperties(properties);
 
