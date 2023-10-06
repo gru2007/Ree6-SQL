@@ -53,7 +53,7 @@ public class SQLConnector {
         sqlWorker = new SQLWorker(this);
 
         connectToSQLServer();
-        SQLSession.runMigrations();
+        runMigrations();
     }
 
     /**
@@ -81,6 +81,18 @@ public class SQLConnector {
             // Notify if there was an error.
             log.error("Service (SQL) couldn't be started. Connection was unsuccessful.", exception);
         }
+    }
+
+    /**
+     * Run all Flyway Migrations.
+     */
+    public void runMigrations() {
+
+        // Check if there is an open Connection if not, skip.
+        if (!isConnected()) return;
+
+        Flyway flyway = Flyway.configure().dataSource(getDataSource()).locations("sql/migrations").load();
+        flyway.migrate();
     }
 
     //region Utility

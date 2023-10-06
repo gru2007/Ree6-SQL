@@ -132,7 +132,7 @@ public class SQLSession {
         }
 
         // DO NOT OVERWRITE!
-        if (!Sentry.isEnabled()) {
+        if (!Sentry.isEnabled() && !debug) {
             String finalDsn = dsn;
 
             Sentry.init(options -> {
@@ -210,9 +210,10 @@ public class SQLSession {
             properties.put("hibernate.format_sql", debug);
 
             //properties.put("hibernate.hbm2ddl.auto", "validate");
-            properties.put("jakarta.persistence.schema-generation.database.action", "validate");
+            //properties.put("jakarta.persistence.schema-generation.database.action", "validate");
 
             configuration.addProperties(properties);
+
 
             Set<Class<?>> classSet = new Reflections(
                     ConfigurationBuilder
@@ -235,15 +236,6 @@ public class SQLSession {
             Sentry.captureException(ex);
             throw new ExceptionInInitializerError(ex);
         }
-    }
-
-    public static void runMigrations() {
-
-        // Check if there is an open Connection if not, skip.
-        if (!getSqlConnector().isConnected()) return;
-
-        Flyway flyway = Flyway.configure().dataSource(getSqlConnector().getDataSource()).load();
-        flyway.migrate();
     }
 
     /**
