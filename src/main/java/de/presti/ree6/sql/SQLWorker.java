@@ -198,7 +198,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public List<VoiceUserLevel> getTopVoice(String guildId, int limit) {
         // Return the list.
         return getEntityList(new VoiceUserLevel(),
-                "FROM VoiceUserLevel WHERE guildId=:gid ORDER BY experience DESC LIMIT :limit", Map.of("gid", guildId), limit);
+                "FROM VoiceUserLevel WHERE guildId=:gid ORDER BY experience DESC", Map.of("gid", guildId), limit);
     }
 
     /**

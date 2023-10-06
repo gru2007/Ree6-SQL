@@ -214,7 +214,6 @@ public class SQLSession {
 
             configuration.addProperties(properties);
 
-
             Set<Class<?>> classSet = new Reflections(
                     ConfigurationBuilder
                             .build()
