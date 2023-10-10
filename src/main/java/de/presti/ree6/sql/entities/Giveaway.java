@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 /**
  * A Class that represents the Giveaway Entity
  */
+@Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
