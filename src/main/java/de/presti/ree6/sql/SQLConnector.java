@@ -94,25 +94,29 @@ public class SQLConnector {
         // Check if there is an open Connection if not, skip.
         if (!isConnected()) return;
 
-        Flyway flyway = Flyway
-                .configure(ClasspathHelper.staticClassLoader())
-                .dataSource(getDataSource())
-                .locations("sql/migrations")
-                .installedBy("Ree6-SQL").load();
+        try {
+            Flyway flyway = Flyway
+                    .configure(ClasspathHelper.staticClassLoader())
+                    .dataSource(getDataSource())
+                    .locations("sql/migrations")
+                    .installedBy("Ree6-SQL").load();
 
-        MigrationInfo[] migrationInfo = flyway.info().pending();
+            MigrationInfo[] migrationInfo = flyway.info().pending();
 
-        if (migrationInfo.length != 0) {
-            log.info("Found " + migrationInfo.length + " pending migrations.");
-            log.info("The pending migrations are: " + String.join(", ",
-                    Arrays.stream(migrationInfo).map(MigrationInfo::getDescription).toArray(String[]::new)));
+            if (migrationInfo.length != 0) {
+                log.info("Found " + migrationInfo.length + " pending migrations.");
+                log.info("The pending migrations are: " + String.join(", ",
+                        Arrays.stream(migrationInfo).map(MigrationInfo::getDescription).toArray(String[]::new)));
 
-            log.info("Running Flyway Migrations.");
-        } else {
-            log.info("No pending migrations found.");
+                log.info("Running Flyway Migrations.");
+            } else {
+                log.info("No pending migrations found.");
+            }
+
+            flyway.migrate();
+        } catch (Exception exception) {
+            log.error("Migration failed!", exception);
         }
-
-        flyway.migrate();
     }
 
     //region Utility
