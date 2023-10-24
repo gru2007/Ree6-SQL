@@ -1,6 +1,8 @@
 package de.presti.ree6.sql.entities;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +13,11 @@ import java.sql.Timestamp;
 /**
  * A Class that represents the Giveaway Entity
  */
+@Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "Giveaway")
 public class Giveaway {
 
     /**
@@ -61,8 +65,9 @@ public class Giveaway {
     /**
      * Constructor with the needed data.
      */
-    public Giveaway(long messageId, long guildId, long channelId, String prize, long winners, Timestamp ending) {
+    public Giveaway(long messageId, long creatorId, long guildId, long channelId, String prize, long winners, Timestamp ending) {
         this.messageId = messageId;
+        this.creatorId = creatorId;
         this.guildId = guildId;
         this.channelId = channelId;
         this.prize = prize;
