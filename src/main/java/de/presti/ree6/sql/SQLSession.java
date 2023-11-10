@@ -305,6 +305,10 @@ public class SQLSession {
         SQLSession.maxPoolSize = maxPoolSize;
     }
 
+    /**
+     * Get or create a SessionFactory.
+     * @return The {@link SessionFactory}.
+     */
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null)
             return sessionFactory = buildSessionFactory(isDebug());

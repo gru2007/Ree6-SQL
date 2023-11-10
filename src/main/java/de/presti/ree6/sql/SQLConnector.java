@@ -2,10 +2,12 @@ package de.presti.ree6.sql;
 
 import com.zaxxer.hikari.HikariDataSource;
 import io.sentry.Sentry;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationInfo;
+import org.flywaydb.core.api.output.MigrateResult;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.jetbrains.annotations.NotNull;
@@ -30,11 +32,13 @@ public class SQLConnector {
     /**
      * An Instance of the actual Java SQL Connection.
      */
+    @Getter
     private HikariDataSource dataSource;
 
     /**
      * An Instance of the SQL-Worker which works with the Data in the Database.
      */
+    @Getter
     private final SQLWorker sqlWorker;
 
     /**
@@ -113,7 +117,13 @@ public class SQLConnector {
                 log.info("No pending migrations found.");
             }
 
-            flyway.migrate();
+            MigrateResult result = flyway.migrate();
+
+            if (result.success) {
+                log.info("Flyway Migrations were successful.");
+            } else {
+                log.error("Flyway Migrations were unsuccessful.");
+            }
         } catch (Exception exception) {
             log.error("Migration failed!", exception);
         }
@@ -229,24 +239,6 @@ public class SQLConnector {
                 log.error("Service (SQL) couldn't be stopped.");
             }
         }
-    }
-
-    /**
-     * Retrieve an Instance of the SQL-Connection.
-     *
-     * @return DataSource Instance of te SQL-Connection.
-     */
-    public HikariDataSource getDataSource() {
-        return dataSource;
-    }
-
-    /**
-     * Retrieve an Instance of the SQL-Worker to work with the Data.
-     *
-     * @return {@link SQLWorker} the Instance saved in this SQL-Connector.
-     */
-    public SQLWorker getSqlWorker() {
-        return sqlWorker;
     }
 
     /**

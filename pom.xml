@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.presti.ree6</groupId>
+    <groupId>de.ree6</groupId>
     <artifactId>Ree6-SQL</artifactId>
     <description>This is the SQL-Module for Ree6!</description>
     <version>2.1.4</version>
