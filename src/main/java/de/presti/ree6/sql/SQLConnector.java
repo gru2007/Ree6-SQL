@@ -113,16 +113,16 @@ public class SQLConnector {
                         Arrays.stream(migrationInfo).map(MigrationInfo::getDescription).toArray(String[]::new)));
 
                 log.info("Running Flyway Migrations.");
+
+                MigrateResult result = flyway.migrate();
+
+                if (result.success) {
+                    log.info("Flyway Migrations were successful.");
+                } else {
+                    log.error("Flyway Migrations were unsuccessful.");
+                }
             } else {
                 log.info("No pending migrations found.");
-            }
-
-            MigrateResult result = flyway.migrate();
-
-            if (result.success) {
-                log.info("Flyway Migrations were successful.");
-            } else {
-                log.error("Flyway Migrations were unsuccessful.");
             }
         } catch (Exception exception) {
             log.error("Migration failed!", exception);
