@@ -26,6 +26,8 @@
     <dependencies>
 
         <!-- Hibernate -->
+        <!-- DO NOT UPDATE TO ANYTHING HIGHER  -->
+        <!-- https://discourse.hibernate.org/t/hibernate6-with-hikaricp-on-springboot-fails-to-boot/8614/5 -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
