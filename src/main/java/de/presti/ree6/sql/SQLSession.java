@@ -192,6 +192,7 @@ public class SQLSession {
             Configuration configuration = new Configuration();
             Properties properties = new Properties();
             properties.put("hibernate.connection.datasource", "com.zaxxer.hikari.HikariDataSource");
+            properties.put("hibernate.connection.driver_class", getDatabaseTyp().getDriverClass());
             properties.put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
             properties.put("hibernate.connection.url", jdbcURL);
 
@@ -283,6 +284,7 @@ public class SQLSession {
         }
 
         hConfig.setMaximumPoolSize(getMaxPoolSize());
+        hConfig.setDriverClassName(getDatabaseTyp().getDriverClass());
 
         return hConfig;
     }
