@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.flywaydb.core.Flyway;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -33,7 +32,7 @@ import java.util.Set;
 public class SQLSession {
 
     /**
-     * Various String that keep connection information to use for a connection.
+     * Various Strings that keep connection information to use for a connection.
      */
     static String databaseUser,
             databaseName,
@@ -61,7 +60,7 @@ public class SQLSession {
     static DatabaseTyp databaseTyp;
 
     /**
-     * The max amount of connections allowed by Hikari.
+     * The max number of connections allowed by Hikari.
      */
     @Getter
     static int maxPoolSize;
@@ -191,8 +190,8 @@ public class SQLSession {
         try {
             Configuration configuration = new Configuration();
             Properties properties = new Properties();
-            properties.put("hibernate.connection.datasource", "com.zaxxer.hikari.HikariDataSource");
-            properties.put("hibernate.connection.driver_class", getDatabaseTyp().getDriverClass());
+            //properties.put("hibernate.connection.datasource", getSqlConnector().getDataSource());
+            //properties.put("hibernate.connection.driver_class", getDatabaseTyp().getDriverClass());
             properties.put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
             properties.put("hibernate.connection.url", jdbcURL);
 
@@ -204,8 +203,8 @@ public class SQLSession {
                 properties.put("hibernate.connection.password", databasePassword);
             }
 
-            properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(maxPoolSize));
-            properties.put("hibernate.dialect", getDatabaseTyp().getHibernateDialect());
+            properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(getMaxPoolSize()));
+            //properties.put("hibernate.dialect", getDatabaseTyp().getHibernateDialect());
 
             properties.put("hibernate.show_sql", debug);
             properties.put("hibernate.format_sql", debug);

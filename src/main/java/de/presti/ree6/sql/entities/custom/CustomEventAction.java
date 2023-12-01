@@ -41,7 +41,7 @@ public class CustomEventAction {
     /**
      * The typ of event which should trigger this action.
      */
-    @Column(name = "eventTyp")
+    @Column(name = "eventTyp", columnDefinition = "VARCHAR(255)")
     @Enumerated(EnumType.STRING)
     private CustomEventTyp event;
 

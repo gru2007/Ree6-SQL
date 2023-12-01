@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         // Used to test stuff quickly.
-        new SQLSession("ree6", "ree6", "8s9]qgQsQanCbe5T", "146.19.191.6",
+        new SQLSession("sql11666668", "sql11666668", "zeD8ADy7sT", "sql11.freemysqlhosting.net",
                 3306, "storage/", DatabaseTyp.MariaDB, 3, false, true);
 
         SQLSession.getSqlConnector().getSqlWorker().updateEntity(new Setting("test", "test", "test" ,"test"));

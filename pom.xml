@@ -26,17 +26,15 @@
     <dependencies>
 
         <!-- Hibernate -->
-        <!-- DO NOT UPDATE TO ANYTHING HIGHER  -->
-        <!-- https://discourse.hibernate.org/t/hibernate6-with-hikaricp-on-springboot-fails-to-boot/8614/5 -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.2.9.Final</version>
+            <version>6.4.0.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-community-dialects</artifactId>
-            <version>6.2.9.Final</version>
+            <version>6.4.0.Final</version>
         </dependency>
 
         <!-- Hikari -->
@@ -48,7 +46,7 @@
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-hikaricp</artifactId>
-            <version>6.2.9.Final</version>
+            <version>6.4.0.Final</version>
         </dependency>
 
         <!-- Jakarta -->
