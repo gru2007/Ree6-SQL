@@ -28,7 +28,7 @@ public enum DatabaseTyp {
     /**
      * H2 Database Information.
      */
-    H2("jdbc:h2:%s", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false),
+    H2("jdbc:h2:%s;MODE=MySQL;NON_KEYWORDS=VALUE,DAY,MONTH,YEAR;", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false),
 
     /**
      * H2 Server Database Information.

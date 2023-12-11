@@ -261,7 +261,7 @@ public class SQLSession {
                     databasePath = databasePath.replace(".db", "");
                 }
 
-                jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath) + ";MODE=MySQL;NON_KEYWORDS=VALUE,DAY,MONTH,YEAR;";
+                jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath);
             }
 
             default -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databasePath);
@@ -284,6 +284,10 @@ public class SQLSession {
 
         hConfig.setMaximumPoolSize(getMaxPoolSize());
         hConfig.setDriverClassName(getDatabaseTyp().getDriverClass());
+
+        if (databaseTyp == DatabaseTyp.SQLite) {
+            hConfig.setConnectionInitSql("PRAGMA foreign_keys = ON");
+        }
 
         return hConfig;
     }
