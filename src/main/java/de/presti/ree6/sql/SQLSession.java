@@ -100,6 +100,7 @@ public class SQLSession {
         SQLSession.databaseServerIP = config.getHost();
         SQLSession.databaseServerPort = config.getPort();
         SQLSession.databasePath = config.getPath();
+        SQLSession.databaseTyp = config.getTyp();
 
         SQLSession.debug = config.isDebug();
 

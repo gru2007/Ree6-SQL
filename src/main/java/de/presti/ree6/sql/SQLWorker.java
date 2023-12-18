@@ -231,6 +231,16 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     /**
+     * Get the ModWebhook data.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link Webhook} with all the needed data.
+     */
+    public WebhookMod getModWebhook(String guildId) {
+        return getEntity(new WebhookMod(), "FROM WebhookMod WHERE guildId=:gid", Map.of("gid", guildId));
+    }
+
+    /**
      * Set the LogWebhook in our Database.
      *
      * @param guildId   the ID of the Guild.
@@ -253,6 +263,28 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     /**
+     * Set the ModWebhook in our Database.
+     *
+     * @param guildId   the ID of the Guild.
+     * @param channelId the ID of the Channel.
+     * @param webhookId the ID of the Webhook.
+     * @param authToken the Auth-token to verify the access.
+     */
+    public void setModWebhook(String guildId, long channelId, String webhookId, String authToken) {
+        WebhookMod webhookLog = getModWebhook(guildId);
+        if (webhookLog == null) {
+            webhookLog = new WebhookMod();
+            webhookLog.setGuildId(guildId);
+        }
+
+        webhookLog.setChannelId(channelId);
+        webhookLog.setWebhookId(webhookId);
+        webhookLog.setToken(authToken);
+
+        updateEntity(webhookLog);
+    }
+
+    /**
      * Check if the Log Webhook has been set in our Database for this Server.
      *
      * @param guildId the ID of the Guild.
@@ -260,6 +292,16 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public boolean isLogSetup(String guildId) {
         return getEntity(new WebhookLog(), "FROM WebhookLog WHERE guildId=:gid", Map.of("gid", guildId)) != null;
+    }
+
+    /**
+     * Check if the ModWebhook has been set in our Database for this Server.
+     *
+     * @param guildId the ID of the Guild.
+     * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
+     */
+    public boolean isModSetup(String guildId) {
+        return getEntity(new WebhookMod(), "FROM WebhookMod WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -274,6 +316,17 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     /**
+     * Check if the ModWebhook data is in our Database.
+     *
+     * @param webhookId the ID of the Webhook.
+     * @param authToken the Auth-Token of the Webhook.
+     * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
+     */
+    public boolean existsModData(long webhookId, String authToken) {
+        return getEntity(new WebhookMod(), "FROM WebhookMod WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken)) != null;
+    }
+
+    /**
      * Set the LogWebhook in our Database.
      *
      * @param webhookId the ID of the Webhook.
@@ -282,6 +335,21 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public void deleteLogWebhook(long webhookId, String authToken) {
         WebhookLog webhookLog =
                 getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken));
+
+        if (webhookLog != null) {
+            deleteEntity(webhookLog);
+        }
+    }
+
+    /**
+     * Set the ModWebhook in our Database.
+     *
+     * @param webhookId the ID of the Webhook.
+     * @param authToken the Auth-Token of the Webhook.
+     */
+    public void deleteModWebhook(long webhookId, String authToken) {
+        WebhookMod webhookLog =
+                getEntity(new WebhookMod(), "FROM WebhookMod WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken));
 
         if (webhookLog != null) {
             deleteEntity(webhookLog);
