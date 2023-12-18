@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.zaxxer.hikari.HikariConfig;
 import de.presti.ree6.sql.util.IDatabaseServer;
+import de.presti.ree6.sql.util.SQLConfig;
 import de.presti.ree6.sql.util.SettingsManager;
 import de.presti.ree6.sql.util.server.H2DatabaseServer;
 import io.sentry.Sentry;
@@ -90,26 +91,17 @@ public class SQLSession {
     /**
      * Constructor.
      *
-     * @param databaseUser         Database Username
-     * @param databaseName         Database Name
-     * @param databasePassword     Database User password
-     * @param databaseServerIP     Database Address
-     * @param databaseServerPort   Database Port
-     * @param databasePath         Database Path (SQLite)
-     * @param databaseTyp          Database Typ ({@link DatabaseTyp})
-     * @param maxPoolSize          Max Hikari-CP Pool Size
-     * @param createEmbeddedServer If an embedded Database should be created, should be false if it being created by another instance.
-     * @param debug                If debug mode should be enabled.
+     * @param config The {@link SQLConfig} to use.
      */
-    public SQLSession(String databaseUser, String databaseName, String databasePassword, String databaseServerIP, int databaseServerPort, String databasePath, DatabaseTyp databaseTyp, int maxPoolSize, boolean createEmbeddedServer, boolean debug) {
-        SQLSession.databaseUser = databaseUser;
-        SQLSession.databaseName = databaseName;
-        SQLSession.databasePassword = databasePassword;
-        SQLSession.databaseServerIP = databaseServerIP;
-        SQLSession.databaseServerPort = databaseServerPort;
-        SQLSession.databasePath = databasePath;
+    public SQLSession(SQLConfig config) {
+        SQLSession.databaseUser = config.getUsername();
+        SQLSession.databaseName = config.getDatabase();
+        SQLSession.databasePassword = config.getPassword();
+        SQLSession.databaseServerIP = config.getHost();
+        SQLSession.databaseServerPort = config.getPort();
+        SQLSession.databasePath = config.getPath();
 
-        SQLSession.debug = debug;
+        SQLSession.debug = config.isDebug();
 
         Reflections reflections = new Reflections("sql", Scanners.Resources);
 
@@ -131,7 +123,7 @@ public class SQLSession {
         }
 
         // DO NOT OVERWRITE!
-        if (!Sentry.isEnabled() && !debug) {
+        if (!Sentry.isEnabled() && !config.isDebug() && config.isSentry()) {
             String finalDsn = dsn;
 
             Sentry.init(options -> {
@@ -147,7 +139,7 @@ public class SQLSession {
             log.warn("Couldn't load " + databaseTyp.name() + " Driver!\nThis could lead to errors!", e);
         }
 
-        if (createEmbeddedServer) {
+        if (config.isCreateEmbeddedServer()) {
             if (databaseTyp == DatabaseTyp.H2) {
                 try {
                     embeddedDatabaseServer = new H2DatabaseServer();
@@ -169,15 +161,14 @@ public class SQLSession {
             }));
         }
 
-        setMaxPoolSize(maxPoolSize);
-        setDatabaseTyp(databaseTyp);
+        setMaxPoolSize(config.getPoolSize());
+        setDatabaseTyp(config.getTyp());
         setJdbcURL(buildConnectionURL());
 
         SettingsManager.loadDefaults();
 
         sqlConnector = new SQLConnector();
     }
-
     /**
      * Build a new SessionFactory or return the current one.
      *
@@ -205,6 +196,9 @@ public class SQLSession {
 
             properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(getMaxPoolSize()));
             //properties.put("hibernate.dialect", getDatabaseTyp().getHibernateDialect());
+
+            if (databaseTyp == DatabaseTyp.SQLite)
+                properties.put("hibernate.hikari.connectionInitSql", "PRAGMA foreign_keys = ON;");
 
             properties.put("hibernate.show_sql", debug);
             properties.put("hibernate.format_sql", debug);
@@ -286,7 +280,7 @@ public class SQLSession {
         hConfig.setDriverClassName(getDatabaseTyp().getDriverClass());
 
         if (databaseTyp == DatabaseTyp.SQLite) {
-            hConfig.setConnectionInitSql("PRAGMA foreign_keys = ON");
+            hConfig.setConnectionInitSql("PRAGMA foreign_keys = ON;");
         }
 
         return hConfig;
@@ -302,9 +296,9 @@ public class SQLSession {
     }
 
     /**
-     * Set the max amount of connections allowed by Hikari.
+     * Set the max number of connections allowed by Hikari.
      *
-     * @param maxPoolSize The max amount of connections.
+     * @param maxPoolSize The max number of connections.
      */
     public static void setMaxPoolSize(int maxPoolSize) {
         SQLSession.maxPoolSize = maxPoolSize;

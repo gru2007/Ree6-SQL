@@ -2265,6 +2265,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             throw exception;
         } catch (Exception exception) {
             Sentry.captureException(exception);
+            log.error("Failed to update Entity", exception);
             throw exception;
         }
     }
@@ -2294,6 +2295,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             session.getTransaction().commit();
         } catch (Exception exception) {
             Sentry.captureException(exception);
+            log.error("Failed to delete Entity", exception);
             throw exception;
         }
     }
@@ -2364,6 +2366,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             return query.getResultList();
         } catch (Exception exception) {
             Sentry.captureException(exception);
+            log.error("Failed to get Entity List", exception);
             throw exception;
         }
     }
@@ -2417,6 +2420,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             return query.setMaxResults(1).getSingleResultOrNull();
         } catch (Exception exception) {
             Sentry.captureException(exception);
+            log.error("Failed to get Entity", exception);
             throw exception;
         }
     }

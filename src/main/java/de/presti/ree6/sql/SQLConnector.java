@@ -103,6 +103,7 @@ public class SQLConnector {
                     .configure(ClasspathHelper.staticClassLoader())
                     .dataSource(getDataSource())
                     .locations("sql/migrations")
+                    .initSql(SQLSession.databaseTyp == DatabaseTyp.SQLite ? "PRAGMA foreign_keys = ON;" : "")
                     .installedBy("Ree6-SQL").load();
 
             MigrationInfo[] migrationInfo = flyway.info().pending();
@@ -139,29 +140,53 @@ public class SQLConnector {
      * @return Either a {@link Integer} or the result object of the ResultSet.
      */
     public Object querySQL(String sqlQuery, Object... parameters) {
+        return querySQL(sqlQuery, !sqlQuery.startsWith("SELECT"), parameters);
+    }
+
+    /**
+     * Query basic SQL Statements, without using the ORM-System.
+     *
+     * @param sqlQuery   The SQL Query.
+     * @param update     If a executeUpdate should be used.
+     * @param parameters The Parameters for the Query.
+     * @return Either a {@link Integer} or the result object of the ResultSet.
+     */
+    public Object querySQL(String sqlQuery, boolean update, Object... parameters) {
         if (!isConnected()) {
             if (connectedOnce()) {
                 connectToSQLServer();
-                return querySQL(sqlQuery, parameters);
+                return querySQL(sqlQuery, update, parameters);
             } else {
                 return null;
             }
         }
 
         try (Connection connection = getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)) {
-            for (int i = 0; i < parameters.length; i++) {
-                preparedStatement.setObject(i + 1, parameters[i]);
-            }
-            if (sqlQuery.startsWith("SELECT")) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    return resultSet.next();
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery, ResultSet.CONCUR_READ_ONLY)) {
+
+            if (parameters != null) {
+                for (int i = 0; i < parameters.length; i++) {
+                    Object parameter = parameters[i];
+                    if (parameter == null) continue;
+
+                    preparedStatement.setObject(i + 1, parameter);
                 }
-            } else {
+            }
+
+            if (update) {
                 return preparedStatement.executeUpdate();
+            } else {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return resultSet;
+                    }
+
+                    return null;
+                }
             }
         } catch (Exception exception) {
             Sentry.captureException(exception);
+            log.error("Failed to send SQL-Query: " + sqlQuery, exception);
         }
 
         return null;
@@ -204,6 +229,7 @@ public class SQLConnector {
             return query;
         } catch (Exception exception) {
             Sentry.captureException(exception);
+            log.error("Failed to send SQL-Query: " + sqlQuery, exception);
             throw exception;
         }
     }
