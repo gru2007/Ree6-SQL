@@ -26,7 +26,7 @@ public class ChatUserLevel extends UserLevel {
      * @param userId     the ID of the User.
      * @param experience his XP count.
      */
-    public ChatUserLevel(String guildId, String userId, long experience) {
+    public ChatUserLevel(long guildId, long userId, long experience) {
         super(guildId, userId, experience, SQLSession.getSqlConnector().getSqlWorker().getAllChatLevelSorted(guildId).indexOf(userId));
     }
 
@@ -38,7 +38,7 @@ public class ChatUserLevel extends UserLevel {
      * @param experience his XP count.
      * @param level      his Level.
      */
-    public ChatUserLevel(String guildId, String userId, long experience, long level) {
+    public ChatUserLevel(long guildId, long userId, long experience, long level) {
         super(guildId, userId, experience, level, SQLSession.getSqlConnector().getSqlWorker().getAllChatLevelSorted(guildId).indexOf(userId));
     }
 }

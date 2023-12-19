@@ -21,7 +21,7 @@ public class Blacklist {
      * The ID of the Guild.
      */
     @Column(name = "gid")
-    private String guildId;
+    private long guildId;
 
     /**
      * The blacklisted word.
@@ -41,7 +41,7 @@ public class Blacklist {
      * @param guildId the GuildID of the Blacklist.
      * @param word    the blacklisted word.
      */
-    public Blacklist(String guildId, String word) {
+    public Blacklist(long guildId, String word) {
         this.guildId = guildId;
         this.word = word;
     }
@@ -51,7 +51,7 @@ public class Blacklist {
      *
      * @return {@link String} as GuildID.
      */
-    public String getGuildId() {
+    public long getGuildId() {
         return guildId;
     }
 

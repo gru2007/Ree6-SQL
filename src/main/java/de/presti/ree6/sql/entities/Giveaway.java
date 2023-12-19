@@ -47,7 +47,7 @@ public class Giveaway {
     public String prize;
 
     /**
-     * The amount of possible winners.
+     * The number of possible winners.
      */
     public long winners;
 

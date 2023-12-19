@@ -19,7 +19,7 @@ public class AutoRole extends Role {
     /**
      * @inheritDoc
      */
-    public AutoRole(String guildId, String roleId) {
+    public AutoRole(long guildId, long roleId) {
         super(guildId, roleId);
     }
 }

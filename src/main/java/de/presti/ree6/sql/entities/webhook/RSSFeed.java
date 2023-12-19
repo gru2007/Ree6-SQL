@@ -32,7 +32,7 @@ public class RSSFeed extends Webhook {
      * @param webhookId The webhook ID.
      * @param token     The token.
      */
-    public RSSFeed(String guildId, String url, long channelId, String webhookId, String token) {
+    public RSSFeed(long guildId, String url, long channelId, long webhookId, String token) {
         super(guildId, channelId, webhookId, token);
         this.url = url;
     }

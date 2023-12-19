@@ -24,19 +24,19 @@ public class BirthdayWish {
      * The Guild ID.
      */
     @Column(name = "gid")
-    String guildId;
+    long guildId;
 
     /**
      * The Channel ID.
      */
     @Column(name = "cid")
-    String channelId;
+    long channelId;
 
     /**
      * The User ID.
      */
     @Column(name = "uid")
-    String userId;
+    long userId;
 
     /**
      * The Birthday.
@@ -59,7 +59,7 @@ public class BirthdayWish {
      * @param userId the User ID.
      * @param birthdate the Birthday.
      */
-    public BirthdayWish(String guildId, String channelId, String userId, Date birthdate) {
+    public BirthdayWish(long guildId, long channelId, long userId, Date birthdate) {
         this.guildId = guildId;
         this.channelId = channelId;
         this.userId = userId;
@@ -71,7 +71,7 @@ public class BirthdayWish {
      *
      * @return the Guild ID.
      */
-    public String getGuildId() {
+    public long getGuildId() {
         return guildId;
     }
 
@@ -80,7 +80,7 @@ public class BirthdayWish {
      *
      * @return the Channel ID.
      */
-    public String getChannelId() {
+    public long getChannelId() {
         return channelId;
     }
 
@@ -89,7 +89,7 @@ public class BirthdayWish {
      *
      * @return the User ID.
      */
-    public String getUserId() {
+    public long getUserId() {
         return userId;
     }
 

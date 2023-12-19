@@ -1,5 +1,6 @@
 import de.presti.ree6.sql.DatabaseTyp;
 import de.presti.ree6.sql.SQLSession;
+import de.presti.ree6.sql.entities.Setting;
 import de.presti.ree6.sql.util.SQLConfig;
 
 import java.sql.ResultSet;
@@ -11,10 +12,10 @@ public class Main {
         // Used to test stuff quickly.
         SQLConfig sqlConfig = SQLConfig.builder()
                 .host("sql11.freemysqlhosting.net")
-                .password("zeD8ADy7sT")
-                .username("sql11666668")
-                .database("sql11666668")
-                .typ(DatabaseTyp.SQLite)
+                .password("Qjear6zKAR")
+                .username("sql11671575")
+                .database("sql11671575")
+                .typ(DatabaseTyp.MariaDB)
                 .poolSize(3)
                 .createEmbeddedServer(false)
                 .debug(true)
@@ -28,6 +29,8 @@ public class Main {
         if (SQLSession.getSqlConnector().querySQL("PRAGMA foreign_keys;", false, (Object[])null) instanceof ResultSet resultSet) {
             System.out.println(resultSet.getBoolean(1));
         }
+
+        SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Warning(), "", null);
     }
 
 }

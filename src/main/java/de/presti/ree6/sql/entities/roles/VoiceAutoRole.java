@@ -30,7 +30,7 @@ public class VoiceAutoRole extends Role {
      * @param roleId  the ID of the Role.
      * @param level  the needed level for this AutoRole.
      */
-    public VoiceAutoRole(String guildId, String roleId, long level) {
+    public VoiceAutoRole(long guildId, long roleId, long level) {
         super(guildId, roleId);
         this.level = level;
     }

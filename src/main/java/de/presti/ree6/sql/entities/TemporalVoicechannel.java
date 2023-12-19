@@ -22,13 +22,13 @@ public class TemporalVoicechannel {
      */
     @Id
     @Column(name = "gid")
-    String guildId;
+    long guildId;
 
     /**
      * The ID of the Voice-channel.
      */
     @Column(name = "vid")
-    String voiceChannelId;
+    long voiceChannelId;
 
     /**
      * Constructor.
@@ -42,7 +42,7 @@ public class TemporalVoicechannel {
      * @param guildId the ID of the Guild.
      * @param voiceChannelId the ID of the Voice-channel.
      */
-    public TemporalVoicechannel(String guildId, String voiceChannelId) {
+    public TemporalVoicechannel(long guildId, long voiceChannelId) {
         this.guildId = guildId;
         this.voiceChannelId = voiceChannelId;
     }

@@ -31,19 +31,19 @@ public class Recording {
      * The ID of the Guild.
      */
     @Column(name = "gid")
-    String guildId;
+    long guildId;
 
     /**
      * The ID of the Voice-Channel.
      */
     @Column(name = "vid")
-    String voiceId;
+    long voiceId;
 
     /**
      * The ID of the Creator.
      */
     @Column(name = "creator")
-    String creatorId;
+    long creatorId;
 
     /**
      * The WAV-File bytes.
@@ -80,7 +80,7 @@ public class Recording {
      * @param recording the WAV-File bytes.
      * @param jsonArray an JsonArray containing the IDs of the Users who have participated in the Recording.
      */
-    public Recording(String guildId, String voiceId, String creatorId, byte[] recording, JsonElement jsonArray) {
+    public Recording(long guildId, long voiceId, long creatorId, byte[] recording, JsonElement jsonArray) {
 
         SecureRandom secureRandom = new SecureRandom();
         byte[] randomBytes = new byte[16];
@@ -107,7 +107,7 @@ public class Recording {
      * Get the ID of the Guild.
      * @return the ID of the Guild.
      */
-    public String getGuildId() {
+    public long getGuildId() {
         return guildId;
     }
 
@@ -115,7 +115,7 @@ public class Recording {
      * Get the ID of the Voice-Channel.
      * @return the ID of the Voice-Channel.
      */
-    public String getVoiceId() {
+    public long getVoiceId() {
         return voiceId;
     }
 
@@ -123,7 +123,7 @@ public class Recording {
      * Get the ID of the Creator.
      * @return the ID of the Creator.
      */
-    public String getCreatorId() {
+    public long getCreatorId() {
         return creatorId;
     }
 

@@ -28,7 +28,7 @@ public class GuildCommandStats {
      */
     @Getter
     @Column(name = "gid")
-    private String guildId;
+    private long guildId;
 
     /**
      * Name of the Command.

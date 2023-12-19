@@ -100,8 +100,11 @@ public class SQLSession {
         SQLSession.databaseServerIP = config.getHost();
         SQLSession.databaseServerPort = config.getPort();
         SQLSession.databasePath = config.getPath();
+        setDatabaseTyp(config.getTyp());
 
         SQLSession.debug = config.isDebug();
+
+        setMaxPoolSize(config.getPoolSize());
 
         Reflections reflections = new Reflections("sql", Scanners.Resources);
 
@@ -161,8 +164,6 @@ public class SQLSession {
             }));
         }
 
-        setMaxPoolSize(config.getPoolSize());
-        setDatabaseTyp(config.getTyp());
         setJdbcURL(buildConnectionURL());
 
         SettingsManager.loadDefaults();

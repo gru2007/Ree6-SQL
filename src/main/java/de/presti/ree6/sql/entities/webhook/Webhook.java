@@ -28,17 +28,17 @@ public class Webhook {
      * The GuildID of the Webhook.
      */
     @Column(name = "gid", nullable = false)
-    private String guildId;
+    private long guildId;
 
 
     @Column(name = "channel", nullable = false)
     private long channelId = 0;
 
     /**
-     * The Webhook Id of the Webhook.
+     * The Webhook ID of the Webhook.
      */
     @Column(name = "cid", nullable = false)
-    private String webhookId;
+    private long webhookId;
 
     /**
      * The Token of the Webhook.
@@ -54,7 +54,7 @@ public class Webhook {
      * @param webhookId The WebhookId of the Webhook.
      * @param token     The Token of the Webhook.
      */
-    public Webhook(String guildId, long channelId, String webhookId, String token) {
+    public Webhook(long guildId, long channelId, long webhookId, String token) {
         this.guildId = guildId;
         this.channelId = channelId;
         this.webhookId = webhookId;
