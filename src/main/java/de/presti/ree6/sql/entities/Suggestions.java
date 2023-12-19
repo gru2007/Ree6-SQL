@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities;
 
+import de.presti.ree6.sql.keys.GuildChannelId;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,17 +15,10 @@ import lombok.Setter;
 public class Suggestions {
 
     /**
-     * The ID of the Guild.
+     * The ID of the Entity.
      */
-    @Id
-    @Column(name = "guildId")
-    long guildId;
-
-    /**
-     * The ID of the Channel.
-     */
-    @Column(name = "channelId")
-    long channelId;
+    @EmbeddedId
+    GuildChannelId guildChannelId;
 
     /**
      * Constructor.
@@ -39,7 +33,6 @@ public class Suggestions {
      * @param channelId the ID of the Channel.
      */
     public Suggestions(long guildId, long channelId) {
-        this.guildId = guildId;
-        this.channelId = channelId;
+        this.guildChannelId = new GuildChannelId(guildId, channelId);
     }
 }
