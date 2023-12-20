@@ -19,7 +19,7 @@ public class WebhookMod extends Webhook {
     /**
      * @inheritDoc
      */
-    public WebhookMod(String guildId, long channelId, String webhookId, String token) {
+    public WebhookMod(long guildId, long channelId, Long webhookId, String token) {
         super(guildId, channelId, webhookId, token);
     }
 }

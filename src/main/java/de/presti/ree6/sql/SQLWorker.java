@@ -214,7 +214,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Webhook} with all the needed data.
      */
-    public WebhookMod getModWebhook(String guildId) {
+    public WebhookMod getModWebhook(long guildId) {
         return getEntity(new WebhookMod(), "FROM WebhookMod WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -248,7 +248,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      */
-    public void setModWebhook(String guildId, long channelId, String webhookId, String authToken) {
+    public void setModWebhook(long guildId, long channelId, String webhookId, String authToken) {
         WebhookMod webhookLog = getModWebhook(guildId);
         if (webhookLog == null) {
             webhookLog = new WebhookMod();
@@ -256,7 +256,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         }
 
         webhookLog.setChannelId(channelId);
-        webhookLog.setWebhookId(webhookId);
+        webhookLog.setWebhookId(guildId);
         webhookLog.setToken(authToken);
 
         updateEntity(webhookLog);
