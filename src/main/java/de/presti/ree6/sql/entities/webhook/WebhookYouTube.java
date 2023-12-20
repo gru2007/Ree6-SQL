@@ -39,7 +39,7 @@ public class WebhookYouTube extends Webhook {
      * @param message  The message.
      * @param token     The token.
      */
-    public WebhookYouTube(String guildId, String name, String message, long channelId, String webhookId, String token) {
+    public WebhookYouTube(long guildId, String name, String message, long channelId, long webhookId, String token) {
         super(guildId, channelId, webhookId, token);
         this.name = name;
         this.message = message;

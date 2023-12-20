@@ -1,6 +1,7 @@
 package de.presti.ree6.sql.entities;
 
 
+import de.presti.ree6.sql.keys.SettingId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,24 +25,10 @@ import java.sql.Types;
 public class Setting {
 
     /**
-     * The PrimaryKey of the Entity.
+     * The Keys related to the Settings.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
-    /**
-     * The ID of the Guild.
-     */
-    @Column(name = "gid")
-    private String guildId;
-
-    /**
-     * Name / Identifier of the Setting.
-     */
-    @Column(name = "name")
-    private String name;
+    @EmbeddedId
+    private SettingId settingId;
 
     /**
      * The Display Name of the Setting.
@@ -60,13 +47,12 @@ public class Setting {
     /**
      * Constructor for the Setting.
      *
-     * @param guildId the GuildID of the Setting.
-     * @param name    the Name / Identifier of the Setting.
-     * @param value   the Value of the Setting.
+     * @param name        the Name / Identifier of the Setting.
+     * @param displayName the Display Name of the Setting.
+     * @param value       the Value of the Setting.
      */
-    public Setting(String guildId, String name, String displayName, Object value) {
-        this.guildId = guildId;
-        this.name = name;
+    public Setting(long guildId, String name, String displayName, Object value) {
+        if (settingId == null) this.settingId = new SettingId(guildId, name);
         this.displayName = displayName;
         this.value = String.valueOf(value);
     }
@@ -105,6 +91,25 @@ public class Setting {
         return "";
     }
 
+    /**
+     * Get the ID of the Guild.
+     * @return ID of the Guild as {@link Long}
+     */
+    public long getGuildId() {
+        if (getSettingId() == null) return -1;
+
+        return getSettingId().getGuildId();
+    }
+
+    /**
+     * Get the Name of the String.
+     * @return Name as {@link String}
+     */
+    public String getName() {
+        if (getSettingId() == null) return "";
+
+        return getSettingId().getName();
+    }
 
     /**
      * Get the Value as Object.

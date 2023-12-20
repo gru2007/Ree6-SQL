@@ -21,13 +21,13 @@ public class Invite {
      * The GuildID of the Invite.
      */
     @Column(name = "gid")
-    String guild;
+    long guild;
 
     /**
      * The UserID of the Invite.
      */
     @Column(name = "uid")
-    String userId;
+    long userId;
 
     /**
      * The Usages of the Invite.
@@ -55,7 +55,7 @@ public class Invite {
      * @param uses   the Usages of the Invite.
      * @param code   the Code of the Invite.
      */
-    public Invite(String guild, String userId, long uses, String code) {
+    public Invite(long guild, long userId, long uses, String code) {
         this.guild = guild;
         this.userId = userId;
         this.uses = uses;
@@ -67,7 +67,7 @@ public class Invite {
      *
      * @return {@link String} as GuildID.
      */
-    public String getGuild() {
+    public long getGuild() {
         return guild;
     }
 
@@ -76,7 +76,7 @@ public class Invite {
      *
      * @return {@link String} as UserID.
      */
-    public String getUserId() {
+    public long getUserId() {
         return userId;
     }
 

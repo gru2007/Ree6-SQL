@@ -19,7 +19,7 @@ public class WebhookWelcome extends Webhook {
     /**
      * @inheritDoc
      */
-    public WebhookWelcome(String guildId, long channelId, String webhookId, String token) {
+    public WebhookWelcome(long guildId, long channelId, long webhookId, String token) {
         super(guildId, channelId, webhookId, token);
     }
 }

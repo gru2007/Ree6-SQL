@@ -20,13 +20,13 @@ public class Role {
      * The Name of the Role.
      */
     @Column(name = "gid")
-    String guildId;
+    long guildId;
 
     /**
      * The ID of the Role.
      */
     @Column(name = "rid")
-    String roleId;
+    long roleId;
 
     /**
      * Constructor.
@@ -39,7 +39,7 @@ public class Role {
      * @param guildId the GuildID of the Role.
      * @param roleId the ID of the Role.
      */
-    public Role(String guildId, String roleId) {
+    public Role(long guildId, long roleId) {
         this.guildId = guildId;
         this.roleId = roleId;
     }
@@ -48,7 +48,7 @@ public class Role {
      * Get the GuildID of the Role.
      * @return {@link String} as GuildID.
      */
-    public String getGuildId() {
+    public long getGuildId() {
         return guildId;
     }
 
@@ -56,7 +56,7 @@ public class Role {
      * Get the ID of the Role.
      * @return {@link String} as ID.
      */
-    public String getRoleId() {
+    public long getRoleId() {
         return roleId;
     }
 }

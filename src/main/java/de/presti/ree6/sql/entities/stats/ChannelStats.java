@@ -12,18 +12,11 @@ import jakarta.persistence.*;
 public class ChannelStats {
 
     /**
-     * The PrimaryKey of the Entity.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
-    /**
      * The Guild ID.
      */
+    @Id
     @Column(name = "gid")
-    private String guildId;
+    private long guildId;
 
     /**
      * The Channel ID for overall Members of the Guild.
@@ -126,7 +119,7 @@ public class ChannelStats {
      * @param subredditMemberChannelId the Channel ID for Reddit Stats of the Guild.
      * @param subredditMemberChannelSubredditName the subreddit name for Reddit Stats of the Guild.
      */
-    public ChannelStats(String guildId,
+    public ChannelStats(long guildId,
                         String memberStatsChannelId,
                         String realMemberStatsChannelId,
                         String botMemberStatsChannelId,
@@ -160,7 +153,7 @@ public class ChannelStats {
      * Get the Guild ID.
      * @return the Guild ID.
      */
-    public String getGuildId() {
+    public long getGuildId() {
         return guildId;
     }
 

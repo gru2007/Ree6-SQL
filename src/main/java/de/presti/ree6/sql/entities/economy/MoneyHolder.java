@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities.economy;
 
+import de.presti.ree6.sql.keys.GuildUserId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,21 +21,8 @@ public class MoneyHolder {
     /**
      * The ID of the entity.
      */
-    @jakarta.persistence.Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long Id;
-
-    /**
-     * The ID of the Guild.
-     */
-    @Column(name = "guildId")
-    private long guildId;
-
-    /**
-     * The ID of the User.
-     */
-    @Column(name = "userId")
-    private long userId;
+    @EmbeddedId
+    GuildUserId guildUserId;
 
     /**
      * The amount of money the user has.

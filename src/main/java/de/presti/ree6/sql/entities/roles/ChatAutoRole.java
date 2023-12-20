@@ -30,7 +30,7 @@ public class ChatAutoRole extends Role {
      * @param roleId  the ID of the Role.
      * @param level  the needed level for this AutoRole.
      */
-    public ChatAutoRole(String guildId, String roleId, long level) {
+    public ChatAutoRole(long guildId, long roleId, long level) {
         super(guildId, roleId);
         this.level = level;
     }

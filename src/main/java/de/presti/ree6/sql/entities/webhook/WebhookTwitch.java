@@ -40,7 +40,7 @@ public class WebhookTwitch extends Webhook {
      * @param message   The message.
      * @param token     The token.
      */
-    public WebhookTwitch(String guildId, String name, String message, long channelId, String webhookId, String token) {
+    public WebhookTwitch(long guildId, String name, String message, long channelId, long webhookId, String token) {
         super(guildId, channelId, webhookId, token);
         this.name = name;
         this.message = message;

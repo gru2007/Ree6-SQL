@@ -1,10 +1,8 @@
 package de.presti.ree6.sql.entities;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import de.presti.ree6.sql.keys.GuildChannelId;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,17 +16,10 @@ import lombok.Setter;
 public class TemporalVoicechannel {
 
     /**
-     * The ID of the Guild.
+     * The ID of the Entity.
      */
-    @Id
-    @Column(name = "gid")
-    String guildId;
-
-    /**
-     * The ID of the Voice-channel.
-     */
-    @Column(name = "vid")
-    String voiceChannelId;
+    @EmbeddedId
+    GuildChannelId guildChannelId;
 
     /**
      * Constructor.
@@ -42,8 +33,7 @@ public class TemporalVoicechannel {
      * @param guildId the ID of the Guild.
      * @param voiceChannelId the ID of the Voice-channel.
      */
-    public TemporalVoicechannel(String guildId, String voiceChannelId) {
-        this.guildId = guildId;
-        this.voiceChannelId = voiceChannelId;
+    public TemporalVoicechannel(long guildId, long voiceChannelId) {
+        this.guildChannelId = new GuildChannelId(guildId, voiceChannelId);
     }
 }

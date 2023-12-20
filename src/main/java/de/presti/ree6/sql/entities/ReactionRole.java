@@ -51,7 +51,7 @@ public class ReactionRole {
     private long channelId = 0;
 
     /**
-     * The ID of the Role used as reaction role.
+     * The ID of the Role used as a reaction role.
      */
     @Column(name = "roleId")
     private long roleId;

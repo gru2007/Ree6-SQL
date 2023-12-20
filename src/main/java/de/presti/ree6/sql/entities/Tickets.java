@@ -22,7 +22,7 @@ public class Tickets {
      */
     @Id
     @Column(name = "guildId")
-    private Long guildId;
+    long guildId;
 
     /**
      * The ID of the Channel.

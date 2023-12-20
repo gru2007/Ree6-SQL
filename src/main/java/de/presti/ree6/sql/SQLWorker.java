@@ -58,7 +58,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link Long} as XP Count.
      */
-    public ChatUserLevel getChatLevelData(String guildId, String userId) {
+    public ChatUserLevel getChatLevelData(long guildId, long userId) {
         ChatUserLevel chatUserLevel =
                 getEntity(new ChatUserLevel(), "FROM ChatUserLevel WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId));
 
@@ -76,7 +76,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link Boolean} true if there was a match | false if there wasn't a match.
      */
-    public boolean existsInChatLevel(String guildId, String userId) {
+    public boolean existsInChatLevel(long guildId, long userId) {
         return getEntity(new ChatUserLevel(), "FROM ChatUserLevel WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)) != null;
     }
 
@@ -86,21 +86,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId   the ID of the Guild.
      * @param userLevel the {@link ChatUserLevel} Entity with all the information.
      */
-    public void addChatLevelData(String guildId, @Nonnull ChatUserLevel userLevel) {
+    public void addChatLevelData(long guildId, @Nonnull ChatUserLevel userLevel) {
 
         if (isOptOut(guildId, userLevel.getUserId())) {
             return;
-        }
-
-        if (userLevel.getId() == 0) {
-            ChatUserLevel oldUser =
-                    getEntity(new ChatUserLevel(), "FROM ChatUserLevel WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userLevel.getUserId()));
-
-            if (oldUser != null) {
-                oldUser.setExperience(userLevel.getExperience());
-                updateEntity(oldUser);
-                return;
-            }
         }
 
         updateEntity(userLevel);
@@ -113,7 +102,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param limit   the Limit of how many should be given back.
      * @return {@link List<ChatUserLevel>} as container of the User IDs.
      */
-    public List<ChatUserLevel> getTopChat(String guildId, int limit) {
+    public List<ChatUserLevel> getTopChat(long guildId, int limit) {
         return getEntityList(new ChatUserLevel(), "FROM ChatUserLevel WHERE guildId=:gid ORDER BY experience DESC",
                 Map.of("gid", guildId), limit);
     }
@@ -122,9 +111,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get the Top list of the Guild Chat XP.
      *
      * @param guildId the ID of the Guild.
-     * @return {@link List<String>} as container of the User IDs.
+     * @return {@link List<Long>} as container of the User IDs.
      */
-    public List<String> getAllChatLevelSorted(String guildId) {
+    public List<Long> getAllChatLevelSorted(long guildId) {
         return getEntityList(new ChatUserLevel(), "FROM ChatUserLevel WHERE guildId=:gid ORDER BY experience DESC",
                 Map.of("gid", guildId)).stream().map(UserLevel::getUserId).toList();
     }
@@ -140,7 +129,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link VoiceUserLevel} with information about the User Level.
      */
-    public VoiceUserLevel getVoiceLevelData(String guildId, String userId) {
+    public VoiceUserLevel getVoiceLevelData(long guildId, long userId) {
         VoiceUserLevel voiceUserLevel =
                 getEntity(new VoiceUserLevel(), "FROM VoiceUserLevel WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId));
 
@@ -158,7 +147,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link Boolean} true if there was a match | false if there wasn't a match.
      */
-    public boolean existsInVoiceLevel(String guildId, String userId) {
+    public boolean existsInVoiceLevel(long guildId, long userId) {
         return getEntity(new VoiceUserLevel(), "FROM VoiceUserLevel WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)) != null;
     }
 
@@ -168,21 +157,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId        the ID of the Guild.
      * @param voiceUserLevel the {@link VoiceUserLevel} Entity with all the information.
      */
-    public void addVoiceLevelData(String guildId, @Nonnull VoiceUserLevel voiceUserLevel) {
+    public void addVoiceLevelData(long guildId, @Nonnull VoiceUserLevel voiceUserLevel) {
 
         if (isOptOut(guildId, voiceUserLevel.getUserId())) {
             return;
-        }
-
-        if (voiceUserLevel.getId() == 0) {
-            VoiceUserLevel oldUser =
-                    getEntity(new VoiceUserLevel(), "FROM VoiceUserLevel WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", voiceUserLevel.getUserId()));
-
-            if (oldUser != null) {
-                oldUser.setExperience(voiceUserLevel.getExperience());
-                updateEntity(oldUser);
-                return;
-            }
         }
 
         updateEntity(voiceUserLevel);
@@ -195,7 +173,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param limit   the Limit of how many should be given back.
      * @return {@link List<VoiceUserLevel>} as container of the User IDs.
      */
-    public List<VoiceUserLevel> getTopVoice(String guildId, int limit) {
+    public List<VoiceUserLevel> getTopVoice(long guildId, int limit) {
         // Return the list.
         return getEntityList(new VoiceUserLevel(),
                 "FROM VoiceUserLevel WHERE guildId=:gid ORDER BY experience DESC", Map.of("gid", guildId), limit);
@@ -205,10 +183,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get the Top list of the Guild Voice XP.
      *
      * @param guildId the ID of the Guild.
-     * @return {@link List<String>} as container of the UserIds.
+     * @return {@link List<Long>} as container of the UserIds.
      */
-    public List<String> getAllVoiceLevelSorted(String guildId) {
-        // Creating a SQL Statement to get the Entries from the Level Table by the GuildID.
+    public List<Long> getAllVoiceLevelSorted(long guildId) {
+        // Creating an SQL Statement to get the Entries from the Level Table by the GuildID.
         return getEntityList(new VoiceUserLevel(), "FROM VoiceUserLevel WHERE guildId=:gid ORDER BY experience DESC", Map.of("gid", guildId)).stream().map(VoiceUserLevel::getUserId).toList();
     }
 
@@ -226,7 +204,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Webhook} with all the needed data.
      */
-    public WebhookLog getLogWebhook(String guildId) {
+    public WebhookLog getLogWebhook(long guildId) {
         return getEntity(new WebhookLog(), "FROM WebhookLog WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -248,7 +226,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      */
-    public void setLogWebhook(String guildId, long channelId, String webhookId, String authToken) {
+    public void setLogWebhook(long guildId, long channelId, long webhookId, String authToken) {
         WebhookLog webhookLog = getLogWebhook(guildId);
         if (webhookLog == null) {
             webhookLog = new WebhookLog();
@@ -290,7 +268,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isLogSetup(String guildId) {
+    public boolean isLogSetup(long guildId) {
         return getEntity(new WebhookLog(), "FROM WebhookLog WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -366,7 +344,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link WebhookWelcome} with all the needed data.
      */
-    public WebhookWelcome getWelcomeWebhook(String guildId) {
+    public WebhookWelcome getWelcomeWebhook(long guildId) {
         return getEntity(new WebhookWelcome(), "FROM WebhookWelcome WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -378,7 +356,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param webhookId the ID of the Webhook.
      * @param authToken the Auth-token to verify the access.
      */
-    public void setWelcomeWebhook(String guildId, long channelId, String webhookId, String authToken) {
+    public void setWelcomeWebhook(long guildId, long channelId, long webhookId, String authToken) {
         WebhookWelcome webhookWelcome = getWelcomeWebhook(guildId);
         if (webhookWelcome == null) {
             webhookWelcome = new WebhookWelcome();
@@ -398,7 +376,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isWelcomeSetup(String guildId) {
+    public boolean isWelcomeSetup(long guildId) {
         return getEntity(new WebhookWelcome(), "FROM WebhookWelcome WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -413,7 +391,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitchName the Username of the Twitch User.
      * @return {@link WebhookTwitch} with all the needed data.
      */
-    public WebhookTwitch getTwitchWebhook(String guildId, String twitchName) {
+    public WebhookTwitch getTwitchWebhook(long guildId, String twitchName) {
         return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitchName));
     }
 
@@ -442,7 +420,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<String> getAllTwitchNames(String guildId) {
+    public List<String> getAllTwitchNames(long guildId) {
         return getAllTwitchWebhooks(guildId).stream().map(WebhookTwitch::getName).toList();
     }
 
@@ -452,7 +430,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<WebhookTwitch> getAllTwitchWebhooks(String guildId) {
+    public List<WebhookTwitch> getAllTwitchWebhooks(long guildId) {
         return getEntityList(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -465,7 +443,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken  the Auth-token to verify the access.
      * @param twitchName the Username of the Twitch User.
      */
-    public void addTwitchWebhook(String guildId, long channelId, String webhookId, String authToken, String twitchName) {
+    public void addTwitchWebhook(long guildId, long channelId, long webhookId, String authToken, String twitchName) {
         addTwitchWebhook(guildId, channelId, webhookId, authToken, twitchName, null);
     }
 
@@ -479,7 +457,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitchName     the Username of the Twitch User.
      * @param messageContent custom message content.
      */
-    public void addTwitchWebhook(String guildId, long channelId, String webhookId, String authToken, String twitchName, String messageContent) {
+    public void addTwitchWebhook(long guildId, long channelId, long webhookId, String authToken, String twitchName, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% is now Live on Twitch! Come and join the stream <%url%>!";
 
@@ -506,7 +484,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId    the ID of the Guild.
      * @param twitchName the Name of the Twitch User.
      */
-    public void removeTwitchWebhook(String guildId, String twitchName) {
+    public void removeTwitchWebhook(long guildId, String twitchName) {
 
         WebhookTwitch webhook = getTwitchWebhook(guildId, twitchName);
 
@@ -523,7 +501,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isTwitchSetup(String guildId) {
+    public boolean isTwitchSetup(long guildId) {
         return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildId=?", Map.of("gid", guildId)) != null;
     }
 
@@ -534,7 +512,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitchName the Username of the Twitch User.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isTwitchSetup(String guildId, String twitchName) {
+    public boolean isTwitchSetup(long guildId, String twitchName) {
         return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitchName)) != null;
     }
 
@@ -549,7 +527,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param name    the Name of the Instagram User.
      * @return {@link WebhookInstagram} with all the needed data.
      */
-    public WebhookInstagram getInstagramWebhook(String guildId, String name) {
+    public WebhookInstagram getInstagramWebhook(long guildId, String name) {
         return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", name));
     }
 
@@ -578,7 +556,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<String> getAllInstagramUsers(String guildId) {
+    public List<String> getAllInstagramUsers(long guildId) {
         return getAllInstagramWebhooks(guildId).stream().map(WebhookInstagram::getName).toList();
     }
 
@@ -588,7 +566,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<WebhookInstagram> getAllInstagramWebhooks(String guildId) {
+    public List<WebhookInstagram> getAllInstagramWebhooks(long guildId) {
         return getEntityList(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -601,7 +579,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken the Auth-token to verify the access.
      * @param name      the Name of the Instagram User.
      */
-    public void addInstagramWebhook(String guildId, long channelId, String webhookId, String authToken, String name) {
+    public void addInstagramWebhook(long guildId, long channelId, long webhookId, String authToken, String name) {
         addInstagramWebhook(guildId, channelId, webhookId, authToken, name, null);
     }
 
@@ -615,7 +593,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param name           the Name of the Instagram User.
      * @param messageContent custom message content.
      */
-    public void addInstagramWebhook(String guildId, long channelId, String webhookId, String authToken, String name, String messageContent) {
+    public void addInstagramWebhook(long guildId, long channelId, long webhookId, String authToken, String name, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% just posted something on their Instagram!";
 
@@ -644,7 +622,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param name    the Name of the Instagram User.
      */
-    public void removeInstagramWebhook(String guildId, String name) {
+    public void removeInstagramWebhook(long guildId, String name) {
 
         WebhookInstagram webhook = getInstagramWebhook(guildId, name);
 
@@ -661,7 +639,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isInstagramSetup(String guildId) {
+    public boolean isInstagramSetup(long guildId) {
         return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -672,7 +650,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param name    the Name of the Instagram User.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isInstagramSetup(String guildId, String name) {
+    public boolean isInstagramSetup(long guildId, String name) {
         return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", name)) != null;
     }
 
@@ -687,7 +665,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param subreddit the Name of the Subreddit.
      * @return {@link WebhookReddit} with all the needed data.
      */
-    public WebhookReddit getRedditWebhook(String guildId, String subreddit) {
+    public WebhookReddit getRedditWebhook(long guildId, String subreddit) {
         return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND subreddit=:name", Map.of("gid", guildId, "name", subreddit));
     }
 
@@ -716,7 +694,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<String> getAllSubreddits(String guildId) {
+    public List<String> getAllSubreddits(long guildId) {
         return getAllRedditWebhooks(guildId).stream().map(WebhookReddit::getSubreddit).toList();
     }
 
@@ -726,7 +704,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<WebhookReddit> getAllRedditWebhooks(String guildId) {
+    public List<WebhookReddit> getAllRedditWebhooks(long guildId) {
         return getEntityList(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -739,7 +717,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken the Auth-token to verify the access.
      * @param subreddit the Name of the Subreddit.
      */
-    public void addRedditWebhook(String guildId, long channelId, String webhookId, String authToken, String subreddit) {
+    public void addRedditWebhook(long guildId, long channelId, long webhookId, String authToken, String subreddit) {
         addRedditWebhook(guildId, channelId, webhookId, authToken, subreddit, null);
     }
 
@@ -753,7 +731,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param subreddit      the Name of the Subreddit.
      * @param messageContent custom message content.
      */
-    public void addRedditWebhook(String guildId, long channelId, String webhookId, String authToken, String subreddit, String messageContent) {
+    public void addRedditWebhook(long guildId, long channelId, long webhookId, String authToken, String subreddit, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% got a new post check it out <%url%>!";
 
@@ -781,7 +759,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId   the ID of the Guild.
      * @param subreddit the Name of the Subreddit.
      */
-    public void removeRedditWebhook(String guildId, String subreddit) {
+    public void removeRedditWebhook(long guildId, String subreddit) {
 
         WebhookReddit webhook = getRedditWebhook(guildId, subreddit);
 
@@ -798,7 +776,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isRedditSetup(String guildId) {
+    public boolean isRedditSetup(long guildId) {
         return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -809,7 +787,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param subreddit the Name of the Subreddit.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isRedditSetup(String guildId, String subreddit) {
+    public boolean isRedditSetup(long guildId, String subreddit) {
         return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildId=:gid AND subreddit=:name", Map.of("gid", guildId, "name", subreddit)) != null;
     }
 
@@ -824,7 +802,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param youtubeChannel the Username of the YouTube channel.
      * @return {@link WebhookYouTube} with all the needed data.
      */
-    public WebhookYouTube getYouTubeWebhook(String guildId, String youtubeChannel) {
+    public WebhookYouTube getYouTubeWebhook(long guildId, String youtubeChannel) {
         return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", youtubeChannel));
     }
 
@@ -853,7 +831,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<String> getAllYouTubeChannels(String guildId) {
+    public List<String> getAllYouTubeChannels(long guildId) {
         return getAllYouTubeWebhooks(guildId).stream().map(WebhookYouTube::getName).toList();
     }
 
@@ -863,7 +841,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<WebhookYouTube> getAllYouTubeWebhooks(String guildId) {
+    public List<WebhookYouTube> getAllYouTubeWebhooks(long guildId) {
         return getEntityList(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -876,7 +854,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken      the Auth-token to verify the access.
      * @param youtubeChannel the Username of the YouTube channel.
      */
-    public void addYouTubeWebhook(String guildId, long channelId, String webhookId, String authToken, String youtubeChannel) {
+    public void addYouTubeWebhook(long guildId, long channelId, long webhookId, String authToken, String youtubeChannel) {
         addYouTubeWebhook(guildId, channelId, webhookId, authToken, youtubeChannel, null);
     }
 
@@ -890,7 +868,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param youtubeChannel the Username of the YouTube channel.
      * @param messageContent custom message content.
      */
-    public void addYouTubeWebhook(String guildId, long channelId, String webhookId, String authToken, String youtubeChannel, String messageContent) {
+    public void addYouTubeWebhook(long guildId, long channelId, long webhookId, String authToken, String youtubeChannel, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% just uploaded a new Video! Check it out <%url%>!";
 
@@ -918,7 +896,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId        the ID of the Guild.
      * @param youtubeChannel the Name of the YouTube channel.
      */
-    public void removeYouTubeWebhook(String guildId, String youtubeChannel) {
+    public void removeYouTubeWebhook(long guildId, String youtubeChannel) {
 
         WebhookYouTube webhook = getYouTubeWebhook(guildId, youtubeChannel);
 
@@ -935,7 +913,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isYouTubeSetup(String guildId) {
+    public boolean isYouTubeSetup(long guildId) {
         return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -946,7 +924,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param youtubeChannel the Username of the YouTube channel.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isYouTubeSetup(String guildId, String youtubeChannel) {
+    public boolean isYouTubeSetup(long guildId, String youtubeChannel) {
         return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", youtubeChannel)) != null;
     }
 
@@ -961,7 +939,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitterName the Username of the Twitter User.
      * @return {@link WebhookTwitter} with all the needed data.
      */
-    public WebhookTwitter getTwitterWebhook(String guildId, String twitterName) {
+    public WebhookTwitter getTwitterWebhook(long guildId, String twitterName) {
         return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitterName));
     }
 
@@ -990,7 +968,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<String> getAllTwitterNames(String guildId) {
+    public List<String> getAllTwitterNames(long guildId) {
         return getAllTwitterWebhooks(guildId).stream().map(WebhookTwitter::getName).toList();
     }
 
@@ -1000,7 +978,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<WebhookTwitter> getAllTwitterWebhooks(String guildId) {
+    public List<WebhookTwitter> getAllTwitterWebhooks(long guildId) {
         return getEntityList(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -1013,7 +991,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken   the Auth-token to verify the access.
      * @param twitterName the Username of the Twitter User.
      */
-    public void addTwitterWebhook(String guildId, long channelId, String webhookId, String authToken, String twitterName) {
+    public void addTwitterWebhook(long guildId, long channelId, long webhookId, String authToken, String twitterName) {
         addTwitterWebhook(guildId, channelId, webhookId, authToken, twitterName, null);
     }
 
@@ -1027,7 +1005,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitterName    the Username of the Twitter User.
      * @param messageContent custom message content.
      */
-    public void addTwitterWebhook(String guildId, long channelId, String webhookId, String authToken, String twitterName, String messageContent) {
+    public void addTwitterWebhook(long guildId, long channelId, long webhookId, String authToken, String twitterName, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% tweeted something! Check it out <%url%>!";
 
@@ -1055,7 +1033,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId     the ID of the Guild.
      * @param twitterName the Name of the Twitter User.
      */
-    public void removeTwitterWebhook(String guildId, String twitterName) {
+    public void removeTwitterWebhook(long guildId, String twitterName) {
         WebhookTwitter webhook = getTwitterWebhook(guildId, twitterName);
 
         // Check if there is a Webhook set.
@@ -1071,7 +1049,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isTwitterSetup(String guildId) {
+    public boolean isTwitterSetup(long guildId) {
         return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -1082,7 +1060,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitterName the Username of the Twitter User.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isTwitterSetup(String guildId, String twitterName) {
+    public boolean isTwitterSetup(long guildId, String twitterName) {
         return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitterName)) != null;
     }
 
@@ -1097,7 +1075,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param tiktokId the ID of the TikTok User.
      * @return {@link WebhookTikTok} with all the needed data.
      */
-    public WebhookTikTok getTikTokWebhook(String guildId, String tiktokId) {
+    public WebhookTikTok getTikTokWebhook(long guildId, String tiktokId) {
         return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", tiktokId));
     }
 
@@ -1126,7 +1104,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<String> getAllTikTokNames(String guildId) {
+    public List<String> getAllTikTokNames(long guildId) {
         return getAllTikTokWebhooks(guildId).stream().map(WebhookTikTok::getName).toList();
     }
 
@@ -1136,7 +1114,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<WebhookTikTok> getAllTikTokWebhooks(String guildId) {
+    public List<WebhookTikTok> getAllTikTokWebhooks(long guildId) {
         return getEntityList(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -1149,7 +1127,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken the Auth-token to verify the access.
      * @param tiktokId  the ID of the TikTok User.
      */
-    public void addTikTokWebhook(String guildId, long channelId, String webhookId, String authToken, String tiktokId) {
+    public void addTikTokWebhook(long guildId, long channelId, long webhookId, String authToken, String tiktokId) {
         addTikTokWebhook(guildId, channelId, webhookId, authToken, tiktokId, null);
     }
 
@@ -1163,7 +1141,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param tiktokId       the ID of the TikTok User.
      * @param messageContent custom message content.
      */
-    public void addTikTokWebhook(String guildId, long channelId, String webhookId, String authToken, String tiktokId, String messageContent) {
+    public void addTikTokWebhook(long guildId, long channelId, long webhookId, String authToken, String tiktokId, String messageContent) {
         if (messageContent == null)
             messageContent = "%name% just posted something new on TikTok!";
 
@@ -1191,7 +1169,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId  the ID of the Guild.
      * @param tiktokId the ID of the TikTok User.
      */
-    public void removeTikTokWebhook(String guildId, String tiktokId) {
+    public void removeTikTokWebhook(long guildId, String tiktokId) {
         WebhookTikTok webhook = getTikTokWebhook(guildId, tiktokId);
 
         // Check if there is a Webhook set.
@@ -1207,7 +1185,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isTikTokSetup(String guildId) {
+    public boolean isTikTokSetup(long guildId) {
         return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -1218,7 +1196,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param tiktokId the ID of the TikTok User.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isTikTokSetup(String guildId, String tiktokId) {
+    public boolean isTikTokSetup(long guildId, String tiktokId) {
         return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildId=:gid AND name=:name", Map.of("gid", guildId, "name", tiktokId)) != null;
     }
 
@@ -1233,7 +1211,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param url     the Url of the RSS-Feed.
      * @return {@link RSSFeed} with all the needed data.
      */
-    public RSSFeed getRSSWebhook(String guildId, String url) {
+    public RSSFeed getRSSWebhook(long guildId, String url) {
         return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildId=:gid AND url=:url", Map.of("gid", guildId, "url", url));
     }
 
@@ -1262,7 +1240,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<String> getAllRSSUrls(String guildId) {
+    public List<String> getAllRSSUrls(long guildId) {
         return getAllRSSWebhooks(guildId).stream().map(RSSFeed::getUrl).toList();
     }
 
@@ -1272,7 +1250,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<>} the entry.
      */
-    public List<RSSFeed> getAllRSSWebhooks(String guildId) {
+    public List<RSSFeed> getAllRSSWebhooks(long guildId) {
         return getEntityList(new RSSFeed(), "FROM RSSFeed WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -1285,7 +1263,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken the Auth-token to verify the access.
      * @param url       the Url of the RSS-Feed.
      */
-    public void addRSSWebhook(String guildId, long channelId, String webhookId, String authToken, String url) {
+    public void addRSSWebhook(long guildId, long channelId, long webhookId, String authToken, String url) {
         // Check if there is already a Webhook set.
         RSSFeed webhook = getRSSWebhook(guildId, url);
 
@@ -1309,7 +1287,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param url     the Url of the RSS-Feed.
      */
-    public void removeRSSWebhook(String guildId, String url) {
+    public void removeRSSWebhook(long guildId, String url) {
         RSSFeed webhook = getRSSWebhook(guildId, url);
 
         // Check if there is a Webhook set.
@@ -1325,7 +1303,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isRSSSetup(String guildId) {
+    public boolean isRSSSetup(long guildId) {
         return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -1336,7 +1314,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param url     the Url of the RSS-Feed.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public boolean isRSSSetup(String guildId, String url) {
+    public boolean isRSSSetup(long guildId, String url) {
         return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildId=:gid AND url=:url", Map.of("gid", guildId, "url", url)) != null;
     }
 
@@ -1354,17 +1332,17 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<AutoRole>} as List with all Roles.
      */
-    public List<AutoRole> getAutoRoles(String guildId) {
+    public List<AutoRole> getAutoRoles(long guildId) {
         return getEntityList(new AutoRole(), "FROM AutoRole WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
     /**
-     * Add a AutoRole in our Database.
+     * Add an AutoRole in our Database.
      *
      * @param guildId the ID of the Guild.
      * @param roleId  the ID of the Role.
      */
-    public void addAutoRole(String guildId, String roleId) {
+    public void addAutoRole(long guildId, long roleId) {
         // Check if there is a role in the database.
         if (!isAutoRoleSetup(guildId, roleId)) {
             // Add a new entry into the Database.
@@ -1378,7 +1356,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param roleId  the ID of the Role.
      */
-    public void removeAutoRole(String guildId, String roleId) {
+    public void removeAutoRole(long guildId, long roleId) {
         AutoRole autoRole = getEntity(new AutoRole(), "FROM AutoRole WHERE guildId=:gid AND roleId=:rid ", Map.of("gid", guildId, "rid", roleId));
 
         // Check if there is a role in the database.
@@ -1394,7 +1372,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isAutoRoleSetup(String guildId) {
+    public boolean isAutoRoleSetup(long guildId) {
         return getEntity(new AutoRole(), "FROM AutoRole WHERE guildId=:gid ", Map.of("gid", guildId)) != null;
     }
 
@@ -1405,7 +1383,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isAutoRoleSetup(String guildId, String roleId) {
+    public boolean isAutoRoleSetup(long guildId, long roleId) {
         return getEntity(new AutoRole(), "FROM AutoRole WHERE guildId=:gid AND roleId=:rid ", Map.of("gid", guildId, "rid", roleId)) != null;
     }
 
@@ -1421,10 +1399,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link HashMap<>} as List with all Role IDs and the needed Level.
      */
-    public Map<Long, String> getChatLevelRewards(String guildId) {
+    public Map<Long, Long> getChatLevelRewards(long guildId) {
 
         // Create a new HashMap to save the Role Ids and their needed level.
-        Map<Long, String> rewards = new HashMap<>();
+        Map<Long, Long> rewards = new HashMap<>();
 
         getEntityList(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildId=:gid", Map.of("gid", guildId)).forEach(chatAutoRole -> rewards.put(chatAutoRole.getLevel(), chatAutoRole.getRoleId()));
 
@@ -1437,9 +1415,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @param roleId  the ID of the Role.
-     * @param level   the Level required to get this Role.
+     * @param level   the Level required getting this Role.
      */
-    public void addChatLevelReward(String guildId, String roleId, long level) {
+    public void addChatLevelReward(long guildId, long roleId, long level) {
         // Check if there is a role in the database.
         if (!isChatLevelRewardSetup(guildId, roleId, level)) {
             // Add a new entry into the Database.
@@ -1451,9 +1429,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Remove a Chat Level Reward Role from our Database.
      *
      * @param guildId the ID of the Guild.
-     * @param level   the Level required to get this Role.
+     * @param level   the Level required getting this Role.
      */
-    public void removeChatLevelReward(String guildId, long level) {
+    public void removeChatLevelReward(long guildId, long level) {
         ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildId=:gid AND level=:lvl",
                 Map.of("gid", guildId, "lvl", level));
 
@@ -1469,9 +1447,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @param roleId  the ID of the Role.
-     * @param level   the Level required to get this Role.
+     * @param level   the Level required getting this Role.
      */
-    public void removeChatLevelReward(String guildId, String roleId, long level) {
+    public void removeChatLevelReward(long guildId, long roleId, long level) {
         ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildId=:gid AND roleId=:rid AND level=:lvl",
                 Map.of("gid", guildId, "rid", roleId, "lvl", level));
 
@@ -1488,7 +1466,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isChatLevelRewardSetup(String guildId) {
+    public boolean isChatLevelRewardSetup(long guildId) {
         return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -1499,7 +1477,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isChatLevelRewardSetup(String guildId, String roleId) {
+    public boolean isChatLevelRewardSetup(long guildId, long roleId) {
         return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildId=:gid AND roleId=:rid", Map.of("gid", guildId, "rid", roleId)) != null;
     }
 
@@ -1511,7 +1489,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level needed to get the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isChatLevelRewardSetup(String guildId, String roleId, long level) {
+    public boolean isChatLevelRewardSetup(long guildId, long roleId, long level) {
         return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildId=:gid AND roleId=:rid AND level=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)) != null;
     }
 
@@ -1525,10 +1503,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Map<>} as List with all Role IDs and the needed Level.
      */
-    public Map<Long, String> getVoiceLevelRewards(String guildId) {
+    public Map<Long, Long> getVoiceLevelRewards(long guildId) {
 
         // Create a new HashMap to save the Role Ids and their needed level.
-        Map<Long, String> rewards = new HashMap<>();
+        Map<Long, Long> rewards = new HashMap<>();
 
         getEntityList(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildId=:gid", Map.of("gid", guildId)).forEach(voiceAutoRole -> rewards.put(voiceAutoRole.getLevel(), voiceAutoRole.getRoleId()));
 
@@ -1541,9 +1519,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @param roleId  the ID of the Role.
-     * @param level   the Level required to get this Role.
+     * @param level   the Level required getting this Role.
      */
-    public void addVoiceLevelReward(String guildId, String roleId, long level) {
+    public void addVoiceLevelReward(long guildId, long roleId, long level) {
 
         // Check if there is a role in the database.
         if (!isVoiceLevelRewardSetup(guildId, roleId, level)) {
@@ -1558,7 +1536,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param level   the Level required to get this Role.
      */
-    public void removeVoiceLevelReward(String guildId, long level) {
+    public void removeVoiceLevelReward(long guildId, long level) {
         VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildId=:gid AND level=:lvl",
                 Map.of("gid", guildId, "lvl", level));
 
@@ -1576,7 +1554,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      * @param level   the Level required to get this Role.
      */
-    public void removeVoiceLevelReward(String guildId, String roleId, long level) {
+    public void removeVoiceLevelReward(long guildId, long roleId, long level) {
         VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildId=:gid AND roleId=:rid AND LVL=:lvl",
                 Map.of("gid", guildId, "rid", roleId, "lvl", level));
 
@@ -1593,7 +1571,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isVoiceLevelRewardSetup(String guildId) {
+    public boolean isVoiceLevelRewardSetup(long guildId) {
         return getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
@@ -1604,7 +1582,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isVoiceLevelRewardSetup(String guildId, String roleId) {
+    public boolean isVoiceLevelRewardSetup(long guildId, long roleId) {
         return getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildId=:gid AND roleId=:rid", Map.of("gid", guildId, "rid", roleId)) != null;
     }
 
@@ -1616,7 +1594,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level needed to get the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public boolean isVoiceLevelRewardSetup(String guildId, String roleId, long level) {
+    public boolean isVoiceLevelRewardSetup(long guildId, long roleId, long level) {
         return getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildId=:gid AND roleId=:rid AND level=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)) != null;
     }
 
@@ -1634,7 +1612,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<String>} as List with {@link Invite}.
      */
-    public List<Invite> getInvites(String guildId) {
+    public List<Invite> getInvites(long guildId) {
         return getEntityList(new Invite(), "FROM Invite WHERE guild=:gid", Map.of("gid", guildId));
     }
 
@@ -1646,7 +1624,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode    the Code of the Invite.
      * @return {@link Boolean} as Result if true, then it's saved in our Database | if false, we couldn't find anything.
      */
-    public boolean existsInvite(String guildId, String inviteCreator, String inviteCode) {
+    public boolean existsInvite(long guildId, String inviteCreator, String inviteCode) {
         return getEntity(new Invite(), "FROM Invite WHERE guild=:gid AND userId=:uid AND code=:code", Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode)) != null;
     }
 
@@ -1656,7 +1634,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId    the ID of the Guild.
      * @param inviteCode the Code of the Invite.
      */
-    public void removeInvite(String guildId, String inviteCode) {
+    public void removeInvite(long guildId, String inviteCode) {
         deleteEntity(getInvite(guildId, inviteCode));
     }
 
@@ -1668,7 +1646,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode    the Code of the Invite Code.
      * @param inviteUsage   the Usage count of the Invite.
      */
-    public void setInvite(String guildId, String inviteCreator, String inviteCode, long inviteUsage) {
+    public void setInvite(long guildId, long inviteCreator, String inviteCode, long inviteUsage) {
         updateEntity(new Invite(guildId, inviteCreator, inviteUsage, inviteCode));
     }
 
@@ -1679,7 +1657,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode the Code of the Invite.
      * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
      */
-    public Invite getInvite(String guildId, String inviteCode) {
+    public Invite getInvite(long guildId, String inviteCode) {
         return getEntity(new Invite(), "FROM Invite WHERE guild=:gid AND code=:code", Map.of("gid", guildId, "code", inviteCode));
     }
 
@@ -1691,7 +1669,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode    the Code of the Invite.
      * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
      */
-    public Invite getInvite(String guildId, String inviteCreator, String inviteCode) {
+    public Invite getInvite(long guildId, long inviteCreator, String inviteCode) {
         return getEntity(new Invite(), "FROM Invite WHERE guild=:gid AND userId=:uid AND code=:code", Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode));
     }
 
@@ -1704,7 +1682,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteUsage   the Usage count of the Invite.
      * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
      */
-    public Invite getInvite(String guildId, String inviteCreator, String inviteCode, String inviteUsage) {
+    public Invite getInvite(long guildId, long inviteCreator, String inviteCode, long inviteUsage) {
         return getEntity(new Invite(), "FROM Invite WHERE guild=:gid AND userId=:uid AND code=:code AND USES=:uses",
                 Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode, "uses", inviteUsage));
     }
@@ -1716,7 +1694,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCreator the ID of the Invite Creator.
      * @param inviteCode    the Code of the Invite.
      */
-    public void removeInvite(String guildId, String inviteCreator, String inviteCode) {
+    public void removeInvite(long guildId, long inviteCreator, String inviteCode) {
         deleteEntity(getInvite(guildId, inviteCreator, inviteCode));
     }
 
@@ -1728,8 +1706,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode    the Code of the Invite.
      * @param inviteUsage   the usage count of the Invite.
      */
-    public void removeInvite(String guildId, String inviteCreator, String inviteCode, int inviteUsage) {
-        deleteEntity(getInvite(guildId, inviteCreator, inviteCode, String.valueOf(inviteUsage)));
+    public void removeInvite(long guildId, long inviteCreator, String inviteCode, long inviteUsage) {
+        deleteEntity(getInvite(guildId, inviteCreator, inviteCode, inviteUsage));
     }
 
     /**
@@ -1737,7 +1715,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      */
-    public void clearInvites(String guildId) {
+    public void clearInvites(long guildId) {
         getInvites(guildId).forEach(this::deleteEntity);
     }
 
@@ -1748,12 +1726,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
     //region Chat Protector / Word Blacklist
 
     /**
-     * Get every Blacklisted Word saved in our Database from the Guild.
+     * Get every blacklisted Word saved in our Database from the Guild.
      *
      * @param guildId the ID of the Guild.
-     * @return {@link List<String>} as list with every Blacklisted Word.
+     * @return {@link List<String>} as list with every blacklisted Word.
      */
-    public List<String> getChatProtectorWords(String guildId) {
+    public List<String> getChatProtectorWords(long guildId) {
         return getEntityList(new Blacklist(), "FROM Blacklist WHERE guildId = :gid", Map.of("gid", guildId)).stream().map(Blacklist::getWord).toList();
     }
 
@@ -1763,7 +1741,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result. If true, there is an entry in our Database | If false, there is no entry in our Database.
      */
-    public boolean isChatProtectorSetup(String guildId) {
+    public boolean isChatProtectorSetup(long guildId) {
         return getEntity(new Blacklist(), "FROM Blacklist WHERE guildId = :gid", Map.of("gid", guildId)) != null;
     }
 
@@ -1774,17 +1752,17 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param word    the Word that should be checked.
      * @return {@link Boolean} as result. If true, there is an entry in our Database | If false, there is no entry in our Database.
      */
-    public boolean isChatProtectorSetup(String guildId, String word) {
+    public boolean isChatProtectorSetup(long guildId, String word) {
         return getEntity(new Blacklist(), "FROM Blacklist WHERE guildId = :gid AND word = :word", Map.of("gid", guildId, "word", word)) != null;
     }
 
     /**
-     * Add a new Word to the blacklist for the given Guild.
+     * Add a new Word to the blocklist for the given Guild.
      *
      * @param guildId the ID of the Guild.
      * @param word    the Word to be blocked.
      */
-    public void addChatProtectorWord(String guildId, String word) {
+    public void addChatProtectorWord(long guildId, String word) {
 
         // Check if there is already an entry for it.
         if (isChatProtectorSetup(guildId, word)) return;
@@ -1794,12 +1772,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     /**
-     * Remove a Word from the blacklist for the given Guild.
+     * Remove a Word from the blocklist for the given Guild.
      *
      * @param guildId the ID of the Guild.
      * @param word    the Word to be removed.
      */
-    public void removeChatProtectorWord(String guildId, String word) {
+    public void removeChatProtectorWord(long guildId, String word) {
         Blacklist blacklist =
                 getEntity(new Blacklist(), "FROM Blacklist WHERE guildId = :gid AND word = :word",
                         Map.of("gid", guildId, "word", word));
@@ -1822,7 +1800,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param settingName the Identifier of the Setting.
      * @return {@link Setting} which stores every information needed.
      */
-    public Setting getSetting(String guildId, String settingName) {
+    public Setting getSetting(long guildId, String settingName) {
         Setting setting =
                 getEntity(new Setting(), "FROM Setting WHERE guildId = :gid AND name = :name",
                         Map.of("gid", guildId, "name", settingName));
@@ -1839,11 +1817,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
                     updateEntity(setting);
                 }
             }
+
             return setting;
         } else {
-            // Check if everything is alright with the config.
-            checkSetting(guildId, settingName);
-
             Setting defaultSetting = SettingsManager.getDefault(settingName);
 
             if (defaultSetting == null) {
@@ -1851,7 +1827,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
                 return null;
             }
 
-            defaultSetting.setGuildId(guildId);
+            // Check if everything is alright with the config.
+            checkSetting(guildId, settingName);
+
+            defaultSetting.getSettingId().setGuildId(guildId);
             return defaultSetting;
         }
     }
@@ -1862,7 +1841,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<Setting>} which is a List with every Setting that stores every information needed.
      */
-    public List<Setting> getAllSettings(String guildId) {
+    public List<Setting> getAllSettings(long guildId) {
         return getEntityList(new Setting(), "FROM Setting WHERE guildId = :gid", Map.of("gid", guildId));
     }
 
@@ -1909,7 +1888,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param settingName  the Identifier of the Setting.
      * @param settingValue the Value of the Setting.
      */
-    public void setSetting(String guildId, String settingName, String settingDisplayName, Object settingValue) {
+    public void setSetting(long guildId, String settingName, String settingDisplayName, Object settingValue) {
         setSetting(new Setting(guildId, settingName, settingDisplayName, settingValue));
     }
 
@@ -1920,7 +1899,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param setting the Setting itself.
      * @return {@link Boolean} as result. If true, there is a Setting Entry for the Guild | if false, there is no Entry for it.
      */
-    public boolean hasSetting(String guildId, Setting setting) {
+    public boolean hasSetting(long guildId, Setting setting) {
         return hasSetting(guildId, setting.getName());
     }
 
@@ -1931,27 +1910,27 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param settingName the Identifier of the Setting.
      * @return {@link Boolean} as result. If true, there is a Setting Entry for the Guild | if false, there is no Entry for it.
      */
-    public boolean hasSetting(String guildId, String settingName) {
+    public boolean hasSetting(long guildId, String settingName) {
         return getEntity(new Setting(), "FROM Setting WHERE guildId =:gid AND name =:name", Map.of("gid", guildId, "name", settingName)) != null;
     }
 
     /**
-     * Check if there is an entry for the Setting, if not create one for every Setting that doesn't have an entry.
+     * Check if there is an entry for the Setting, if not, create one for every Setting that doesn't have an entry.
      *
      * @param guildId the ID of the Guild.
      * @param setting the Setting itself.
      */
-    public void checkSetting(String guildId, Setting setting) {
+    public void checkSetting(long guildId, Setting setting) {
         checkSetting(guildId, setting.getName());
     }
 
     /**
-     * Check if there is an entry for the Setting, if not create one for every Setting that doesn't have an entry.
+     * Check if there is an entry for the Setting, if not, create one for every Setting that doesn't have an entry.
      *
      * @param guildId     the ID of the Guild.
      * @param settingName the Identifier of the Setting.
      */
-    public void checkSetting(String guildId, String settingName) {
+    public void checkSetting(long guildId, String settingName) {
         // Check if the Setting exists in our Database.
         if (!hasSetting(guildId, settingName)) {
             // If not then creat every Setting that doesn't exist for the Guild.
@@ -1964,7 +1943,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      */
-    public void createSettings(String guildId) {
+    public void createSettings(long guildId) {
         SettingsManager.getSettings().forEach(setting -> {
             if (!hasSetting(guildId, setting)) {
                 setSetting(guildId, setting.getName(), setting.getDisplayName(), setting.getValue());
@@ -2044,7 +2023,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param command the Command.
      * @return the Stats of the Command.
      */
-    public GuildCommandStats getStatsCommand(String guildId, String command) {
+    public GuildCommandStats getStatsCommand(long guildId, String command) {
         return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command));
     }
 
@@ -2054,7 +2033,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return all the Command-Stats related to the given Guild.
      */
-    public List<GuildCommandStats> getStats(String guildId) {
+    public List<GuildCommandStats> getStats(long guildId) {
         return getEntityList(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId=:gid ORDER BY uses DESC", Map.of("gid", guildId), 5);
     }
 
@@ -2073,7 +2052,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public boolean isStatsSaved(String guildId) {
+    public boolean isStatsSaved(long guildId) {
         return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid ", Map.of("gid", guildId)) != null;
     }
 
@@ -2084,7 +2063,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param command the Name of the Command.
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public boolean isStatsSaved(String guildId, String command) {
+    public boolean isStatsSaved(long guildId, String command) {
         return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command)) != null;
     }
 
@@ -2104,7 +2083,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param command the Command.
      */
-    public void addStats(String guildId, String command) {
+    public void addStats(long guildId, String command) {
         Statistics statistics = getStatisticsOfToday();
         JsonObject jsonObject = statistics != null ? statistics.getStatsObject() : new JsonObject();
         JsonObject commandStats = statistics != null && jsonObject.has("command") ? jsonObject.getAsJsonObject("command") : new JsonObject();
@@ -2149,8 +2128,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link Boolean} as result. If true, the User is opted out | If false, the User is not opted out.
      */
-    public boolean isOptOut(String guildId, String userId) {
-        // Creating a SQL Statement to check if there is an entry in the Opt-out Table by the Guild ID and User ID
+    public boolean isOptOut(long guildId, long userId) {
+        // Creating an SQL Statement to check if there is an entry in the Opt-out Table by the Guild ID and User ID
         return getEntity(new OptOut(), "FROM OptOut WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)) != null;
     }
 
@@ -2160,7 +2139,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param userId  the ID of the User.
      */
-    public void optOut(String guildId, String userId) {
+    public void optOut(long guildId, long userId) {
         if (!isOptOut(guildId, userId)) {
             updateEntity(new OptOut(guildId, userId));
         }
@@ -2172,7 +2151,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param userId  the ID of the User.
      */
-    public void optIn(String guildId, String userId) {
+    public void optIn(long guildId, long userId) {
         OptOut optOut = getEntity(new OptOut(), "FROM OptOut WHERE guildId=:gid AND userId=:uid",
                 Map.of("gid", guildId, "uid", userId));
 
@@ -2193,7 +2172,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId    the ID of the User.
      * @param birthday  the birthday of the user.
      */
-    public void addBirthday(String guildId, String channelId, String userId, String birthday) {
+    public void addBirthday(long guildId, long channelId, long userId, String birthday) {
         try {
             BirthdayWish newBirthday = new BirthdayWish(guildId, channelId, userId, new SimpleDateFormat("dd.MM.yyyy").parse(birthday));
             updateEntity(newBirthday);
@@ -2208,7 +2187,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @param userId  the ID of the User.
      */
-    public void removeBirthday(String guildId, String userId) {
+    public void removeBirthday(long guildId, long userId) {
         BirthdayWish birthdayWish = getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId));
         if (birthdayWish != null) {
             deleteEntity(birthdayWish);
@@ -2222,7 +2201,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public boolean isBirthdaySaved(String guildId, String userId) {
+    public boolean isBirthdaySaved(long guildId, long userId) {
         return getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)) != null;
     }
 
@@ -2233,7 +2212,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link BirthdayWish} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public BirthdayWish getBirthday(String guildId, String userId) {
+    public BirthdayWish getBirthday(long guildId, long userId) {
         return getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId));
     }
 
@@ -2243,7 +2222,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List} of {@link BirthdayWish} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public List<BirthdayWish> getBirthdays(String guildId) {
+    public List<BirthdayWish> getBirthdays(long guildId) {
         return getEntityList(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -2265,7 +2244,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      */
-    public void deleteAllData(String guildId) {
+    public void deleteAllData(long guildId) {
         Set<Class<?>> classSet = new Reflections(
                 ConfigurationBuilder
                         .build()

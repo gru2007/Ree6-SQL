@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities.level;
 
+import de.presti.ree6.sql.keys.GuildUserId;
 import de.presti.ree6.sql.util.LevelUtil;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,22 +17,8 @@ public class UserLevel {
     /**
      * The PrimaryKey of the Entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
-    /**
-     * The ID of the Guild.
-     */
-    @Column(name = "gid")
-    String guildId;
-
-    /**
-     * The ID of the User.
-     */
-    @Column(name = "uid")
-    String userId;
+    @EmbeddedId
+    GuildUserId guildUserId;
 
     /**
      * The experience of the User.
@@ -65,9 +52,8 @@ public class UserLevel {
      * @param experience his XP count.
      * @param rank       the Rank of the User.
      */
-    public UserLevel(String guildId, String userId, long experience, int rank) {
-        this.guildId = guildId;
-        this.userId = userId;
+    public UserLevel(long guildId, long userId, long experience, int rank) {
+        guildUserId = new GuildUserId(guildId, userId);
         this.experience = experience;
         level = LevelUtil.calculateLevel(this, experience);
         this.rank = rank;
@@ -83,12 +69,35 @@ public class UserLevel {
      * @param level      his Level.
      * @param rank       the Rank of the User.
      */
-    public UserLevel(String guildId, String userId, long experience, long level, int rank) {
-        this.guildId = guildId;
-        this.userId = userId;
+    public UserLevel(long guildId, long userId, long experience, long level, int rank) {
+        guildUserId = new GuildUserId(guildId, userId);
         this.experience = experience;
         this.level = level;
         this.rank = rank;
+    }
+
+    /**
+     * Get the ID of the Guild.
+     * @return the ID.
+     */
+    public long getGuildId() {
+        if (guildUserId == null) {
+            return -1;
+        }
+
+        return guildUserId.getGuildId();
+    }
+
+    /**
+     * Get the ID of the User.
+     * @return the ID.
+     */
+    public long getUserId() {
+        if (guildUserId == null) {
+            return -1;
+        }
+
+        return guildUserId.getUserId();
     }
 
     /**
