@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.ree6</groupId>
-    <artifactId>Ree6-SQL</artifactId>
+    <artifactId>Storm-SQL</artifactId>
     <description>This is the SQL-Module for Ree6!</description>
     <version>2.1.6</version>
 
