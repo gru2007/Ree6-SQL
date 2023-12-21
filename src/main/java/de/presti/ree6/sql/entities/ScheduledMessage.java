@@ -1,6 +1,7 @@
 package de.presti.ree6.sql.entities;
 
 import de.presti.ree6.sql.entities.webhook.WebhookScheduledMessage;
+import de.presti.ree6.sql.keys.GuildAndId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,17 +21,10 @@ import java.sql.Timestamp;
 public class ScheduledMessage {
 
     /**
-     * The ID of the entity.
+     * Key of the Entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long Id;
-
-    /**
-     * The ID of the Guild.
-     */
-    @Column(name = "guild")
-    long guildId;
+    @EmbeddedId
+    GuildAndId guildAndId;
 
     /**
      * Special message content.

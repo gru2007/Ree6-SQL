@@ -1,6 +1,7 @@
 package de.presti.ree6.sql.entities;
 
 
+import de.presti.ree6.sql.keys.GuildAndId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,18 +20,10 @@ import lombok.Setter;
 public class ReactionRole {
 
     /**
-     * The PrimaryKey of the Entity.
+     * The Key of the Entity.
      */
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    /**
-     * The ID of the Guild.
-     */
-    @Column(name = "guildId")
-    private long guildId;
+    @EmbeddedId
+    GuildAndId guildAndId;
 
     /**
      * The ID of the Emote used as reaction.
@@ -66,11 +59,13 @@ public class ReactionRole {
      * Constructor for the Reaction role.
      * @param guildId the GuildID.
      * @param emoteId the EmoteId.
+     * @param formattedEmote the formatted Emote.
      * @param roleId the Role ID.
      * @param messageId the Message ID.
      */
     public ReactionRole(long guildId, long emoteId, String formattedEmote, long roleId, long messageId) {
-        this.guildId = guildId;
+        this.guildAndId = new GuildAndId(guildId);
+        this.formattedEmote = formattedEmote;
         this.emoteId = emoteId;
         this.roleId = roleId;
         this.messageId = messageId;

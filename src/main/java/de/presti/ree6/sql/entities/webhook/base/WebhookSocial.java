@@ -1,6 +1,6 @@
 package de.presti.ree6.sql.entities.webhook.base;
 
-import de.presti.ree6.sql.keys.SocialWebhookId;
+import de.presti.ree6.sql.keys.GuildAndId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class WebhookSocial {
      * The ID of the Entity.
      */
     @EmbeddedId
-    SocialWebhookId socialWebhookId;
+    GuildAndId guildAndId;
 
     @Column(name = "channel", nullable = false)
     long channelId = 0;
@@ -47,7 +47,7 @@ public class WebhookSocial {
      * @param token     The Token of the Webhook.
      */
     public WebhookSocial(long guildId, long channelId, long webhookId, String token) {
-        this.socialWebhookId = new SocialWebhookId(guildId);
+        this.guildAndId = new GuildAndId(guildId);
         this.channelId = channelId;
         this.webhookId = webhookId;
         this.token = token;
@@ -58,6 +58,9 @@ public class WebhookSocial {
      * @param guildId The GuildID of the Webhook.
      */
     public void setGuildId(long guildId) {
-        this.socialWebhookId.setGuildId(guildId);
+        if (guildAndId == null)
+            this.guildAndId = new GuildAndId(guildId);
+        else
+            this.guildAndId.setGuildId(guildId);
     }
 }

@@ -35,4 +35,48 @@ public class MoneyHolder {
      */
     @Column(name = "bank")
     private double bankAmount;
+
+    /**
+     * Set the GuildID of the MoneyHolder.
+     * @param guildId The GuildID of the MoneyHolder.
+     */
+    public void setGuildId(long guildId) {
+        if (this.guildUserId == null)
+            this.guildUserId = new GuildUserId();
+
+        this.guildUserId.setGuildId(guildId);
+    }
+
+    /**
+     * Get the GuildID of the MoneyHolder.
+     * @return The GuildID of the MoneyHolder.
+     */
+    public long getGuildId() {
+        if (this.guildUserId == null)
+            return 0;
+
+        return this.guildUserId.getGuildId();
+    }
+
+    /**
+     * Set the UserID of the MoneyHolder.
+     * @param userId The UserID of the MoneyHolder.
+     */
+    public void setUserId(long userId) {
+        if (this.guildUserId == null)
+            this.guildUserId = new GuildUserId();
+
+        this.guildUserId.setUserId(userId);
+    }
+
+    /**
+     * Get the UserID of the MoneyHolder.
+     * @return The UserID of the MoneyHolder.
+     */
+    public long getUserId() {
+        if (this.guildUserId == null)
+            return 0;
+
+        return this.guildUserId.getUserId();
+    }
 }

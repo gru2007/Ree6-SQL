@@ -17,7 +17,7 @@ import java.util.Objects;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class SocialWebhookId implements Serializable {
+public class GuildAndId implements Serializable {
 
     /**
      * Unique ID of the Webhook.
@@ -33,16 +33,16 @@ public class SocialWebhookId implements Serializable {
     private long guildId;
 
     /**
-     * Constructor for the SocialWebhookId.
+     * Constructor for the GuildAndId.
      * @param guildId The Discord Guild ID.
      */
-    public SocialWebhookId(long guildId) {
+    public GuildAndId(long guildId) {
         this.guildId = guildId;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof SocialWebhookId settingId) {
+        if (obj instanceof GuildAndId settingId) {
             return settingId.getGuildId() == guildId && settingId.getId() == id;
         }
 

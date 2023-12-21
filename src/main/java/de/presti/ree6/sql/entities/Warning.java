@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities;
 
+import de.presti.ree6.sql.keys.GuildUserId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,21 +19,10 @@ import lombok.Setter;
 public class Warning {
 
     /**
-     * The id of the warning.
+     * The primary key for the entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-
-    /**
-     * The user id its bound to.
-     */
-    long userId;
-
-    /**
-     * The guild id its bound to.
-     */
-    long guildId;
+    @EmbeddedId
+    GuildUserId guildUserId;
 
     /**
      * The warnings that the user has.

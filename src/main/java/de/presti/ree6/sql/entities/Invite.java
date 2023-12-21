@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities;
 
+import de.presti.ree6.sql.keys.GuildAndId;
 import jakarta.persistence.*;
 
 /**
@@ -12,16 +13,8 @@ public class Invite {
     /**
      * The PrimaryKey of the Entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
-    /**
-     * The GuildID of the Invite.
-     */
-    @Column(name = "guildId")
-    long guild;
+    @EmbeddedId
+    GuildAndId guildAndId;
 
     /**
      * The UserID of the Invite.
@@ -56,7 +49,7 @@ public class Invite {
      * @param code   the Code of the Invite.
      */
     public Invite(long guild, long userId, long uses, String code) {
-        this.guild = guild;
+        this.guildAndId = new GuildAndId(guild);
         this.userId = userId;
         this.uses = uses;
         this.code = code;
@@ -68,7 +61,10 @@ public class Invite {
      * @return {@link String} as GuildID.
      */
     public long getGuild() {
-        return guild;
+        if (guildAndId == null)
+            return 0;
+
+        return guildAndId.getGuildId();
     }
 
     /**

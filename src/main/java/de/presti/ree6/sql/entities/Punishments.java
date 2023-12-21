@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities;
 
+import de.presti.ree6.sql.keys.GuildAndId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,16 +19,10 @@ import lombok.Setter;
 public class Punishments {
 
     /**
-     * The id of the punishment.
+     * Primary key for the entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-
-    /**
-     * The guild that it is bound to.
-     */
-    long guildId;
+    @EmbeddedId
+    GuildAndId guildAndId;
 
     /**
      * The required warnings.

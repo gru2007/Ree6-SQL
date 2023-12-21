@@ -2,6 +2,7 @@ package de.presti.ree6.sql.entities;
 
 import com.google.gson.JsonElement;
 import de.presti.ree6.sql.converter.JsonAttributeConverter;
+import de.presti.ree6.sql.keys.GuildAndId;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,17 +14,10 @@ import lombok.Setter;
 public class StreamAction {
 
     /**
-     * The ID of the entity.
+     * The Key of the Entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-
-    /**
-     * The ID of the Guild.
-     */
-    @Column(name = "guildId")
-    long guildId;
+    @EmbeddedId
+    GuildAndId guildAndId;
 
     /**
      * The name of the action.
