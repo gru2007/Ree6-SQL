@@ -31,6 +31,7 @@ public class SettingsManager {
                 new Setting("-1", "chatprefix", "Prefix", "ree!"),
                 new Setting("-1", "level_message", "Send Levelup Message", false),
                 new Setting("-1", "configuration_news", "Receive News", true),
+                new Setting("-1", "configuration_moderRecords", "Moder download records", false),
                 new Setting("-1", "configuration_language", "Language", "en-GB"),
                 new Setting("-1", "message_join", "Welcome Message", "Welcome %user_mention%!\nWe wish you a great stay on %guild_name%"),
                 new Setting("-1", "message_rules_1", "Глава 1", "**1)** Ваш ник должен соответствовать определенной форме:\n"
