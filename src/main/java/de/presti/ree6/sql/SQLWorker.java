@@ -1622,6 +1622,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //endregion
 
+    //region Recordings
+
+    public Map<String, String> getRecordings(String guildId) {
+
+        // Create a new HashMap to save the Role Ids and their needed level.
+        Map<String, String> records = new HashMap<>();
+
+        getEntityList(new Recording(), "FROM Recording WHERE guildId=:gid", Map.of("gid", guildId)).forEach(Recording -> records.put(Recording.getIdentifier(), Recording.getGuildId()));
+
+        // Return the HashMap.
+        return records;
+    }
+
+
     //endregion
 
     //endregion
