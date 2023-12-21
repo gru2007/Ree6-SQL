@@ -42,14 +42,20 @@ public class MoneyTransaction {
      * The Bank of the user that sends the money.
      */
     @ManyToOne(optional = false)
-    @JoinColumn(name="sender", updatable=false)
+    @JoinColumns(value = {
+            @JoinColumn(name="sender_guildId", referencedColumnName="guildId"),
+            @JoinColumn(name="sender_userId", referencedColumnName="userId")
+    }, foreignKey = @ForeignKey(name = "fk_money_transaction_sender"))
     private MoneyHolder sender;
 
     /**
      * The Bank of the user that receives the money.
      */
     @ManyToOne(optional = false)
-    @JoinColumn(name="receiver", updatable=false)
+    @JoinColumns(value = {
+            @JoinColumn(name="receiver_guildId", referencedColumnName="guildId"),
+            @JoinColumn(name="receiver_userId", referencedColumnName="userId")
+    }, foreignKey = @ForeignKey(name = "fk_money_transaction_receiver"))
     private MoneyHolder receiver;
 
     /**

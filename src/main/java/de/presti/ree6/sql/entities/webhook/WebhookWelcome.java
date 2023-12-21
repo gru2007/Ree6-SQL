@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities.webhook;
 
+import de.presti.ree6.sql.entities.webhook.base.Webhook;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 

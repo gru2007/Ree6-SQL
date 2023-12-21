@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities.roles;
 
+import de.presti.ree6.sql.keys.GuildRoleId;
 import jakarta.persistence.*;
 
 /**
@@ -9,24 +10,10 @@ import jakarta.persistence.*;
 public class Role {
 
     /**
-     * The PrimaryKey of the Entity.
+     * The ID of the Entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
-    /**
-     * The Name of the Role.
-     */
-    @Column(name = "gid")
-    long guildId;
-
-    /**
-     * The ID of the Role.
-     */
-    @Column(name = "rid")
-    long roleId;
+    @EmbeddedId
+    private GuildRoleId guildRoleId;
 
     /**
      * Constructor.
@@ -40,8 +27,7 @@ public class Role {
      * @param roleId the ID of the Role.
      */
     public Role(long guildId, long roleId) {
-        this.guildId = guildId;
-        this.roleId = roleId;
+        guildRoleId = new GuildRoleId(guildId, roleId);
     }
 
     /**
@@ -49,7 +35,11 @@ public class Role {
      * @return {@link String} as GuildID.
      */
     public long getGuildId() {
-        return guildId;
+        if (guildRoleId == null) {
+            return 0;
+        }
+
+        return guildRoleId.getGuildId();
     }
 
     /**
@@ -57,6 +47,10 @@ public class Role {
      * @return {@link String} as ID.
      */
     public long getRoleId() {
-        return roleId;
+        if (guildRoleId == null) {
+            return 0;
+        }
+
+        return guildRoleId.getRoleId();
     }
 }

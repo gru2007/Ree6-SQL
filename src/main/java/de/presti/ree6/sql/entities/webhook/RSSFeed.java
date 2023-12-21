@@ -1,5 +1,7 @@
 package de.presti.ree6.sql.entities.webhook;
 
+import de.presti.ree6.sql.entities.webhook.base.Webhook;
+import de.presti.ree6.sql.entities.webhook.base.WebhookSocial;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "RSSFeed")
-public class RSSFeed extends Webhook {
+public class RSSFeed extends WebhookSocial {
 
     /**
      * Name of the Channel.
