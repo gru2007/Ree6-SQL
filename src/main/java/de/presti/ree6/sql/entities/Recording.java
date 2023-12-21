@@ -30,13 +30,13 @@ public class Recording {
     /**
      * The ID of the Guild.
      */
-    @Column(name = "gid")
+    @Column(name = "guildId")
     long guildId;
 
     /**
      * The ID of the Voice-Channel.
      */
-    @Column(name = "vid")
+    @Column(name = "channelId")
     long voiceId;
 
     /**

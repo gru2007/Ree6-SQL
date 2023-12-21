@@ -1,5 +1,6 @@
-package de.presti.ree6.sql.entities.webhook;
+package de.presti.ree6.sql.entities.webhook.base;
 
+import de.presti.ree6.sql.keys.SocialWebhookId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,37 +15,28 @@ import lombok.Setter;
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
-public class Webhook {
+public class WebhookSocial {
 
     /**
-     * The PrimaryKey of the Entity.
+     * The ID of the Entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
-    /**
-     * The GuildID of the Webhook.
-     */
-    @Column(name = "gid", nullable = false)
-    private long guildId;
-
+    @EmbeddedId
+    SocialWebhookId socialWebhookId;
 
     @Column(name = "channel", nullable = false)
-    private long channelId = 0;
+    long channelId = 0;
 
     /**
      * The Webhook ID of the Webhook.
      */
-    @Column(name = "cid", nullable = false)
-    private long webhookId;
+    @Column(name = "webhookId", nullable = false)
+    long webhookId;
 
     /**
      * The Token of the Webhook.
      */
     @Column(name = "token", nullable = false)
-    private String token;
+    String token;
 
     /**
      * Constructor.
@@ -54,10 +46,18 @@ public class Webhook {
      * @param webhookId The WebhookId of the Webhook.
      * @param token     The Token of the Webhook.
      */
-    public Webhook(long guildId, long channelId, long webhookId, String token) {
-        this.guildId = guildId;
+    public WebhookSocial(long guildId, long channelId, long webhookId, String token) {
+        this.socialWebhookId = new SocialWebhookId(guildId);
         this.channelId = channelId;
         this.webhookId = webhookId;
         this.token = token;
+    }
+
+    /**
+     * Set the GuildID of the Webhook.
+     * @param guildId The GuildID of the Webhook.
+     */
+    public void setGuildId(long guildId) {
+        this.socialWebhookId.setGuildId(guildId);
     }
 }

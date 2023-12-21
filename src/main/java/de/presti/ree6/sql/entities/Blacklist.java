@@ -20,7 +20,7 @@ public class Blacklist {
     /**
      * The ID of the Guild.
      */
-    @Column(name = "gid")
+    @Column(name = "guildId")
     private long guildId;
 
     /**

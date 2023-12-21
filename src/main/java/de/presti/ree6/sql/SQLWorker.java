@@ -12,6 +12,7 @@ import de.presti.ree6.sql.entities.stats.CommandStats;
 import de.presti.ree6.sql.entities.stats.GuildCommandStats;
 import de.presti.ree6.sql.entities.stats.Statistics;
 import de.presti.ree6.sql.entities.webhook.*;
+import de.presti.ree6.sql.entities.webhook.base.Webhook;
 import de.presti.ree6.sql.util.SettingsManager;
 import io.sentry.Sentry;
 import jakarta.persistence.PersistenceException;

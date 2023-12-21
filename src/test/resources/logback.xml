@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <logger name="de.presti.ree6" level="info" />
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <!-- Appender Configuration [Console] -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%thread] %highlight(%-5level %logger{35}) - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Appender Output Configuration -->
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

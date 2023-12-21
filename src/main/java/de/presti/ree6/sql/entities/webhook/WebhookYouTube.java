@@ -1,5 +1,7 @@
 package de.presti.ree6.sql.entities.webhook;
 
+import de.presti.ree6.sql.entities.webhook.base.Webhook;
+import de.presti.ree6.sql.entities.webhook.base.WebhookSocial;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -15,7 +17,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "YouTubeNotify")
-public class WebhookYouTube extends Webhook {
+public class WebhookYouTube extends WebhookSocial {
 
     /**
      * Name of the Channel.

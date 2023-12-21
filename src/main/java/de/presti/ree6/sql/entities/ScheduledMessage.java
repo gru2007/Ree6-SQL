@@ -54,7 +54,10 @@ public class ScheduledMessage {
      * The related ScheduledMessage Webhook.
      */
     @ManyToOne(optional = false)
-    @JoinColumn(name="webhook_id", nullable=false, updatable=false)
+    @JoinColumns(value = {
+            @JoinColumn(name="webhook_id", referencedColumnName="id"),
+            @JoinColumn(name="webhook_guildId", referencedColumnName="guildId")
+    }, foreignKey = @ForeignKey(name = "fk_scheduled_message_webhook"))
     private WebhookScheduledMessage scheduledMessageWebhook;
 
     /**

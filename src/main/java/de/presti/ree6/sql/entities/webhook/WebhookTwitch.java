@@ -1,9 +1,10 @@
 package de.presti.ree6.sql.entities.webhook;
 
+import de.presti.ree6.sql.entities.webhook.base.Webhook;
+import de.presti.ree6.sql.entities.webhook.base.WebhookSocial;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "TwitchNotify")
-public class WebhookTwitch extends Webhook {
+public class WebhookTwitch extends WebhookSocial {
 
     /**
      * Name of the Channel.

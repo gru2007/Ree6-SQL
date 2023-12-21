@@ -1,5 +1,7 @@
 package de.presti.ree6.sql.entities.webhook;
 
+import de.presti.ree6.sql.entities.webhook.base.Webhook;
+import de.presti.ree6.sql.entities.webhook.base.WebhookSocial;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -15,7 +17,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Table(name = "TikTokNotify")
-public class WebhookTikTok extends Webhook {
+public class WebhookTikTok extends WebhookSocial {
 
     /**
      * Name of the User.

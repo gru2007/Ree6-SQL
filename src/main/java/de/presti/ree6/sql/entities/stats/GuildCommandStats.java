@@ -43,5 +43,5 @@ public class GuildCommandStats {
     @Getter
     @Setter
     @Column(name = "uses")
-    private int uses;
+    private long uses;
 }
