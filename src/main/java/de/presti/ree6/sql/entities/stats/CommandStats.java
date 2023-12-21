@@ -27,7 +27,7 @@ public class CommandStats {
      * Number of times the Command was used.
      */
     @Column(name = "uses")
-    private int uses;
+    private long uses;
 
     /**
      * Constructor.
@@ -57,7 +57,7 @@ public class CommandStats {
      * Get the number of times the Command was used.
      * @return the number of uses.
      */
-    public int getUses() {
+    public long getUses() {
         return uses;
     }
 
@@ -65,7 +65,7 @@ public class CommandStats {
      * Set the number of times the Command was used.
      * @param uses the number of uses.
      */
-    public void setUses(int uses) {
+    public void setUses(long uses) {
         this.uses = uses;
     }
 }

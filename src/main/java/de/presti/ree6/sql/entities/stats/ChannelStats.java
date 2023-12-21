@@ -15,7 +15,7 @@ public class ChannelStats {
      * The Guild ID.
      */
     @Id
-    @Column(name = "gid")
+    @Column(name = "guildId")
     private long guildId;
 
     /**

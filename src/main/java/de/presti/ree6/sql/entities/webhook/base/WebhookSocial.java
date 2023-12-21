@@ -29,7 +29,7 @@ public class WebhookSocial {
     /**
      * The Webhook ID of the Webhook.
      */
-    @Column(name = "cid", nullable = false)
+    @Column(name = "webhookId", nullable = false)
     long webhookId;
 
     /**

@@ -20,13 +20,13 @@ public class Invite {
     /**
      * The GuildID of the Invite.
      */
-    @Column(name = "gid")
+    @Column(name = "guildId")
     long guild;
 
     /**
      * The UserID of the Invite.
      */
-    @Column(name = "uid")
+    @Column(name = "userId")
     long userId;
 
     /**

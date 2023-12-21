@@ -23,19 +23,19 @@ public class BirthdayWish {
     /**
      * The Guild ID.
      */
-    @Column(name = "gid")
+    @Column(name = "guildId")
     long guildId;
 
     /**
      * The Channel ID.
      */
-    @Column(name = "cid")
+    @Column(name = "channelId")
     long channelId;
 
     /**
      * The User ID.
      */
-    @Column(name = "uid")
+    @Column(name = "userId")
     long userId;
 
     /**

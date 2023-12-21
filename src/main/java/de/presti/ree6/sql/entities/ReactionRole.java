@@ -24,12 +24,12 @@ public class ReactionRole {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     /**
      * The ID of the Guild.
      */
-    @Column(name = "gid")
+    @Column(name = "guildId")
     private long guildId;
 
     /**
@@ -57,7 +57,7 @@ public class ReactionRole {
     private long roleId;
 
     /**
-     * The ID of the Message used as reaction message.
+     * The ID of the Message used as a reaction message.
      */
     @Column(name = "messageId")
     private long messageId;
