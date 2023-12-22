@@ -61,6 +61,8 @@ ALTER TABLE WelcomeWebhooks
 ALTER TABLE LogWebhooks
     CHANGE gid guildId BIGINT NOT NULL;
 
+TRUNCATE TABLE Money_Transaction;
+
 ALTER TABLE Money_Transaction
     ADD receiver_guildId BIGINT NOT NULL;
 
