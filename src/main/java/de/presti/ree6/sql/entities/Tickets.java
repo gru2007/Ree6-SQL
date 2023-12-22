@@ -42,7 +42,6 @@ public class Tickets {
     @Column(name = "logChannelId")
     long logChannelId = 0L;
 
-
     /**
      * The ID for the Webhook.
      */
@@ -55,10 +54,8 @@ public class Tickets {
     @Column(name = "logChannelWebhookToken")
     String logChannelWebhookToken;
 
-
     /**
      * The Ticket counter.
-     *
      */
     @Column(name = "ticketCount")
     @ColumnDefault("0")

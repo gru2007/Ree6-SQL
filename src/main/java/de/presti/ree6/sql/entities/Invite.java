@@ -56,15 +56,43 @@ public class Invite {
     }
 
     /**
-     * Get the GuildID of the Invite.
+     * Set the GuildID.
+     * @param guildId The GuildID.
+     */
+    public void setGuildId(long guildId) {
+        if (guildAndId == null) guildAndId = new GuildAndId(guildId);
+        guildAndId.setGuildId(guildId);
+    }
+
+    /**
+     * Set the ID.
+     * @param id The ID.
+     */
+    public void setId(long id) {
+        if (guildAndId == null) guildAndId = new GuildAndId(0, id);
+        guildAndId.setId(id);
+    }
+
+    /**
+     * Get the GuildID.
      *
-     * @return {@link String} as GuildID.
+     * @return {@link long} as GuildID.
      */
     public long getGuild() {
         if (guildAndId == null)
             return 0;
 
         return guildAndId.getGuildId();
+    }
+
+    /**
+     * Get the ID.
+     *
+     * @return the ID.
+     */
+    public long getId() {
+        if (guildAndId == null) return -1;
+        return guildAndId.getId();
     }
 
     /**
@@ -96,6 +124,7 @@ public class Invite {
 
     /**
      * Set the Code of the Invite.
+     *
      * @param code the Code of the Invite.
      */
     public void setCode(String code) {

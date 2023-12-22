@@ -63,4 +63,15 @@ public class WebhookSocial {
         else
             this.guildAndId.setGuildId(guildId);
     }
+
+    /**
+     * Get the GuildID of the Webhook.
+     * @return The GuildID of the Webhook.
+     */
+    public long getGuildId() {
+        if (guildAndId == null)
+            return -1;
+
+        return guildAndId.getGuildId();
+    }
 }

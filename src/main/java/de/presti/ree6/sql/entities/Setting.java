@@ -92,6 +92,24 @@ public class Setting {
     }
 
     /**
+     * Set the ID of the Guild.
+     * @param guildId ID of the Guild as {@link Long}
+     */
+    public void setGuildId(long guildId) {
+        if (getSettingId() == null) this.settingId = new SettingId();
+        else this.settingId.setGuildId(guildId);
+    }
+
+    /**
+     * Set the Name of the Setting.
+     * @param name Name of the Setting as {@link String}
+     */
+    public void setName(String name) {
+        if (getSettingId() == null) this.settingId = new SettingId();
+        else this.settingId.setName(name);
+    }
+
+    /**
      * Get the ID of the Guild.
      * @return ID of the Guild as {@link Long}
      */

@@ -28,4 +28,40 @@ public class Warning {
      * The warnings that the user has.
      */
     int warnings;
+
+    /**
+     * Set the Guild ID.
+     * @param guildId The Guild ID.
+     */
+    public void setGuildId(long guildId) {
+        if (guildUserId == null) guildUserId = new GuildUserId(guildId, 0);
+        guildUserId.setGuildId(guildId);
+    }
+
+    /**
+     * Set the User ID.
+     * @param userId The User ID.
+     */
+    public void setUserId(long userId) {
+        if (guildUserId == null) guildUserId = new GuildUserId(0, userId);
+        guildUserId.setUserId(userId);
+    }
+
+    /**
+     * Get the Guild ID.
+     * @return The Guild ID.
+     */
+    public long getGuildId() {
+        if (guildUserId == null) return -1;
+        return guildUserId.getGuildId();
+    }
+
+    /**
+     * Get the User ID.
+     * @return The User ID.
+     */
+    public long getUserId() {
+        if (guildUserId == null) return -1;
+        return guildUserId.getUserId();
+    }
 }
