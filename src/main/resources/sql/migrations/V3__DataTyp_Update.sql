@@ -1,11 +1,6 @@
 UPDATE Invites
     SET uid = @temp := uid, uid = code, code = @temp WHERE LENGTH(uid) < 17;
 
-DELETE s1 FROM Settings s1
-    JOIN Settings s2 ON s1.guildId = s2.guildId
-    AND s1.name = s2.name
-    AND s1.id < s2.id;
-
 ALTER TABLE Level
     CHANGE gid guildId BIGINT;
 
@@ -26,6 +21,11 @@ ALTER TABLE VCLevel
 
 ALTER TABLE VCLevel
     CHANGE uid userId BIGINT;
+
+DELETE s1 FROM Settings s1
+                   JOIN Settings s2 ON s1.guildId = s2.guildId
+    AND s1.name = s2.name
+    AND s1.id < s2.id;
 
 DELETE l1 FROM Level l1
     INNER JOIN Level l2 ON l1.userId = l2.userId AND l1.guildId = l2.guildId

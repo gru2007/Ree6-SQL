@@ -62,37 +62,22 @@ ALTER TABLE LogWebhooks
     CHANGE gid guildId BIGINT NOT NULL;
 
 ALTER TABLE Money_Transaction
-    ADD receiver_guildId BIGINT NULL;
+    ADD receiver_guildId BIGINT NOT NULL;
 
 ALTER TABLE Money_Transaction
-    ADD receiver_userId BIGINT NULL;
+    ADD receiver_userId BIGINT NOT NULL;
 
 ALTER TABLE Money_Transaction
-    ADD sender_guildId BIGINT NULL;
+    ADD sender_guildId BIGINT NOT NULL;
 
 ALTER TABLE Money_Transaction
-    ADD sender_userId BIGINT NULL;
-
-ALTER TABLE Money_Transaction
-    MODIFY receiver_guildId BIGINT NOT NULL;
-
-ALTER TABLE Money_Transaction
-    MODIFY receiver_userId BIGINT NOT NULL;
-
-ALTER TABLE Money_Transaction
-    MODIFY sender_guildId BIGINT NOT NULL;
-
-ALTER TABLE Money_Transaction
-    MODIFY sender_userId BIGINT NOT NULL;
+    ADD sender_userId BIGINT NOT NULL;
 
 ALTER TABLE ScheduledMessage
     MODIFY webhook_id BIGINT NULL;
 
 ALTER TABLE ScheduledMessage
-    ADD webhook_guildId BIGINT NULL;
-
-ALTER TABLE ScheduledMessage
-    MODIFY webhook_guildId BIGINT NOT NULL;
+    ADD webhook_guildId BIGINT NOT NULL;
 
 ALTER TABLE Money_Holder
     DROP COLUMN Id;
