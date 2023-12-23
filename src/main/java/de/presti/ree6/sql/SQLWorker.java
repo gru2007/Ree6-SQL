@@ -1990,16 +1990,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //region BanServ
 
-    public Map<String, String> getBanFollowers(String guildId) {
-
-        // Create a new HashMap to save the Role Ids and their needed level.
-        Map<String, String> followers = new HashMap<>();
-
-        getEntityList(new Setting(), "FROM Setting WHERE value=:gid AND name=:name", Map.of("gid", guildId, "name", "configuration_ban_server"))
-                .forEach(Setting -> followers.put(Setting.getGuildId(), Setting.getStringValue()));
-
-        // Return the HashMap.
-        return followers;
+    public List<Setting> getBanFollowers(String guildId) {
+        return getEntityList(new Setting(), "FROM Setting WHERE value = :gid AND name = :name", Map.of("gid", guildId, "name", "configuration_ban_server"));
     }
 
     //endregion
