@@ -1995,7 +1995,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
         // Create a new HashMap to save the Role Ids and their needed level.
         Map<String, String> followers = new HashMap<>();
 
-        getEntityList(new Setting(), "FROM Settings WHERE value=:gid AND name=:name", Map.of("gid", guildId, "name", "configuration_ban_server"))
+        getEntityList(new Setting(), "FROM Setting WHERE value=:gid AND name=:name", Map.of("gid", guildId, "name", "configuration_ban_server"))
                 .forEach(Setting -> followers.put(Setting.getGuildId(), Setting.getStringValue()));
 
         // Return the HashMap.
