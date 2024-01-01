@@ -2,7 +2,7 @@ package de.presti.ree6.sql.entities;
 
 import com.google.gson.JsonElement;
 import de.presti.ree6.sql.converter.JsonAttributeConverter;
-import de.presti.ree6.sql.keys.GuildAndId;
+import de.presti.ree6.sql.keys.GuildAndName;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,13 +17,7 @@ public class StreamAction {
      * The Key of the Entity.
      */
     @EmbeddedId
-    GuildAndId guildAndId;
-
-    /**
-     * The name of the action.
-     */
-    @Column(name = "actionName")
-    String actionName;
+    GuildAndName guildAndName;
 
     /**
      * The related Twitch Auth.
@@ -56,17 +50,17 @@ public class StreamAction {
      * @param guildId The GuildID.
      */
     public void setGuildId(long guildId) {
-        if (guildAndId == null) guildAndId = new GuildAndId(guildId);
-        guildAndId.setGuildId(guildId);
+        if (guildAndName == null) guildAndName = new GuildAndName();
+        guildAndName.setGuildId(guildId);
     }
 
     /**
-     * Set the ID.
-     * @param id The ID.
+     * Set the Name.
+     * @param name The Name.
      */
-    public void setId(long id) {
-        if (guildAndId == null) guildAndId = new GuildAndId(0, id);
-        guildAndId.setId(id);
+    public void setName(String name) {
+        if (guildAndName == null) guildAndName = new GuildAndName();
+        guildAndName.setName(name);
     }
 
     /**
@@ -75,19 +69,19 @@ public class StreamAction {
      * @return {@link long} as GuildID.
      */
     public long getGuild() {
-        if (guildAndId == null)
+        if (guildAndName == null)
             return 0;
 
-        return guildAndId.getGuildId();
+        return guildAndName.getGuildId();
     }
 
     /**
-     * Get the ID.
+     * Get the Name.
      *
-     * @return the ID.
+     * @return the Name.
      */
-    public long getId() {
-        if (guildAndId == null) return -1;
-        return guildAndId.getId();
+    public String getName() {
+        if (guildAndName == null) return null;
+        return guildAndName.getName();
     }
 }

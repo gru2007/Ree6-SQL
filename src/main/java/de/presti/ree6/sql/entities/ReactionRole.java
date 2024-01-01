@@ -1,7 +1,6 @@
 package de.presti.ree6.sql.entities;
 
-
-import de.presti.ree6.sql.keys.GuildAndId;
+import de.presti.ree6.sql.keys.GuildRoleId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +22,7 @@ public class ReactionRole {
      * The Key of the Entity.
      */
     @EmbeddedId
-    GuildAndId guildAndId;
+    GuildRoleId guildRoleId;
 
     /**
      * The ID of the Emote used as reaction.
@@ -44,12 +43,6 @@ public class ReactionRole {
     private long channelId = 0;
 
     /**
-     * The ID of the Role used as a reaction role.
-     */
-    @Column(name = "roleId")
-    private long roleId;
-
-    /**
      * The ID of the Message used as a reaction message.
      */
     @Column(name = "messageId")
@@ -64,10 +57,9 @@ public class ReactionRole {
      * @param messageId the Message ID.
      */
     public ReactionRole(long guildId, long emoteId, String formattedEmote, long roleId, long messageId) {
-        this.guildAndId = new GuildAndId(guildId);
+        this.guildRoleId = new GuildRoleId(guildId, roleId);
         this.formattedEmote = formattedEmote;
         this.emoteId = emoteId;
-        this.roleId = roleId;
         this.messageId = messageId;
     }
 
@@ -76,17 +68,17 @@ public class ReactionRole {
      * @param guildId The GuildID.
      */
     public void setGuildId(long guildId) {
-        if (guildAndId == null) guildAndId = new GuildAndId(guildId);
-        guildAndId.setGuildId(guildId);
+        if (guildRoleId == null) guildRoleId = new GuildRoleId();
+        guildRoleId.setGuildId(guildId);
     }
 
     /**
-     * Set the ID.
-     * @param id The ID.
+     * Set the Role ID.
+     * @param roleId The Role ID.
      */
-    public void setId(long id) {
-        if (guildAndId == null) guildAndId = new GuildAndId(0, id);
-        guildAndId.setId(id);
+    public void setRole(long roleId) {
+        if (guildRoleId == null) guildRoleId = new GuildRoleId();
+        guildRoleId.setRoleId(roleId);
     }
 
     /**
@@ -95,10 +87,10 @@ public class ReactionRole {
      * @return {@link long} as GuildID.
      */
     public long getGuild() {
-        if (guildAndId == null)
+        if (guildRoleId == null)
             return 0;
 
-        return guildAndId.getGuildId();
+        return guildRoleId.getGuildId();
     }
 
     /**
@@ -107,7 +99,7 @@ public class ReactionRole {
      * @return the ID.
      */
     public long getId() {
-        if (guildAndId == null) return -1;
-        return guildAndId.getId();
+        if (guildRoleId == null) return -1;
+        return guildRoleId.getRoleId();
     }
 }

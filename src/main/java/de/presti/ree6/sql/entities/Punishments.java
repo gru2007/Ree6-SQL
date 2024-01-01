@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Random;
+
 /**
  * Entity class for the Warning punishments.
  */
@@ -54,7 +56,7 @@ public class Punishments {
      * @param guildId The GuildID.
      */
     public void setGuildId(long guildId) {
-        if (guildAndId == null) guildAndId = new GuildAndId(guildId);
+        if (guildAndId == null) guildAndId = new GuildAndId(new Random().nextLong(Long.MAX_VALUE), guildId);
         guildAndId.setGuildId(guildId);
     }
 
@@ -63,7 +65,7 @@ public class Punishments {
      * @param id The ID.
      */
     public void setId(long id) {
-        if (guildAndId == null) guildAndId = new GuildAndId(0, id);
+        if (guildAndId == null) guildAndId = new GuildAndId(id, 0);
         guildAndId.setId(id);
     }
 

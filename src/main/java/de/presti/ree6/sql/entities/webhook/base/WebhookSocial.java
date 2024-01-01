@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Random;
+
 /**
  * SQL Entity for the Webhooks.
  */
@@ -59,7 +61,7 @@ public class WebhookSocial {
      */
     public void setGuildId(long guildId) {
         if (guildAndId == null)
-            this.guildAndId = new GuildAndId(guildId);
+            this.guildAndId = new GuildAndId(new Random().nextLong(Long.MAX_VALUE), guildId);
         else
             this.guildAndId.setGuildId(guildId);
     }

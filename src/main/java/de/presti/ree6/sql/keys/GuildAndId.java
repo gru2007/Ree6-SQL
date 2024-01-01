@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * Class used to store multiple Keys, within one Entity.
@@ -37,6 +38,7 @@ public class GuildAndId implements Serializable {
      * @param guildId The Discord Guild ID.
      */
     public GuildAndId(long guildId) {
+        this.id = new Random().nextLong(Long.MAX_VALUE);
         this.guildId = guildId;
     }
 

@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.Random;
 
 /**
  * This class is used to represent a Scheduled Message.
@@ -82,7 +83,7 @@ public class ScheduledMessage {
      * @param guildId The GuildID.
      */
     public void setGuildId(long guildId) {
-        if (guildAndId == null) guildAndId = new GuildAndId(guildId);
+        if (guildAndId == null) guildAndId = new GuildAndId(new Random().nextLong(Long.MAX_VALUE), guildId);
         guildAndId.setGuildId(guildId);
     }
 
@@ -91,7 +92,7 @@ public class ScheduledMessage {
      * @param id The ID.
      */
     public void setId(long id) {
-        if (guildAndId == null) guildAndId = new GuildAndId(0, id);
+        if (guildAndId == null) guildAndId = new GuildAndId(0, new Random().nextLong(Long.MAX_VALUE));
         guildAndId.setId(id);
     }
 

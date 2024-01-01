@@ -1,6 +1,6 @@
 package de.presti.ree6.sql.entities;
 
-import de.presti.ree6.sql.keys.GuildAndId;
+import de.presti.ree6.sql.keys.GuildAndCode;
 import jakarta.persistence.*;
 
 /**
@@ -14,7 +14,7 @@ public class Invite {
      * The PrimaryKey of the Entity.
      */
     @EmbeddedId
-    GuildAndId guildAndId;
+    GuildAndCode guildAndCode;
 
     /**
      * The UserID of the Invite.
@@ -49,7 +49,7 @@ public class Invite {
      * @param code   the Code of the Invite.
      */
     public Invite(long guild, long userId, long uses, String code) {
-        this.guildAndId = new GuildAndId(guild);
+        this.guildAndCode = new GuildAndCode(guild, code);
         this.userId = userId;
         this.uses = uses;
         this.code = code;
@@ -60,17 +60,17 @@ public class Invite {
      * @param guildId The GuildID.
      */
     public void setGuildId(long guildId) {
-        if (guildAndId == null) guildAndId = new GuildAndId(guildId);
-        guildAndId.setGuildId(guildId);
+        if (guildAndCode == null) guildAndCode = new GuildAndCode();
+        guildAndCode.setGuildId(guildId);
     }
 
     /**
-     * Set the ID.
-     * @param id The ID.
+     * Set the Code.
+     * @param code The Code.
      */
-    public void setId(long id) {
-        if (guildAndId == null) guildAndId = new GuildAndId(0, id);
-        guildAndId.setId(id);
+    public void setCode(String code) {
+        if (guildAndCode == null) guildAndCode = new GuildAndCode();
+        guildAndCode.setCode(code);
     }
 
     /**
@@ -79,10 +79,10 @@ public class Invite {
      * @return {@link long} as GuildID.
      */
     public long getGuild() {
-        if (guildAndId == null)
+        if (guildAndCode == null)
             return 0;
 
-        return guildAndId.getGuildId();
+        return guildAndCode.getGuildId();
     }
 
     /**
@@ -90,9 +90,9 @@ public class Invite {
      *
      * @return the ID.
      */
-    public long getId() {
-        if (guildAndId == null) return -1;
-        return guildAndId.getId();
+    public String getCode() {
+        if (guildAndCode == null) guildAndCode = new GuildAndCode();
+        return guildAndCode.getCode();
     }
 
     /**
@@ -111,23 +111,5 @@ public class Invite {
      */
     public long getUses() {
         return uses;
-    }
-
-    /**
-     * Get the Code of the Invite.
-     *
-     * @return {@link String} as Code.
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * Set the Code of the Invite.
-     *
-     * @param code the Code of the Invite.
-     */
-    public void setCode(String code) {
-        this.code = code;
     }
 }

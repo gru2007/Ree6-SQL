@@ -1665,7 +1665,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<String>} as list with every blacklisted Word.
      */
     public List<String> getChatProtectorWords(long guildId) {
-        return getEntityList(new Blacklist(), "FROM Blacklist WHERE guildAndId.guildId = :gid", Map.of("gid", guildId)).stream().map(Blacklist::getWord).toList();
+        return getEntityList(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid", Map.of("gid", guildId)).stream().map(Blacklist::getWord).toList();
     }
 
     /**
@@ -1675,7 +1675,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} as result. If true, there is an entry in our Database | If false, there is no entry in our Database.
      */
     public boolean isChatProtectorSetup(long guildId) {
-        return getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndId.guildId = :gid", Map.of("gid", guildId)) != null;
+        return getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1686,7 +1686,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} as result. If true, there is an entry in our Database | If false, there is no entry in our Database.
      */
     public boolean isChatProtectorSetup(long guildId, String word) {
-        return getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndId.guildId = :gid AND word = :word", Map.of("gid", guildId, "word", word)) != null;
+        return getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid AND guildAndName.name = :word", Map.of("gid", guildId, "word", word)) != null;
     }
 
     /**
@@ -1712,7 +1712,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void removeChatProtectorWord(long guildId, String word) {
         Blacklist blacklist =
-                getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndId.guildId = :gid AND word = :word",
+                getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndId.guildId = :gid AND guildAndName.name = :word",
                         Map.of("gid", guildId, "word", word));
 
         // Check if there is no entry for it.
