@@ -29,12 +29,6 @@ public class Invite {
     long uses;
 
     /**
-     * The Code of the Invite.
-     */
-    @Column(name = "code")
-    String code;
-
-    /**
      * Constructor.
      */
     public Invite() {
@@ -52,7 +46,6 @@ public class Invite {
         this.guildAndCode = new GuildAndCode(guild, code);
         this.userId = userId;
         this.uses = uses;
-        this.code = code;
     }
 
     /**
