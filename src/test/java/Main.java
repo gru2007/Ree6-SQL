@@ -32,6 +32,8 @@ public class Main {
         }
 
         SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Warning(), "", null);
+        SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Giveaway(), "", null);
+        SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.roles.AutoRole(), "", null);
     }
 
 }

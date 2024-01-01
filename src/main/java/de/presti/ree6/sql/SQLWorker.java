@@ -1546,7 +1546,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link List<String>} as List with {@link Invite}.
      */
     public List<Invite> getInvites(long guildId) {
-        return getEntityList(new Invite(), "FROM Invite WHERE guildAndId.guildId=:gid", Map.of("gid", guildId));
+        return getEntityList(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid", Map.of("gid", guildId));
     }
 
     /**
@@ -1558,7 +1558,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} as Result if true, then it's saved in our Database | if false, we couldn't find anything.
      */
     public boolean existsInvite(long guildId, String inviteCreator, String inviteCode) {
-        return getEntity(new Invite(), "FROM Invite WHERE guildAndId.guildId=:gid AND userId=:uid AND code=:code", Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode)) != null;
+        return getEntity(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid AND userId=:uid AND guildAndCode.code=:code", Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode)) != null;
     }
 
     /**
@@ -1591,7 +1591,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
      */
     public Invite getInvite(long guildId, String inviteCode) {
-        return getEntity(new Invite(), "FROM Invite WHERE guildAndId.guildId=:gid AND code=:code", Map.of("gid", guildId, "code", inviteCode));
+        return getEntity(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid AND guildAndCode.code=:code", Map.of("gid", guildId, "code", inviteCode));
     }
 
     /**
@@ -1603,7 +1603,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
      */
     public Invite getInvite(long guildId, long inviteCreator, String inviteCode) {
-        return getEntity(new Invite(), "FROM Invite WHERE guildAndId.guildId=:gid AND userId=:uid AND code=:code", Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode));
+        return getEntity(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid AND userId=:uid AND guildAndCode.code=:code", Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode));
     }
 
     /**
@@ -1616,7 +1616,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
      */
     public Invite getInvite(long guildId, long inviteCreator, String inviteCode, long inviteUsage) {
-        return getEntity(new Invite(), "FROM Invite WHERE guildAndId.guildId=:gid AND userId=:uid AND code=:code AND USES=:uses",
+        return getEntity(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid AND userId=:uid AND guildAndCode.code=:code AND USES=:uses",
                 Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode, "uses", inviteUsage));
     }
 
