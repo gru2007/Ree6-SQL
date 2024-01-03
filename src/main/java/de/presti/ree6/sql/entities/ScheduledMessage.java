@@ -10,7 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.util.Random;
 
 /**
  * This class is used to represent a Scheduled Message.
@@ -50,8 +49,8 @@ public class ScheduledMessage {
      */
     @ManyToOne(optional = false)
     @JoinColumns(value = {
-            @JoinColumn(name="webhook_id", referencedColumnName="id"),
-            @JoinColumn(name="webhook_guildId", referencedColumnName="guildId")
+            @JoinColumn(name = "webhook_id", referencedColumnName = "id"),
+            @JoinColumn(name = "webhook_guildId", referencedColumnName = "guildId")
     }, foreignKey = @ForeignKey(name = "fk_scheduled_message_webhook"))
     private WebhookScheduledMessage scheduledMessageWebhook;
 
@@ -80,19 +79,21 @@ public class ScheduledMessage {
 
     /**
      * Set the GuildID.
+     *
      * @param guildId The GuildID.
      */
     public void setGuildId(long guildId) {
-        if (guildAndId == null) guildAndId = new GuildAndId(new Random().nextLong(Long.MAX_VALUE), guildId);
+        if (guildAndId == null) guildAndId = new GuildAndId(guildId);
         guildAndId.setGuildId(guildId);
     }
 
     /**
      * Set the ID.
+     *
      * @param id The ID.
      */
     public void setId(long id) {
-        if (guildAndId == null) guildAndId = new GuildAndId(0, new Random().nextLong(Long.MAX_VALUE));
+        if (guildAndId == null) guildAndId = new GuildAndId(0);
         guildAndId.setId(id);
     }
 
