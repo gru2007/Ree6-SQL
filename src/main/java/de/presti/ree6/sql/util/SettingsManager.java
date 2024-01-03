@@ -73,6 +73,15 @@ public class SettingsManager {
     }
 
     /**
+     * Add a Setting to the List.
+     * @param setting The Setting to add.
+     */
+    public static void addSetting(Setting setting) {
+        setting.setGuildId(-1);
+        settings.add(setting);
+    }
+
+    /**
      * Retrieve the default Setting by name.
      *
      * @param settingName The name of the Setting.

@@ -62,6 +62,9 @@ public class Setting {
      */
     public boolean getBooleanValue() {
         Object currentValue = getValue();
+
+        if (currentValue == null) return true;
+
         if (currentValue instanceof Boolean booleanValue) {
             return booleanValue;
         } else if (currentValue instanceof String stringValue) {
@@ -69,6 +72,7 @@ public class Setting {
             if (stringValue.equals("0")) return false;
             return Boolean.parseBoolean(stringValue);
         }
+
         return true;
     }
 
@@ -79,6 +83,9 @@ public class Setting {
      */
     public String getStringValue() {
         Object currentValue = getValue();
+
+        if (currentValue == null) return "";
+
         if (currentValue instanceof String stringValue) {
             return stringValue;
         } else if (getName().equalsIgnoreCase("chatprefix")) {
@@ -86,6 +93,7 @@ public class Setting {
         } else if (currentValue instanceof Boolean booleanValue) {
             return booleanValue + "";
         }
+
         return "";
     }
 
