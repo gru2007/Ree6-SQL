@@ -1757,7 +1757,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
             if (defaultSetting == null) {
                 log.info("Missing default for " + settingName + " in SettingsManager.");
-                return new Setting(guildId, settingName, settingName, null);
+                return null;
             }
 
             // Check if everything is alright with the config.
