@@ -245,7 +245,7 @@ public class SQLSession {
                     databaseServerPort,
                     databaseName);
 
-            case H2_Server -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databaseServerIP, databasePath);
+            case H2_Server -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databaseServerIP, databaseServerPort, databasePath);
 
             case H2 -> {
                 if (!databasePath.startsWith(".") && !databasePath.startsWith("/") && !databasePath.startsWith("~")) {

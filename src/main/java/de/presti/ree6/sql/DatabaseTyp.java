@@ -33,7 +33,7 @@ public enum DatabaseTyp {
     /**
      * H2 Server Database Information.
      */
-    H2_Server("jdbc:h2:tcp://%s/%s", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false);
+    H2_Server("jdbc:h2:tcp://%s:%s/%s", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false);
 
     /**
      * The JDBC Connection URL used by HikariCP and Hibernate.
