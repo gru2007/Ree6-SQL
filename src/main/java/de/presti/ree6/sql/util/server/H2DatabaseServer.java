@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.util.server;
 
+import de.presti.ree6.sql.SQLSession;
 import de.presti.ree6.sql.util.IDatabaseServer;
 import org.h2.tools.Server;
 
@@ -17,11 +18,18 @@ public class H2DatabaseServer implements IDatabaseServer {
 
     /**
      * Create the server.
+     *
      * @throws SQLException If something goes wrong.
      */
     @Override
-    public void createServer() throws SQLException {
-        server = Server.createTcpServer().start();
+    public void createServer(int port, String password, String path) throws SQLException {
+        String[] args = new String[] { "-tcp", "-tcpAllowOthers", "-ifNotExists", "-tcpPort", String.valueOf(port), "-tcpPassword", password, "-baseDir", path };
+        server = Server.createTcpServer(args).start();
+        if (server.isRunning(true)) {
+            System.out.println("H2-Server started successfully.");
+        } else {
+            System.out.println("H2-Server could not be started.");
+        }
     }
 
     /**

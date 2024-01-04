@@ -146,7 +146,7 @@ public class SQLSession {
             if (databaseTyp == DatabaseTyp.H2) {
                 try {
                     embeddedDatabaseServer = new H2DatabaseServer();
-                    embeddedDatabaseServer.createServer();
+                    embeddedDatabaseServer.createServer(config.getPort(), config.getPassword(), config.getPath());
                 } catch (Exception exception) {
                     log.error("Couldn't start embedded H2 Database!", exception);
                 }
