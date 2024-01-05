@@ -1,6 +1,3 @@
-UPDATE Invites
-    SET uid = @temp := uid, uid = code, code = @temp WHERE LENGTH(uid) < 17;
-
 ALTER TABLE Level
     CHANGE gid guildId BIGINT;
 
