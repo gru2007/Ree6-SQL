@@ -67,11 +67,21 @@ ALTER TABLE Money_Transaction
 ALTER TABLE Money_Transaction
     ADD receiver_userId BIGINT NOT NULL;
 
+UPDATE Money_Transaction
+    JOIN Money_Holder ON Money_Transaction.receiver = Money_Holder.id
+SET Money_Transaction.receiver_userId = Money_Holder.userId,
+    Money_Transaction.receiver_guildId = Money_Holder.guildId;
+
 ALTER TABLE Money_Transaction
     ADD sender_guildId BIGINT NOT NULL;
 
 ALTER TABLE Money_Transaction
     ADD sender_userId BIGINT NOT NULL;
+
+UPDATE Money_Transaction
+    JOIN Money_Holder ON Money_Transaction.sender = Money_Holder.id
+SET Money_Transaction.sender_userId = Money_Holder.userId,
+    Money_Transaction.sender_guildId = Money_Holder.guildId;
 
 ALTER TABLE ScheduledMessage
     MODIFY webhook_id BIGINT NULL;
