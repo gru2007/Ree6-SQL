@@ -114,7 +114,12 @@ public class SQLConnector {
             if (migrationInfo.length != 0) {
                 MigrationInfo current = info.current();
 
-                log.info("Currently at version: " + current.getDescription()  + "(" + current.getVersion() + ")");
+                if (current != null) {
+                    log.info("Currently at version: " + current.getDescription()  + "(" + current.getVersion() + ")");
+                } else {
+                    log.info("Currently at version: 0");
+                }
+
                 log.info("Found " + migrationInfo.length + " pending migrations.");
                 log.info("The pending migrations are: " + String.join(", ",
                         Arrays.stream(migrationInfo).map(MigrationInfo::getDescription).toArray(String[]::new)));
