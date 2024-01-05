@@ -29,7 +29,6 @@ WHERE n1.id > n2.id
   AND n1.code = n2.code
   AND n1.guildid = n2.guildid;
 
-
 ALTER TABLE Invites
     MODIFY COLUMN id BIGINT NOT NULL;
 
@@ -43,7 +42,6 @@ DELETE n1 FROM ReactionRole n1, ReactionRole n2
 WHERE n1.id > n2.id
   AND n1.roleId = n2.roleId
   AND n1.guildid = n2.guildid;
-
 
 ALTER TABLE ReactionRole
     MODIFY COLUMN id BIGINT NOT NULL;
