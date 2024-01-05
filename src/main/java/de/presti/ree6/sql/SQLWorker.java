@@ -13,6 +13,7 @@ import de.presti.ree6.sql.entities.stats.GuildCommandStats;
 import de.presti.ree6.sql.entities.stats.Statistics;
 import de.presti.ree6.sql.entities.webhook.*;
 import de.presti.ree6.sql.entities.webhook.base.Webhook;
+import de.presti.ree6.sql.entities.webhook.base.WebhookSocial;
 import de.presti.ree6.sql.util.SettingsManager;
 import io.sentry.Sentry;
 import jakarta.persistence.PersistenceException;
@@ -1712,7 +1713,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void removeChatProtectorWord(long guildId, String word) {
         Blacklist blacklist =
-                getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndId.guildId = :gid AND guildAndName.name = :word",
+                getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid AND guildAndName.name = :word",
                         Map.of("gid", guildId, "word", word));
 
         // Check if there is no entry for it.
@@ -2217,6 +2218,24 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (sqlConnector.connectedOnce()) {
                 sqlConnector.connectToSQLServer();
                 return updateEntity(r);
+            }
+        }
+
+        // TODO:: Need a better way to handle this.
+        if (r instanceof Punishments punishments) {
+            if (punishments.getId() <= 0) {
+                long maxId = (Long) getEntityList(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1).get(0);
+                ((Punishments)r).getGuildAndId().setId(maxId + 1);
+            }
+        } else if (r instanceof ScheduledMessage scheduledMessage) {
+            if (scheduledMessage.getId() <= 0) {
+                long maxId = (Long) getEntityList(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1).get(0);
+                ((ScheduledMessage)r).getGuildAndId().setId(maxId + 1);
+            }
+        } else if (r instanceof WebhookSocial webhookSocial) {
+            if (webhookSocial.getId() <= 0) {
+                long maxId = (Long) getEntityList(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1).get(0);
+                ((WebhookSocial)r).getGuildAndId().setId(maxId + 1);
             }
         }
 

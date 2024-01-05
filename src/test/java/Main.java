@@ -1,5 +1,6 @@
 import de.presti.ree6.sql.DatabaseTyp;
 import de.presti.ree6.sql.SQLSession;
+import de.presti.ree6.sql.entities.webhook.WebhookYouTube;
 import de.presti.ree6.sql.util.SQLConfig;
 
 import java.sql.ResultSet;
@@ -30,6 +31,9 @@ public class Main {
                 System.out.println(resultSet.getBoolean(1));
             }
         }
+
+        WebhookYouTube hook = new WebhookYouTube(-1, "test", "test", -1, -1, "test");
+        SQLSession.getSqlConnector().getSqlWorker().updateEntity(hook);
 
         SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Warning(), "", null);
         SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Giveaway(), "", null);

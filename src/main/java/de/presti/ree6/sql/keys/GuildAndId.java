@@ -38,7 +38,7 @@ public class GuildAndId implements Serializable {
      * @param guildId The Discord Guild ID.
      */
     public GuildAndId(long guildId) {
-        this.id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
+        this.id = -1;
         this.guildId = guildId;
     }
 
