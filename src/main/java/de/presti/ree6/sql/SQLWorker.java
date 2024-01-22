@@ -2224,18 +2224,15 @@ public record SQLWorker(SQLConnector sqlConnector) {
         // TODO:: Need a better way to handle this.
         if (r instanceof Punishments punishments) {
             if (punishments.getId() <= 0) {
-                long maxId = (Long) getEntityList(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1).get(0);
-                ((Punishments)r).getGuildAndId().setId(maxId + 1);
+                ((Punishments)r).getGuildAndId().setId(getNextId(r));
             }
         } else if (r instanceof ScheduledMessage scheduledMessage) {
             if (scheduledMessage.getId() <= 0) {
-                long maxId = (Long) getEntityList(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1).get(0);
-                ((ScheduledMessage)r).getGuildAndId().setId(maxId + 1);
+                ((ScheduledMessage)r).getGuildAndId().setId(getNextId(r));
             }
         } else if (r instanceof WebhookSocial webhookSocial) {
             if (webhookSocial.getId() <= 0) {
-                long maxId = (Long) getEntityList(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1).get(0);
-                ((WebhookSocial)r).getGuildAndId().setId(maxId + 1);
+                ((WebhookSocial)r).getGuildAndId().setId(getNextId(r));
             }
         }
 
@@ -2267,6 +2264,22 @@ public record SQLWorker(SQLConnector sqlConnector) {
             log.error("Failed to update Entity", exception);
             throw exception;
         }
+    }
+
+    private <R> long getNextId(R r) {
+        List<R> entityList = getEntityList(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1);
+
+        if (entityList.isEmpty()) return 1;
+
+        Object databaseReturnValue = entityList.get(0);
+
+        long maxId = 0;
+
+        if (databaseReturnValue != null) {
+            maxId = (Long) databaseReturnValue;
+        }
+
+        return maxId + 1;
     }
 
     /**
