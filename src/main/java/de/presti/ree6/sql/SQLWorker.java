@@ -32,10 +32,8 @@ import javax.annotation.Nonnull;
 import java.sql.SQLNonTransientConnectionException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * A Class to actually handle the SQL data.
@@ -2062,9 +2060,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link Boolean} as result. If true, the User is opted out | If false, the User is not opted out.
      */
-    public boolean isOptOut(long guildId, long userId) {
+    public CompletableFuture<Boolean> isOptOut(long guildId, long userId) {
         // Creating an SQL Statement to check if there is an entry in the Opt-out Table by the Guild ID and User ID
-        return getEntity(new OptOut(), "FROM OptOut WHERE guildUserId.guildId=:gid AND guildUserId.userId=:uid", Map.of("gid", guildId, "uid", userId)) != null;
+        return getEntity(new OptOut(), "FROM OptOut WHERE guildUserId.guildId=:gid AND guildUserId.userId=:uid", Map.of("gid", guildId, "uid", userId)).thenApply(Objects::nonNull);
     }
 
     /**
@@ -2074,9 +2072,11 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      */
     public void optOut(long guildId, long userId) {
-        if (!isOptOut(guildId, userId)) {
-            updateEntity(new OptOut(guildId, userId));
-        }
+        isOptOut(guildId, userId).thenAccept(optedOut -> {
+            if (!optedOut) {
+                updateEntity(new OptOut(guildId, userId));
+            }
+        });
     }
 
     /**
@@ -2086,12 +2086,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      */
     public void optIn(long guildId, long userId) {
-        OptOut optOut = getEntity(new OptOut(), "FROM OptOut WHERE guildUserId.guildId=:gid AND guildUserId.userId=:uid",
-                Map.of("gid", guildId, "uid", userId));
-
-        if (optOut != null) {
-            deleteEntity(optOut);
-        }
+        getEntity(new OptOut(), "FROM OptOut WHERE guildUserId.guildId=:gid AND guildUserId.userId=:uid",
+                Map.of("gid", guildId, "uid", userId)).thenAccept(this::deleteEntity);
     }
 
     //endregion
@@ -2122,10 +2118,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      */
     public void removeBirthday(long guildId, long userId) {
-        BirthdayWish birthdayWish = getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId));
-        if (birthdayWish != null) {
-            deleteEntity(birthdayWish);
-        }
+        getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)).thenAccept(this::deleteEntity);
     }
 
     /**
@@ -2135,8 +2128,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public boolean isBirthdaySaved(long guildId, long userId) {
-        return getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)) != null;
+    public CompletableFuture<Boolean> isBirthdaySaved(long guildId, long userId) {
+        return getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)).thenApply(Objects::nonNull);
     }
 
     /**
@@ -2146,7 +2139,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link BirthdayWish} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public BirthdayWish getBirthday(long guildId, long userId) {
+    public CompletableFuture<BirthdayWish> getBirthday(long guildId, long userId) {
         return getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId));
     }
 
@@ -2156,7 +2149,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List} of {@link BirthdayWish} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public List<BirthdayWish> getBirthdays(long guildId) {
+    public CompletableFuture<List<BirthdayWish>> getBirthdays(long guildId) {
         return getEntityList(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -2165,7 +2158,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @return {@link List} of {@link BirthdayWish} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public List<BirthdayWish> getBirthdays() {
+    public CompletableFuture<List<BirthdayWish>> getBirthdays() {
         return getEntityList(new BirthdayWish(), "FROM BirthdayWish", Map.of());
     }
 
@@ -2211,28 +2204,32 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param r   The Class-Entity to update.
      * @return the new update entity.
      */
-    public <R> R updateEntity(R r) {
+    public <R> CompletableFuture<R> updateEntity(R r) {
+        return CompletableFuture.supplyAsync(() -> updateEntityInternal(r));
+    }
+
+    private <R> R updateEntityInternal(R r) {
         if (r == null) return null;
 
         if (!sqlConnector.isConnected()) {
             if (sqlConnector.connectedOnce()) {
                 sqlConnector.connectToSQLServer();
-                return updateEntity(r);
+                return updateEntityInternal(r);
             }
         }
 
         // TODO:: Need a better way to handle this.
         if (r instanceof Punishments punishments) {
             if (punishments.getId() <= 0) {
-                ((Punishments)r).getGuildAndId().setId(getNextId(r));
+                ((Punishments) r).getGuildAndId().setId(getNextId(r));
             }
         } else if (r instanceof ScheduledMessage scheduledMessage) {
             if (scheduledMessage.getId() <= 0) {
-                ((ScheduledMessage)r).getGuildAndId().setId(getNextId(r));
+                ((ScheduledMessage) r).getGuildAndId().setId(getNextId(r));
             }
         } else if (r instanceof WebhookSocial webhookSocial) {
             if (webhookSocial.getId() <= 0) {
-                ((WebhookSocial)r).getGuildAndId().setId(getNextId(r));
+                ((WebhookSocial) r).getGuildAndId().setId(getNextId(r));
             }
         }
 
@@ -2251,7 +2248,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
                     if (jdbcConnectionException.getSQLException() instanceof SQLNonTransientConnectionException) {
                         sqlConnector.connectToSQLServer();
                         sqlConnector.setConnectedSecond(true);
-                        return updateEntity(r);
+                        return updateEntityInternal(r);
                     }
                 }
             } else {
@@ -2267,7 +2264,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     private <R> long getNextId(R r) {
-        List<R> entityList = getEntityList(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1);
+        List<R> entityList = getEntityListInternal(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1);
 
         if (entityList.isEmpty()) return 1;
 
@@ -2321,7 +2318,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param parameters all parameters.
      * @return The mapped entity.
      */
-    public <R> List<R> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters) {
+    public <R> CompletableFuture<List<R>> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters) {
         return getEntityList(r, sqlQuery, parameters, false, 0);
     }
 
@@ -2335,7 +2332,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param limit      the result limit of the query.
      * @return The mapped entity.
      */
-    public <R> List<R> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, int limit) {
+    public <R> CompletableFuture<List<R>> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, int limit) {
         return getEntityList(r, sqlQuery, parameters, false, limit);
     }
 
@@ -2350,7 +2347,22 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param limit          the result limit of the query.
      * @return The mapped entity.
      */
-    public <R> List<R> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery, int limit) {
+    public <R> CompletableFuture<List<R>> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery, int limit) {
+        return CompletableFuture.supplyAsync(() -> getEntityListInternal(r, sqlQuery, parameters, useNativeQuery, limit));
+    }
+
+    /**
+     * Constructs a new mapped Version of the Entity-class.
+     *
+     * @param <R>            The Class-Entity.
+     * @param r              The Class-Entity to get.
+     * @param sqlQuery       the SQL-Query.
+     * @param parameters     all parameters.
+     * @param useNativeQuery if true, use native query, else use hibernate query.
+     * @param limit          the result limit of the query.
+     * @return The mapped entity.
+     */
+    private <R> List<R> getEntityListInternal(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery, int limit) {
         sqlQuery = sqlQuery.isBlank() ? (useNativeQuery ? "SELECT * FROM " : "FROM ") + r.getClass().getSimpleName() : sqlQuery;
 
         try (Session session = SQLSession.getSessionFactory().openSession()) {
@@ -2392,7 +2404,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param parameters The arguments to use.
      * @return The mapped Version of the given Class-Entity.
      */
-    public <R> R getEntity(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters) {
+    public <R> CompletableFuture<R> getEntity(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters) {
         return getEntity(r, sqlQuery, parameters, false);
     }
 
@@ -2406,7 +2418,21 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param useNativeQuery if true, use native query, else use hibernate query.
      * @return The mapped Version of the given Class-Entity.
      */
-    public <R> R getEntity(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery) {
+    public <R> CompletableFuture<R> getEntity(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery) {
+        return CompletableFuture.supplyAsync(() -> getEntityInternal(r, sqlQuery, parameters, useNativeQuery));
+    }
+
+    /**
+     * Constructs a query for the given Class-Entity, and returns a mapped Version of the given Class-Entity.
+     *
+     * @param <R>            The Class-Entity.
+     * @param r              The Class-Entity to get.
+     * @param sqlQuery       The query to use.
+     * @param parameters     The arguments to use.
+     * @param useNativeQuery if true, use native query, else use hibernate query.
+     * @return The mapped Version of the given Class-Entity.
+     */
+    private <R> R getEntityInternal(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery) {
         sqlQuery = sqlQuery.isEmpty() ? (useNativeQuery ? "SELECT * FROM " : "FROM ") + r.getClass().getSimpleName() : sqlQuery;
 
         try (Session session = SQLSession.getSessionFactory().openSession()) {
