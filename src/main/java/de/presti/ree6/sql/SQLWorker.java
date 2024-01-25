@@ -2202,7 +2202,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
             BirthdayWish newBirthday = new BirthdayWish(guildId, channelId, userId, new SimpleDateFormat("dd.MM.yyyy").parse(birthday));
             updateEntity(newBirthday);
         } catch (Exception exception) {
-            log.error("Couldn't save birthday!", exception);
             Sentry.captureException(exception);
         }
     }

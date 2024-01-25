@@ -4,10 +4,6 @@ import de.presti.ree6.sql.SQLSession;
 import de.presti.ree6.sql.entities.level.ChatUserLevel;
 import de.presti.ree6.sql.entities.level.UserLevel;
 import de.presti.ree6.sql.entities.level.VoiceUserLevel;
-import io.sentry.Sentry;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Utility used to determine data for levels.
@@ -18,7 +14,6 @@ import java.util.concurrent.TimeUnit;
  * Based on the Implementation of <a href="https://gist.github.com/JakeSteam/4d843cc69dff4275acd742b70d4523b6">JakeSteam</a>!
  * Thanks to his great explanation in his <a href="https://blog.jakelee.co.uk/converting-levels-into-xp-vice-versa">blog post</a>!
  */
-@Slf4j
 public class LevelUtil {
 
     /**
@@ -109,15 +104,10 @@ public class LevelUtil {
      * @return the current Rank.
      */
     public static int getCurrentRank(UserLevel userLevel) {
-        try {
-            if (userLevel instanceof ChatUserLevel) {
-                return SQLSession.getSqlConnector().getSqlWorker().getAllChatLevelSorted(userLevel.getGuildId()).get(5, TimeUnit.SECONDS).indexOf(userLevel.getUserId()) + 1;
-            } else if (userLevel instanceof VoiceUserLevel) {
-                return SQLSession.getSqlConnector().getSqlWorker().getAllVoiceLevelSorted(userLevel.getGuildId()).get(5, TimeUnit.SECONDS).indexOf(userLevel.getUserId()) + 1;
-            }
-        } catch (Exception e) {
-            log.error("Error while getting current Rank of UserLevel!", e);
-            Sentry.captureException(e);
+        if (userLevel instanceof ChatUserLevel) {
+            return SQLSession.getSqlConnector().getSqlWorker().getAllChatLevelSorted(userLevel.getGuildId()).indexOf(userLevel.getUserId()) + 1;
+        } else if (userLevel instanceof VoiceUserLevel) {
+            return SQLSession.getSqlConnector().getSqlWorker().getAllVoiceLevelSorted(userLevel.getGuildId()).indexOf(userLevel.getUserId()) + 1;
         }
 
         return 0;

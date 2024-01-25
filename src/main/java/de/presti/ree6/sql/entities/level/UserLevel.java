@@ -2,10 +2,7 @@ package de.presti.ree6.sql.entities.level;
 
 import de.presti.ree6.sql.keys.GuildUserId;
 import de.presti.ree6.sql.util.LevelUtil;
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -53,26 +50,12 @@ public class UserLevel {
      * @param guildId    the ID of the Guild.
      * @param userId     the ID of the User.
      * @param experience his XP count.
-     */
-    public UserLevel(long guildId, long userId, long experience) {
-        this.guildUserId = new GuildUserId(guildId, userId);
-        this.experience = experience;
-        this.level = LevelUtil.calculateLevel(this, experience);
-        this.rank = LevelUtil.getCurrentRank(this);
-    }
-
-    /**
-     * Constructor to create a UserLevel with the needed Data.
-     *
-     * @param guildId    the ID of the Guild.
-     * @param userId     the ID of the User.
-     * @param experience his XP count.
      * @param rank       the Rank of the User.
      */
     public UserLevel(long guildId, long userId, long experience, int rank) {
-        this.guildUserId = new GuildUserId(guildId, userId);
+        guildUserId = new GuildUserId(guildId, userId);
         this.experience = experience;
-        this.level = LevelUtil.calculateLevel(this, experience);
+        level = LevelUtil.calculateLevel(this, experience);
         this.rank = rank;
     }
 
@@ -84,25 +67,10 @@ public class UserLevel {
      * @param userId     the ID of the User.
      * @param experience his XP count.
      * @param level      his Level.
-     */
-    public UserLevel(long guildId, long userId, long experience, long level) {
-        this.guildUserId = new GuildUserId(guildId, userId);
-        this.experience = experience;
-        this.level = level;
-        this.rank = LevelUtil.getCurrentRank(this);
-    }
-
-    /**
-     * Constructor to create a UserLevel with the needed Data.
-     *
-     * @param guildId    the ID of the Guild.
-     * @param userId     the ID of the User.
-     * @param experience his XP count.
-     * @param level      his Level.
      * @param rank       the Rank of the User.
      */
     public UserLevel(long guildId, long userId, long experience, long level, int rank) {
-        this.guildUserId = new GuildUserId(guildId, userId);
+        guildUserId = new GuildUserId(guildId, userId);
         this.experience = experience;
         this.level = level;
         this.rank = rank;
@@ -141,7 +109,6 @@ public class UserLevel {
         if (level == -1) {
             level = LevelUtil.calculateLevel(this);
         }
-
         return level;
     }
 
