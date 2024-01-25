@@ -77,8 +77,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link Boolean} true if there was a match | false if there wasn't a match.
      */
-    public CompletableFuture<Boolean> existsInChatLevel(long guildId, long userId) {
-        return getEntity(new ChatUserLevel(), "FROM ChatUserLevel WHERE guildUserId.guildId=:gid AND guildUserId.userId=:uid", Map.of("gid", guildId, "uid", userId)).thenApply(Objects::nonNull);
+    public boolean existsInChatLevel(long guildId, long userId) {
+        return getEntity(new ChatUserLevel(), "FROM ChatUserLevel WHERE guildUserId.guildId=:gid AND guildUserId.userId=:uid", Map.of("gid", guildId, "uid", userId)) != null;
     }
 
     /**
@@ -148,8 +148,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      * @return {@link Boolean} true if there was a match | false if there wasn't a match.
      */
-    public CompletableFuture<Boolean> existsInVoiceLevel(long guildId, long userId) {
-        return getEntity(new VoiceUserLevel(), "FROM VoiceUserLevel WHERE guildUserId.guildId=:gid AND guildUserId.userId=:uid", Map.of("gid", guildId, "uid", userId)).thenApply(Objects::nonNull);
+    public boolean existsInVoiceLevel(long guildId, long userId) {
+        return getEntity(new VoiceUserLevel(), "FROM VoiceUserLevel WHERE guildUserId.guildId=:gid AND guildUserId.userId=:uid", Map.of("gid", guildId, "uid", userId)) != null;
     }
 
     /**
@@ -270,8 +270,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isLogSetup(long guildId) {
-        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isLogSetup(long guildId) {
+        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -291,8 +291,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken the Auth-Token of the Webhook.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> existsLogData(long webhookId, String authToken) {
-        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken)).thenApply(Objects::nonNull);
+    public boolean existsLogData(long webhookId, String authToken) {
+        return getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken)) != null;
     }
 
     /**
@@ -377,8 +377,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isWelcomeSetup(long guildId) {
-        return getEntity(new WebhookWelcome(), "FROM WebhookWelcome WHERE guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isWelcomeSetup(long guildId) {
+        return getEntity(new WebhookWelcome(), "FROM WebhookWelcome WHERE guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     //endregion
@@ -502,8 +502,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isTwitchSetup(long guildId) {
-        return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildAndId.guildId=?", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isTwitchSetup(long guildId) {
+        return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildAndId.guildId=?", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -513,8 +513,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitchName the Username of the Twitch User.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isTwitchSetup(long guildId, String twitchName) {
-        return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitchName)).thenApply(Objects::nonNull);
+    public boolean isTwitchSetup(long guildId, String twitchName) {
+        return getEntity(new WebhookTwitch(), "FROM WebhookTwitch WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitchName)) != null;
     }
 
     //endregion
@@ -640,8 +640,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isInstagramSetup(long guildId) {
-        return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isInstagramSetup(long guildId) {
+        return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -651,8 +651,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param name    the Name of the Instagram User.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isInstagramSetup(long guildId, String name) {
-        return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", name)).thenApply(Objects::nonNull);
+    public boolean isInstagramSetup(long guildId, String name) {
+        return getEntity(new WebhookInstagram(), "FROM WebhookInstagram WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", name)) != null;
     }
 
     //endregion
@@ -777,8 +777,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isRedditSetup(long guildId) {
-        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isRedditSetup(long guildId) {
+        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -788,8 +788,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param subreddit the Name of the Subreddit.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isRedditSetup(long guildId, String subreddit) {
-        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildAndId.guildId=:gid AND subreddit=:name", Map.of("gid", guildId, "name", subreddit)).thenApply(Objects::nonNull);
+    public boolean isRedditSetup(long guildId, String subreddit) {
+        return getEntity(new WebhookReddit(), "FROM WebhookReddit WHERE guildAndId.guildId=:gid AND subreddit=:name", Map.of("gid", guildId, "name", subreddit)) != null;
     }
 
     //endregion
@@ -914,8 +914,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isYouTubeSetup(long guildId) {
-        return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isYouTubeSetup(long guildId) {
+        return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -925,8 +925,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param youtubeChannel the Username of the YouTube channel.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isYouTubeSetup(long guildId, String youtubeChannel) {
-        return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", youtubeChannel)).thenApply(Objects::nonNull);
+    public boolean isYouTubeSetup(long guildId, String youtubeChannel) {
+        return getEntity(new WebhookYouTube(), "FROM WebhookYouTube WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", youtubeChannel)) != null;
     }
 
     //endregion
@@ -1050,8 +1050,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isTwitterSetup(long guildId) {
-        return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isTwitterSetup(long guildId) {
+        return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1061,8 +1061,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param twitterName the Username of the Twitter User.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isTwitterSetup(long guildId, String twitterName) {
-        return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitterName)).thenApply(Objects::nonNull);
+    public boolean isTwitterSetup(long guildId, String twitterName) {
+        return getEntity(new WebhookTwitter(), "FROM WebhookTwitter WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", twitterName)) != null;
     }
 
     //endregion
@@ -1186,8 +1186,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isTikTokSetup(long guildId) {
-        return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isTikTokSetup(long guildId) {
+        return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1197,8 +1197,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param tiktokId the ID of the TikTok User.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isTikTokSetup(long guildId, String tiktokId) {
-        return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", tiktokId)).thenApply(Objects::nonNull);
+    public boolean isTikTokSetup(long guildId, String tiktokId) {
+        return getEntity(new WebhookTikTok(), "FROM WebhookTikTok WHERE guildAndId.guildId=:gid AND name=:name", Map.of("gid", guildId, "name", tiktokId)) != null;
     }
 
     //endregion
@@ -1304,8 +1304,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isRSSSetup(long guildId) {
-        return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isRSSSetup(long guildId) {
+        return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildAndId.guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1315,8 +1315,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param url     the Url of the RSS-Feed.
      * @return {@link Boolean} if true, it has been set | if false, it hasn't been set.
      */
-    public CompletableFuture<Boolean> isRSSSetup(long guildId, String url) {
-        return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildAndId.guildId=:gid AND url=:url", Map.of("gid", guildId, "url", url)).thenApply(Objects::nonNull);
+    public boolean isRSSSetup(long guildId, String url) {
+        return getEntity(new RSSFeed(), "FROM RSSFeed WHERE guildAndId.guildId=:gid AND url=:url", Map.of("gid", guildId, "url", url)) != null;
     }
 
     //endregion
@@ -1373,8 +1373,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public CompletableFuture<Boolean> isAutoRoleSetup(long guildId) {
-        return getEntity(new AutoRole(), "FROM AutoRole WHERE guildRoleId.guildId=:gid ", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isAutoRoleSetup(long guildId) {
+        return getEntity(new AutoRole(), "FROM AutoRole WHERE guildRoleId.guildId=:gid ", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1384,8 +1384,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public CompletableFuture<Boolean> isAutoRoleSetup(long guildId, long roleId) {
-        return getEntity(new AutoRole(), "FROM AutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid ", Map.of("gid", guildId, "rid", roleId)).thenApply(Objects::nonNull);
+    public boolean isAutoRoleSetup(long guildId, long roleId) {
+        return getEntity(new AutoRole(), "FROM AutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid ", Map.of("gid", guildId, "rid", roleId)) != null;
     }
 
     //endregion
@@ -1400,15 +1400,15 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link HashMap<>} as List with all Role IDs and the needed Level.
      */
-    public CompletableFuture<Map<Long, Long>> getChatLevelRewards(long guildId) {
-        return getEntityList(new VoiceAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid", Map.of("gid", guildId)).thenApply(x -> {
-            // Create a new HashMap to save the Role Ids and their needed level.
-            Map<Long, Long> rewards = new HashMap<>();
+    public Map<Long, Long> getChatLevelRewards(long guildId) {
 
-            x.forEach(chatAutoRole -> rewards.put(chatAutoRole.getLevel(), chatAutoRole.getRoleId()));
+        // Create a new HashMap to save the Role Ids and their needed level.
+        Map<Long, Long> rewards = new HashMap<>();
 
-            return rewards;
-        });
+        getEntityList(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid", Map.of("gid", guildId)).forEach(chatAutoRole -> rewards.put(chatAutoRole.getLevel(), chatAutoRole.getRoleId()));
+
+        // Return the HashMap.
+        return rewards;
     }
 
     /**
@@ -1419,12 +1419,11 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required getting this Role.
      */
     public void addChatLevelReward(long guildId, long roleId, long level) {
-        isChatLevelRewardSetup(guildId, roleId, level).thenAccept(x -> {
-            if (x) return;
-
+        // Check if there is a role in the database.
+        if (!isChatLevelRewardSetup(guildId, roleId, level)) {
             // Add a new entry into the Database.
             updateEntity(new ChatAutoRole(guildId, roleId, level));
-        });
+        }
     }
 
     /**
@@ -1434,12 +1433,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required getting this Role.
      */
     public void removeChatLevelReward(long guildId, long level) {
-        getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND level=:lvl",
-                Map.of("gid", guildId, "lvl", level)).thenAccept(chatAutoRole -> {
-            // Check if there is a role in the database.
-            if (chatAutoRole == null) return;
+        ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND level=:lvl",
+                Map.of("gid", guildId, "lvl", level));
+
+        // Check if there is a role in the database.
+        if (chatAutoRole != null) {
+            // Add a new entry into the Database.
             deleteEntity(chatAutoRole);
-        });
+        }
     }
 
     /**
@@ -1450,13 +1451,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required getting this Role.
      */
     public void removeChatLevelReward(long guildId, long roleId, long level) {
-        getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid AND level=:lvl",
-                Map.of("gid", guildId, "rid", roleId, "lvl", level)).thenAccept(chatAutoRole -> {
-            // Check if there is a role in the database.
-            if (chatAutoRole == null) return;
+        ChatAutoRole chatAutoRole = getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid AND level=:lvl",
+                Map.of("gid", guildId, "rid", roleId, "lvl", level));
 
+        // Check if there is a role in the database.
+        if (chatAutoRole != null) {
+            // Add a new entry into the Database.
             deleteEntity(chatAutoRole);
-        });
+        }
     }
 
     /**
@@ -1465,8 +1467,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public CompletableFuture<Boolean> isChatLevelRewardSetup(long guildId) {
-        return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isChatLevelRewardSetup(long guildId) {
+        return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1476,8 +1478,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public CompletableFuture<Boolean> isChatLevelRewardSetup(long guildId, long roleId) {
-        return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid", Map.of("gid", guildId, "rid", roleId)).thenApply(Objects::nonNull);
+    public boolean isChatLevelRewardSetup(long guildId, long roleId) {
+        return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid", Map.of("gid", guildId, "rid", roleId)) != null;
     }
 
     /**
@@ -1488,8 +1490,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level needed to get the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public CompletableFuture<Boolean> isChatLevelRewardSetup(long guildId, long roleId, long level) {
-        return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND roleId=:rid AND level=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)).thenApply(Objects::nonNull);
+    public boolean isChatLevelRewardSetup(long guildId, long roleId, long level) {
+        return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND roleId=:rid AND level=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)) != null;
     }
 
     //endregion
@@ -1502,15 +1504,15 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Map<>} as List with all Role IDs and the needed Level.
      */
-    public CompletableFuture<Map<Long, Long>> getVoiceLevelRewards(long guildId) {
-        return getEntityList(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid", Map.of("gid", guildId)).thenApply(x -> {
-            // Create a new HashMap to save the Role Ids and their needed level.
-            Map<Long, Long> rewards = new HashMap<>();
+    public Map<Long, Long> getVoiceLevelRewards(long guildId) {
 
-            x.forEach(voiceAutoRole -> rewards.put(voiceAutoRole.getLevel(), voiceAutoRole.getRoleId()));
+        // Create a new HashMap to save the Role Ids and their needed level.
+        Map<Long, Long> rewards = new HashMap<>();
 
-            return rewards;
-        });
+        getEntityList(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid", Map.of("gid", guildId)).forEach(voiceAutoRole -> rewards.put(voiceAutoRole.getLevel(), voiceAutoRole.getRoleId()));
+
+        // Return the HashMap.
+        return rewards;
     }
 
     /**
@@ -1521,12 +1523,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required getting this Role.
      */
     public void addVoiceLevelReward(long guildId, long roleId, long level) {
-        isVoiceLevelRewardSetup(guildId, roleId, level).thenAccept(x -> {
-            if (x) return;
 
+        // Check if there is a role in the database.
+        if (!isVoiceLevelRewardSetup(guildId, roleId, level)) {
             // Add a new entry into the Database.
             updateEntity(new VoiceAutoRole(guildId, roleId, level));
-        });
+        }
     }
 
     /**
@@ -1536,12 +1538,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeVoiceLevelReward(long guildId, long level) {
-        getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid AND level=:lvl",
-                Map.of("gid", guildId, "lvl", level)).thenAccept(voiceAutoRole -> {
-            if (voiceAutoRole == null) return;
+        VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid AND level=:lvl",
+                Map.of("gid", guildId, "lvl", level));
 
+        // Check if there is a role in the database.
+        if (voiceAutoRole != null) {
+            // Add a new entry into the Database.
             deleteEntity(voiceAutoRole);
-        });
+        }
     }
 
     /**
@@ -1552,12 +1556,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level required to get this Role.
      */
     public void removeVoiceLevelReward(long guildId, long roleId, long level) {
-        getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid AND LVL=:lvl",
-                Map.of("gid", guildId, "rid", roleId, "lvl", level)).thenAccept(voiceAutoRole -> {
-            if (voiceAutoRole == null) return;
+        VoiceAutoRole voiceAutoRole = getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid AND LVL=:lvl",
+                Map.of("gid", guildId, "rid", roleId, "lvl", level));
 
+        // Check if there is a role in the database.
+        if (voiceAutoRole != null) {
+            // Add a new entry into the Database.
             deleteEntity(voiceAutoRole);
-        });
+        }
     }
 
     /**
@@ -1566,8 +1572,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public CompletableFuture<Boolean> isVoiceLevelRewardSetup(long guildId) {
-        return getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isVoiceLevelRewardSetup(long guildId) {
+        return getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1577,8 +1583,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param roleId  the ID of the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public CompletableFuture<Boolean> isVoiceLevelRewardSetup(long guildId, long roleId) {
-        return getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid", Map.of("gid", guildId, "rid", roleId)).thenApply(Objects::nonNull);
+    public boolean isVoiceLevelRewardSetup(long guildId, long roleId) {
+        return getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid", Map.of("gid", guildId, "rid", roleId)) != null;
     }
 
     /**
@@ -1589,8 +1595,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param level   the Level needed to get the Role.
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
-    public CompletableFuture<Boolean> isVoiceLevelRewardSetup(long guildId, long roleId, long level) {
-        return getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid AND level=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)).thenApply(Objects::nonNull);
+    public boolean isVoiceLevelRewardSetup(long guildId, long roleId, long level) {
+        return getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid AND level=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)) != null;
     }
 
     //endregion
@@ -1621,7 +1627,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<String>} as List with {@link Invite}.
      */
-    public CompletableFuture<List<Invite>> getInvites(long guildId) {
+    public List<Invite> getInvites(long guildId) {
         return getEntityList(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -1633,8 +1639,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode    the Code of the Invite.
      * @return {@link Boolean} as Result if true, then it's saved in our Database | if false, we couldn't find anything.
      */
-    public CompletableFuture<Boolean> existsInvite(long guildId, String inviteCreator, String inviteCode) {
-        return getEntity(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid AND userId=:uid AND guildAndCode.code=:code", Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode)).thenApply(Objects::nonNull);
+    public boolean existsInvite(long guildId, String inviteCreator, String inviteCode) {
+        return getEntity(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid AND userId=:uid AND guildAndCode.code=:code", Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode)) != null;
     }
 
     /**
@@ -1666,7 +1672,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode the Code of the Invite.
      * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
      */
-    public CompletableFuture<Invite> getInvite(long guildId, String inviteCode) {
+    public Invite getInvite(long guildId, String inviteCode) {
         return getEntity(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid AND guildAndCode.code=:code", Map.of("gid", guildId, "code", inviteCode));
     }
 
@@ -1678,7 +1684,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode    the Code of the Invite.
      * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
      */
-    public CompletableFuture<Invite> getInvite(long guildId, long inviteCreator, String inviteCode) {
+    public Invite getInvite(long guildId, long inviteCreator, String inviteCode) {
         return getEntity(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid AND userId=:uid AND guildAndCode.code=:code", Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode));
     }
 
@@ -1691,7 +1697,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteUsage   the Usage count of the Invite.
      * @return {@link Invite} as result if true, then it's saved in our Database | may be null.
      */
-    public CompletableFuture<Invite> getInvite(long guildId, long inviteCreator, String inviteCode, long inviteUsage) {
+    public Invite getInvite(long guildId, long inviteCreator, String inviteCode, long inviteUsage) {
         return getEntity(new Invite(), "FROM Invite WHERE guildAndCode.guildId=:gid AND userId=:uid AND guildAndCode.code=:code AND USES=:uses",
                 Map.of("gid", guildId, "uid", inviteCreator, "code", inviteCode, "uses", inviteUsage));
     }
@@ -1725,7 +1731,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      */
     public void clearInvites(long guildId) {
-        getInvites(guildId).thenAccept(x -> x.forEach(this::deleteEntity));
+        getInvites(guildId).forEach(this::deleteEntity);
     }
 
     //endregion
@@ -1740,8 +1746,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<String>} as list with every blacklisted Word.
      */
-    public CompletableFuture<List<String>> getChatProtectorWords(long guildId) {
-        return getEntityList(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid", Map.of("gid", guildId)).thenApply(x -> x.stream().map(Blacklist::getWord).toList());
+    public List<String> getChatProtectorWords(long guildId) {
+        return getEntityList(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid", Map.of("gid", guildId)).stream().map(Blacklist::getWord).toList();
     }
 
     /**
@@ -1750,8 +1756,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result. If true, there is an entry in our Database | If false, there is no entry in our Database.
      */
-    public CompletableFuture<Boolean> isChatProtectorSetup(long guildId) {
-        return getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isChatProtectorSetup(long guildId) {
+        return getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -1761,41 +1767,41 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param word    the Word that should be checked.
      * @return {@link Boolean} as result. If true, there is an entry in our Database | If false, there is no entry in our Database.
      */
-    public CompletableFuture<Boolean> isChatProtectorSetup(long guildId, String word) {
-        return getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid AND guildAndName.name = :word", Map.of("gid", guildId, "word", word)).thenApply(Objects::nonNull);
+    public boolean isChatProtectorSetup(long guildId, String word) {
+        return getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid AND guildAndName.name = :word", Map.of("gid", guildId, "word", word)) != null;
     }
 
     /**
-     * Add a new Word to the blacklist for the given Guild.
+     * Add a new Word to the blocklist for the given Guild.
      *
      * @param guildId the ID of the Guild.
      * @param word    the Word to be blocked.
      */
     public void addChatProtectorWord(long guildId, String word) {
-        isChatProtectorSetup(guildId, word).thenAccept(isSetup -> {
-            // Check if there is already an entry for it.
-            if (isSetup) return;
 
-            // If not, then just add it.
-            updateEntity(new Blacklist(guildId, word));
-        });
+        // Check if there is already an entry for it.
+        if (isChatProtectorSetup(guildId, word)) return;
+
+        // If not then just add it.
+        updateEntity(new Blacklist(guildId, word));
     }
 
     /**
-     * Remove a Word from the blacklist for the given Guild.
+     * Remove a Word from the blocklist for the given Guild.
      *
      * @param guildId the ID of the Guild.
      * @param word    the Word to be removed.
      */
     public void removeChatProtectorWord(long guildId, String word) {
-        getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid AND guildAndName.name = :word",
-                Map.of("gid", guildId, "word", word)).thenAccept(blacklist -> {
-            // Check if there is no entry for it.
-            if (blacklist == null) return;
+        Blacklist blacklist =
+                getEntity(new Blacklist(), "FROM Blacklist WHERE guildAndName.guildId = :gid AND guildAndName.name = :word",
+                        Map.of("gid", guildId, "word", word));
 
-            // If so, then delete it.
-            deleteEntity(blacklist);
-        });
+        // Check if there is no entry for it.
+        if (blacklist == null) return;
+
+        // If so then delete it.
+        deleteEntity(blacklist);
     }
 
     //endregion
@@ -1809,38 +1815,39 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param settingName the Identifier of the Setting.
      * @return {@link Setting} which stores every information needed.
      */
-    public CompletableFuture<Setting> getSetting(long guildId, String settingName) {
-        return getEntity(new Setting(), "FROM Setting WHERE settingId.guildId = :gid AND settingId.name = :name",
-                Map.of("gid", guildId, "name", settingName)).thenApply(setting -> {
-            // Check if there is an entry in the database.
-            if (setting != null) {
-                if (setting.getDisplayName() == null) {
-                    Setting defaultSetting = SettingsManager.getDefault(settingName);
+    public Setting getSetting(long guildId, String settingName) {
+        Setting setting =
+                getEntity(new Setting(), "FROM Setting WHERE settingId.guildId = :gid AND settingId.name = :name",
+                        Map.of("gid", guildId, "name", settingName));
 
-                    if (defaultSetting == null) {
-                        log.info("Missing default for " + settingName + " in SettingsManager.");
-                    } else {
-                        setting.setDisplayName(defaultSetting.getDisplayName());
-                        updateEntity(setting);
-                    }
-                }
-
-                return setting;
-            } else {
+        // Check if there is an entry in the database.
+        if (setting != null) {
+            if (setting.getDisplayName() == null) {
                 Setting defaultSetting = SettingsManager.getDefault(settingName);
 
                 if (defaultSetting == null) {
                     log.info("Missing default for " + settingName + " in SettingsManager.");
-                    return null;
+                } else {
+                    setting.setDisplayName(defaultSetting.getDisplayName());
+                    updateEntity(setting);
                 }
-
-                // Check if everything is alright with the config.
-                checkSetting(guildId, settingName);
-
-                defaultSetting.getSettingId().setGuildId(guildId);
-                return defaultSetting;
             }
-        });
+
+            return setting;
+        } else {
+            Setting defaultSetting = SettingsManager.getDefault(settingName);
+
+            if (defaultSetting == null) {
+                log.info("Missing default for " + settingName + " in SettingsManager.");
+                return null;
+            }
+
+            // Check if everything is alright with the config.
+            checkSetting(guildId, settingName);
+
+            defaultSetting.getSettingId().setGuildId(guildId);
+            return defaultSetting;
+        }
     }
 
     /**
@@ -1849,7 +1856,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link List<Setting>} which is a List with every Setting that stores every information needed.
      */
-    public CompletableFuture<List<Setting>> getAllSettings(long guildId) {
+    public List<Setting> getAllSettings(long guildId) {
         return getEntityList(new Setting(), "FROM Setting WHERE settingId.guildId = :gid", Map.of("gid", guildId));
     }
 
@@ -1877,15 +1884,16 @@ public record SQLWorker(SQLConnector sqlConnector) {
             setting.setDisplayName(defaultDisplayName);
         }
 
-        getEntity(new Setting(), "FROM Setting WHERE settingId.guildId = :gid AND settingId.name = :name",
-                Map.of("gid", setting.getGuildId(), "name", setting.getName())).thenAccept(databaseSetting -> {
-            if (databaseSetting != null) {
-                databaseSetting.setValue(setting.getValue());
-                updateEntity(databaseSetting);
-            } else {
-                updateEntity(setting);
-            }
-        });
+        Setting databaseSetting =
+                getEntity(new Setting(), "FROM Setting WHERE settingId.guildId = :gid AND settingId.name = :name",
+                        Map.of("gid", setting.getGuildId(), "name", setting.getName()));
+
+        if (databaseSetting != null) {
+            databaseSetting.setValue(setting.getValue());
+            updateEntity(databaseSetting);
+        } else {
+            updateEntity(setting);
+        }
     }
 
     /**
@@ -1906,7 +1914,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param setting the Setting itself.
      * @return {@link Boolean} as result. If true, there is a Setting Entry for the Guild | if false, there is no Entry for it.
      */
-    public CompletableFuture<Boolean> hasSetting(long guildId, Setting setting) {
+    public boolean hasSetting(long guildId, Setting setting) {
         return hasSetting(guildId, setting.getName());
     }
 
@@ -1917,8 +1925,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param settingName the Identifier of the Setting.
      * @return {@link Boolean} as result. If true, there is a Setting Entry for the Guild | if false, there is no Entry for it.
      */
-    public CompletableFuture<Boolean> hasSetting(long guildId, String settingName) {
-        return getEntity(new Setting(), "FROM Setting WHERE settingId.guildId =:gid AND settingId.name =:name", Map.of("gid", guildId, "name", settingName)).thenApply(Objects::nonNull);
+    public boolean hasSetting(long guildId, String settingName) {
+        return getEntity(new Setting(), "FROM Setting WHERE settingId.guildId =:gid AND settingId.name =:name", Map.of("gid", guildId, "name", settingName)) != null;
     }
 
     /**
@@ -1939,12 +1947,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void checkSetting(long guildId, String settingName) {
         // Check if the Setting exists in our Database.
-        hasSetting(guildId, settingName).thenAccept(hasSetting -> {
+        if (!hasSetting(guildId, settingName)) {
             // If not then creat every Setting that doesn't exist for the Guild.
-            if (!hasSetting) {
-                createSettings(guildId);
-            }
-        });
+            createSettings(guildId);
+        }
     }
 
     /**
@@ -1954,12 +1960,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void createSettings(long guildId) {
         SettingsManager.getSettings().forEach(setting -> {
-            hasSetting(guildId, setting).thenAccept(hasSetting -> {
-                // If not, then create every Setting that doesn't exist for the Guild.
-                if (!hasSetting) {
-                    setSetting(guildId, setting.getName(), setting.getDisplayName(), setting.getValue());
-                }
-            });
+            if (!hasSetting(guildId, setting)) {
+                setSetting(guildId, setting.getName(), setting.getDisplayName(), setting.getValue());
+            }
         });
     }
 
@@ -1980,7 +1983,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @return the Statistics.
      */
-    public CompletableFuture<Statistics> getStatisticsOfToday() {
+    public Statistics getStatisticsOfToday() {
         LocalDate today = LocalDate.now();
         return getStatistics(today.getDayOfMonth(), today.getMonthValue(), today.getYear());
     }
@@ -1993,7 +1996,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param year  the year the statics has been taken from.
      * @return the Statistics.
      */
-    public CompletableFuture<Statistics> getStatistics(int day, int month, int year) {
+    public Statistics getStatistics(int day, int month, int year) {
         return getEntity(new Statistics(), "FROM Statistics WHERE day = :day AND month = :month AND year = :year", Map.of("day", day, "month", month, "year", year));
     }
 
@@ -2003,7 +2006,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param month the month you want to receive the Statistics from.
      * @return all {@link Statistics} of the given month.
      */
-    public CompletableFuture<List<Statistics>> getStatisticsOfMonth(int month) {
+    public List<Statistics> getStatisticsOfMonth(int month) {
         return getEntityList(new Statistics(), "FROM Statistics WHERE month = :month", Map.of("month", month));
     }
 
@@ -2014,15 +2017,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void updateStatistic(JsonObject statisticObject) {
         LocalDate today = LocalDate.now();
-        getEntity(new Statistics(), "FROM Statistics WHERE day = :day AND month = :month AND year = :year", Map.of("day", today.getDayOfMonth(), "month", today.getMonthValue(), "year", today.getYear())).thenAccept(statistics -> {
-            if (statistics != null) {
-                statistics.setStatsObject(statisticObject);
-                updateEntity(statistics);
-            } else {
-                statistics = new Statistics(today.getDayOfMonth(), today.getMonthValue(), today.getYear(), statisticObject);
-                updateEntity(statistics);
-            }
-        });
+        Statistics statistics = getEntity(new Statistics(), "FROM Statistics WHERE day = :day AND month = :month AND year = :year", Map.of("day", today.getDayOfMonth(), "month", today.getMonthValue(), "year", today.getYear()));
+        if (statistics != null) {
+            statistics.setStatsObject(statisticObject);
+            updateEntity(statistics);
+        } else {
+            statistics = new Statistics(today.getDayOfMonth(), today.getMonthValue(), today.getYear(), statisticObject);
+            updateEntity(statistics);
+        }
     }
 
     /**
@@ -2031,7 +2033,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param command the Command.
      * @return the Stats of the Command.
      */
-    public CompletableFuture<CommandStats> getStatsCommandGlobal(String command) {
+    public CommandStats getStatsCommandGlobal(String command) {
         return getEntity(new CommandStats(), "FROM CommandStats WHERE command = :command", Map.of("command", command));
     }
 
@@ -2042,7 +2044,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param command the Command.
      * @return the Stats of the Command.
      */
-    public CompletableFuture<GuildCommandStats> getStatsCommand(long guildId, String command) {
+    public GuildCommandStats getStatsCommand(long guildId, String command) {
         return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command));
     }
 
@@ -2052,7 +2054,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return all the Command-Stats related to the given Guild.
      */
-    public CompletableFuture<List<GuildCommandStats>> getStats(long guildId) {
+    public List<GuildCommandStats> getStats(long guildId) {
         return getEntityList(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId=:gid ORDER BY uses DESC", Map.of("gid", guildId), 5);
     }
 
@@ -2061,7 +2063,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @return all the Command-Stats globally.
      */
-    public CompletableFuture<List<CommandStats>> getStatsGlobal() {
+    public List<CommandStats> getStatsGlobal() {
         return getEntityList(new CommandStats(), "FROM CommandStats ORDER BY uses DESC", null, 5);
     }
 
@@ -2071,8 +2073,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public CompletableFuture<Boolean> isStatsSaved(long guildId) {
-        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid ", Map.of("gid", guildId)).thenApply(Objects::nonNull);
+    public boolean isStatsSaved(long guildId) {
+        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid ", Map.of("gid", guildId)) != null;
     }
 
     /**
@@ -2082,8 +2084,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param command the Name of the Command.
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public CompletableFuture<Boolean> isStatsSaved(long guildId, String command) {
-        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command)).thenApply(Objects::nonNull);
+    public boolean isStatsSaved(long guildId, String command) {
+        return getEntity(new GuildCommandStats(), "FROM GuildCommandStats WHERE guildId = :gid AND command = :command", Map.of("gid", guildId, "command", command)) != null;
     }
 
     /**
@@ -2092,8 +2094,8 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param command the Name of the Command.
      * @return {@link Boolean} as result. If true, there is data saved in the Database | If false, there is no data saved.
      */
-    public CompletableFuture<Boolean> isStatsSavedGlobal(String command) {
-        return getEntity(new CommandStats(), "FROM CommandStats WHERE command = :command", Map.of("command", command)).thenApply(Objects::nonNull);
+    public boolean isStatsSavedGlobal(String command) {
+        return getEntity(new CommandStats(), "FROM CommandStats WHERE command = :command", Map.of("command", command)) != null;
     }
 
     /**
@@ -2103,46 +2105,37 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param command the Command.
      */
     public void addStats(long guildId, String command) {
-        getStatisticsOfToday().thenAccept(
-                stats -> {
-                    JsonObject jsonObject = stats != null ? stats.getStatsObject() : new JsonObject();
-                    JsonObject commandStats = stats != null && jsonObject.has("command") ? jsonObject.getAsJsonObject("command") : new JsonObject();
+        Statistics statistics = getStatisticsOfToday();
+        JsonObject jsonObject = statistics != null ? statistics.getStatsObject() : new JsonObject();
+        JsonObject commandStats = statistics != null && jsonObject.has("command") ? jsonObject.getAsJsonObject("command") : new JsonObject();
 
-                    if (commandStats.has(command) && commandStats.get(command).isJsonPrimitive()) {
-                        commandStats.addProperty(command, commandStats.getAsJsonPrimitive(command).getAsInt() + 1);
-                    } else {
-                        commandStats.addProperty(command, 1);
-                    }
+        if (commandStats.has(command) && commandStats.get(command).isJsonPrimitive()) {
+            commandStats.addProperty(command, commandStats.getAsJsonPrimitive(command).getAsInt() + 1);
+        } else {
+            commandStats.addProperty(command, 1);
+        }
 
-                    jsonObject.add("command", commandStats);
+        jsonObject.add("command", commandStats);
 
-                    updateStatistic(jsonObject);
+        sqlConnector.getSqlWorker().updateStatistic(jsonObject);
 
-                    // Check if there is an entry.
-                    isStatsSaved(guildId, command).thenAccept(x -> {
-                        if (x) {
-                            getStatsCommand(guildId, command).thenAccept(y -> {
-                                y.setUses(y.getUses() + 1);
-                                updateEntity(y);
-                            });
-                        } else {
-                            updateEntity(new GuildCommandStats(0, guildId, command, 1));
-                        }
-                    });
+        // Check if there is an entry.
+        if (isStatsSaved(guildId, command)) {
+            GuildCommandStats newGuildStats = getStatsCommand(guildId, command);
+            newGuildStats.setUses(newGuildStats.getUses() + 1);
+            updateEntity(newGuildStats);
+        } else {
+            updateEntity(new GuildCommandStats(0, guildId, command, 1));
+        }
 
-                    // Check if there is an entry.
-                    isStatsSavedGlobal(command).thenAccept(x -> {
-                        if (x) {
-                            getStatsCommandGlobal(command).thenAccept(y -> {
-                                y.setUses(y.getUses() + 1);
-                                updateEntity(y);
-                            });
-                        } else {
-                            updateEntity(new CommandStats(command, 1));
-                        }
-                    });
-                }
-        );
+        // Check if there is an entry.
+        if (isStatsSavedGlobal(command)) {
+            CommandStats stats = getStatsCommandGlobal(command);
+            stats.setUses(stats.getUses() + 1);
+            updateEntity(stats);
+        } else {
+            updateEntity(new CommandStats(command, 1));
+        }
     }
 
     //endregion
