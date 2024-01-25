@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationInfo;
+import org.flywaydb.core.api.MigrationInfoService;
 import org.flywaydb.core.api.output.MigrateResult;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -21,7 +22,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * A "Connector" Class which connect with the used Database Server.
+ * A "Connector" Class which connects with the used Database Server.
  * Used to manage the connection between Server and Client.
  */
 @Slf4j
@@ -106,9 +107,19 @@ public class SQLConnector {
                     .initSql(SQLSession.databaseTyp == DatabaseTyp.SQLite ? "PRAGMA foreign_keys = ON;" : "")
                     .installedBy("Ree6-SQL").load();
 
-            MigrationInfo[] migrationInfo = flyway.info().pending();
+            MigrationInfoService info = flyway.info();
+
+            MigrationInfo[] migrationInfo = info.pending();
 
             if (migrationInfo.length != 0) {
+                MigrationInfo current = info.current();
+
+                if (current != null) {
+                    log.info("Currently at version: " + current.getDescription()  + "(" + current.getVersion() + ")");
+                } else {
+                    log.info("Currently at version: 0");
+                }
+
                 log.info("Found " + migrationInfo.length + " pending migrations.");
                 log.info("The pending migrations are: " + String.join(", ",
                         Arrays.stream(migrationInfo).map(MigrationInfo::getDescription).toArray(String[]::new)));

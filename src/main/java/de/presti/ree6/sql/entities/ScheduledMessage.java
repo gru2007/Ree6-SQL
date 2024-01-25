@@ -1,6 +1,7 @@
 package de.presti.ree6.sql.entities;
 
 import de.presti.ree6.sql.entities.webhook.WebhookScheduledMessage;
+import de.presti.ree6.sql.keys.GuildAndId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,17 +21,10 @@ import java.sql.Timestamp;
 public class ScheduledMessage {
 
     /**
-     * The ID of the entity.
+     * Key of the Entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long Id;
-
-    /**
-     * The ID of the Guild.
-     */
-    @Column(name = "guild")
-    long guildId;
+    @EmbeddedId
+    GuildAndId guildAndId;
 
     /**
      * Special message content.
@@ -55,8 +49,8 @@ public class ScheduledMessage {
      */
     @ManyToOne(optional = false)
     @JoinColumns(value = {
-            @JoinColumn(name="webhook_id", referencedColumnName="id"),
-            @JoinColumn(name="webhook_guildId", referencedColumnName="guildId")
+            @JoinColumn(name = "webhook_id", referencedColumnName = "id"),
+            @JoinColumn(name = "webhook_guildId", referencedColumnName = "guildId")
     }, foreignKey = @ForeignKey(name = "fk_scheduled_message_webhook"))
     private WebhookScheduledMessage scheduledMessageWebhook;
 
@@ -82,4 +76,46 @@ public class ScheduledMessage {
     @Setter(AccessLevel.PRIVATE)
     @Temporal(TemporalType.TIMESTAMP)
     Timestamp created;
+
+    /**
+     * Set the GuildID.
+     *
+     * @param guildId The GuildID.
+     */
+    public void setGuildId(long guildId) {
+        if (guildAndId == null) guildAndId = new GuildAndId(guildId);
+        guildAndId.setGuildId(guildId);
+    }
+
+    /**
+     * Set the ID.
+     *
+     * @param id The ID.
+     */
+    public void setId(long id) {
+        if (guildAndId == null) guildAndId = new GuildAndId(0);
+        guildAndId.setId(id);
+    }
+
+    /**
+     * Get the GuildID.
+     *
+     * @return {@link long} as GuildID.
+     */
+    public long getGuild() {
+        if (guildAndId == null)
+            return 0;
+
+        return guildAndId.getGuildId();
+    }
+
+    /**
+     * Get the ID.
+     *
+     * @return the ID.
+     */
+    public long getId() {
+        if (guildAndId == null) return -1;
+        return guildAndId.getId();
+    }
 }

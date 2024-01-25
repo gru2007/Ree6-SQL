@@ -2,6 +2,7 @@ package de.presti.ree6.sql.entities;
 
 import com.google.gson.JsonElement;
 import de.presti.ree6.sql.converter.JsonAttributeConverter;
+import de.presti.ree6.sql.keys.GuildAndName;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,23 +14,10 @@ import lombok.Setter;
 public class StreamAction {
 
     /**
-     * The ID of the entity.
+     * The Key of the Entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-
-    /**
-     * The ID of the Guild.
-     */
-    @Column(name = "guildId")
-    long guildId;
-
-    /**
-     * The name of the action.
-     */
-    @Column(name = "actionName")
-    String actionName;
+    @EmbeddedId
+    GuildAndName guildAndName;
 
     /**
      * The related Twitch Auth.
@@ -56,4 +44,44 @@ public class StreamAction {
     @Column(name = "actions")
     @Convert(converter = JsonAttributeConverter.class)
     JsonElement actions;
+
+    /**
+     * Set the GuildID.
+     * @param guildId The GuildID.
+     */
+    public void setGuildId(long guildId) {
+        if (guildAndName == null) guildAndName = new GuildAndName();
+        guildAndName.setGuildId(guildId);
+    }
+
+    /**
+     * Set the Name.
+     * @param name The Name.
+     */
+    public void setName(String name) {
+        if (guildAndName == null) guildAndName = new GuildAndName();
+        guildAndName.setName(name);
+    }
+
+    /**
+     * Get the GuildID.
+     *
+     * @return {@link long} as GuildID.
+     */
+    public long getGuild() {
+        if (guildAndName == null)
+            return 0;
+
+        return guildAndName.getGuildId();
+    }
+
+    /**
+     * Get the Name.
+     *
+     * @return the Name.
+     */
+    public String getName() {
+        if (guildAndName == null) return null;
+        return guildAndName.getName();
+    }
 }

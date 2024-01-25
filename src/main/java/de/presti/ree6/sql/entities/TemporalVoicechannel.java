@@ -36,4 +36,22 @@ public class TemporalVoicechannel {
     public TemporalVoicechannel(long guildId, long voiceChannelId) {
         this.guildChannelId = new GuildChannelId(guildId, voiceChannelId);
     }
+
+    /**
+     * Get the GuildID of the TemporalVoicechannel.
+     * @return the GuildID of the TemporalVoicechannel.
+     */
+    public long getGuildId() {
+        if (getGuildChannelId() == null) return -1;
+        return guildChannelId.getGuildId();
+    }
+
+    /**
+     * Get the VoiceChannelID of the TemporalVoicechannel.
+     * @return the VoiceChannelID of the TemporalVoicechannel.
+     */
+    public long getVoiceChannelId() {
+        if (getGuildChannelId() == null) return -1;
+        return guildChannelId.getChannelId();
+    }
 }

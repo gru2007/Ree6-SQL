@@ -147,7 +147,8 @@ public class SQLSession {
             if (databaseTyp == DatabaseTyp.H2) {
                 try {
                     embeddedDatabaseServer = new H2DatabaseServer();
-                    embeddedDatabaseServer.createServer();
+                    embeddedDatabaseServer.createServer(config.getPort(), config.getPassword(), config.getPath());
+                    databaseTyp = DatabaseTyp.H2_Server;
                 } catch (Exception exception) {
                     log.error("Couldn't start embedded H2 Database!", exception);
                 }
@@ -246,7 +247,17 @@ public class SQLSession {
                     databaseServerPort,
                     databaseName);
 
-            case H2_Server -> jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databaseServerIP, databasePath);
+            case H2_Server -> {
+                if (!databasePath.startsWith(".") && !databasePath.startsWith("/") && !databasePath.startsWith("~")) {
+                    databasePath = "./" + databasePath;
+                }
+
+                if (databasePath.endsWith(".db")) {
+                    databasePath = databasePath.replace(".db", "");
+                }
+
+                jdbcUrl = getDatabaseTyp().getJdbcURL().formatted(databaseServerIP, databaseServerPort, databasePath);
+            }
 
             case H2 -> {
                 if (!databasePath.startsWith(".") && !databasePath.startsWith("/") && !databasePath.startsWith("~")) {

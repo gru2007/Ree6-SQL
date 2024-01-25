@@ -35,4 +35,40 @@ public class Suggestions {
     public Suggestions(long guildId, long channelId) {
         this.guildChannelId = new GuildChannelId(guildId, channelId);
     }
+
+    /**
+     * Set the GuildID.
+     * @param guildId The GuildID.
+     */
+    public void setGuildId(long guildId) {
+        if (guildChannelId == null) guildChannelId = new GuildChannelId(guildId, 0L);
+        guildChannelId.setGuildId(guildId);
+    }
+
+    /**
+     * Set the ChannelID.
+     * @param channelId The ChannelID.
+     */
+    public void setChannelId(long channelId) {
+        if (guildChannelId == null) guildChannelId = new GuildChannelId(0L, channelId);
+        guildChannelId.setChannelId(channelId);
+    }
+
+    /**
+     * Get the GuildID.
+     * @return The GuildID.
+     */
+    public long getGuildId() {
+        if (guildChannelId == null) return -1;
+        return guildChannelId.getGuildId();
+    }
+
+    /**
+     * Get the ChannelID.
+     * @return The ChannelID.
+     */
+    public long getChannelId() {
+        if (guildChannelId == null) return -1;
+        return guildChannelId.getChannelId();
+    }
 }

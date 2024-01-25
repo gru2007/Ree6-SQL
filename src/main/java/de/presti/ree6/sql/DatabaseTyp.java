@@ -28,12 +28,12 @@ public enum DatabaseTyp {
     /**
      * H2 Database Information.
      */
-    H2("jdbc:h2:%s;MODE=MySQL;NON_KEYWORDS=VALUE,DAY,MONTH,YEAR;", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false),
+    H2("jdbc:h2:%s;NON_KEYWORDS=VALUE,DAY,MONTH,YEAR;", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false),
 
     /**
      * H2 Server Database Information.
      */
-    H2_Server("jdbc:h2:tcp://%s/%s", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false);
+    H2_Server("jdbc:h2:tcp://%s:%s/%s", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false);
 
     /**
      * The JDBC Connection URL used by HikariCP and Hibernate.

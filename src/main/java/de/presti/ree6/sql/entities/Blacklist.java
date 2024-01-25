@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities;
 
+import de.presti.ree6.sql.keys.GuildAndName;
 import jakarta.persistence.*;
 
 /**
@@ -10,24 +11,10 @@ import jakarta.persistence.*;
 public class Blacklist {
 
     /**
-     * The PrimaryKey of the Entity.
+     * The ID of the Entity.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
-    /**
-     * The ID of the Guild.
-     */
-    @Column(name = "guildId")
-    private long guildId;
-
-    /**
-     * The blacklisted word.
-     */
-    @Column(name = "word")
-    private String word;
+    @EmbeddedId
+    private GuildAndName guildAndName;
 
     /**
      * Constructor.
@@ -42,8 +29,7 @@ public class Blacklist {
      * @param word    the blacklisted word.
      */
     public Blacklist(long guildId, String word) {
-        this.guildId = guildId;
-        this.word = word;
+        guildAndName = new GuildAndName(guildId, word);
     }
 
     /**
@@ -52,7 +38,10 @@ public class Blacklist {
      * @return {@link String} as GuildID.
      */
     public long getGuildId() {
-        return guildId;
+        if (guildAndName == null)
+            return 0;
+
+        return guildAndName.getGuildId();
     }
 
     /**
@@ -61,7 +50,7 @@ public class Blacklist {
      * @return {@link String} as blacklisted word.
      */
     public String getWord() {
-        return word;
+        return guildAndName.getName();
     }
 
     /**

@@ -1,7 +1,7 @@
 package de.presti.ree6.sql.entities;
 
 
-import de.presti.ree6.sql.keys.SettingId;
+import de.presti.ree6.sql.keys.GuildAndName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,8 +10,6 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.sql.Types;
-
-// TODO:: add a display name.
 
 /**
  * File to store Settings information.
@@ -28,7 +26,7 @@ public class Setting {
      * The Keys related to the Settings.
      */
     @EmbeddedId
-    private SettingId settingId;
+    private GuildAndName settingId;
 
     /**
      * The Display Name of the Setting.
@@ -52,7 +50,7 @@ public class Setting {
      * @param value       the Value of the Setting.
      */
     public Setting(long guildId, String name, String displayName, Object value) {
-        if (settingId == null) this.settingId = new SettingId(guildId, name);
+        if (settingId == null) this.settingId = new GuildAndName(guildId, name);
         this.displayName = displayName;
         this.value = String.valueOf(value);
     }
@@ -89,6 +87,24 @@ public class Setting {
             return booleanValue + "";
         }
         return "";
+    }
+
+    /**
+     * Set the ID of the Guild.
+     * @param guildId ID of the Guild as {@link Long}
+     */
+    public void setGuildId(long guildId) {
+        if (getSettingId() == null) this.settingId = new GuildAndName();
+        else this.settingId.setGuildId(guildId);
+    }
+
+    /**
+     * Set the Name of the Setting.
+     * @param name Name of the Setting as {@link String}
+     */
+    public void setName(String name) {
+        if (getSettingId() == null) this.settingId = new GuildAndName();
+        else this.settingId.setName(name);
     }
 
     /**

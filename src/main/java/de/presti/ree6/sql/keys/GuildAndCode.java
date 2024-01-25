@@ -18,7 +18,7 @@ import java.util.Objects;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class SettingId implements Serializable {
+public class GuildAndCode implements Serializable {
 
     /**
      * The Discord Guild ID.
@@ -27,15 +27,15 @@ public class SettingId implements Serializable {
     private long guildId;
 
     /**
-     * The Name / Identifier of the Setting.
+     * The code of the Entity.
      */
-    @Column(name = "name")
-    private String name;
+    @Column(name = "code")
+    private String code;
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof SettingId settingId) {
-            return settingId.getGuildId() == guildId && settingId.getName().equals(name);
+        if (obj instanceof GuildAndCode settingId) {
+            return settingId.getGuildId() == guildId && settingId.getCode().equals(code);
         }
 
         return false;
@@ -43,6 +43,6 @@ public class SettingId implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(guildId, name);
+        return Objects.hash(guildId, code);
     }
 }
