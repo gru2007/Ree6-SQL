@@ -1963,6 +1963,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //endregion
 
+    //region BanServ
+
+    public List<Setting> getBanFollowers(String guildId) {
+        return getEntityList(new Setting(), "FROM Setting WHERE value = :gid AND name = :name", Map.of("gid", guildId, "name", "configuration_ban_server"));
+    }
+
     //endregion
 
     //region Stats

@@ -28,11 +28,12 @@ public class SettingsManager {
         settings.clear();
         // TODO:: create an structure. (configuration_,logging_,message_)
         settings.addAll(List.of(
-                new Setting(-1, "chatprefix", "Prefix", "ree!"),
+                new Setting(-1, "chatprefix", "Prefix", "s!"),
                 new Setting(-1, "level_message", "Send Levelup Message", false),
                 new Setting(-1, "configuration_news", "Receive News", true),
                 new Setting(-1, "configuration_moder_records", "Moder download records", false),
-                new Setting(-1, "configuration_language", "Language", "en-GB"),
+                new Setting(-1, "configuration_language", "Language", "ru"),
+                new Setting(-1, "data_last_report", "Last Report", "1"),
                 new Setting(-1, "message_join", "Welcome Message", "Welcome %user_mention%!\nWe wish you a great stay on %guild_name%"),
                 new Setting(-1, "message_rules_1", "Глава 1", "**1)** Ваш ник должен соответствовать определенной форме:\n"
                         +        "**Для клонов** Отряд/Звание/Номер/Позывной - **Пример:** 91 SSG 4986 Apache | 91 PVT 3545 (__Позывной необязателен, если у вас его нету__).\n"
