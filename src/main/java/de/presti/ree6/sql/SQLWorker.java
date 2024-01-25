@@ -32,10 +32,8 @@ import javax.annotation.Nonnull;
 import java.sql.SQLNonTransientConnectionException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -217,7 +215,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      * @return {@link Webhook} with all the needed data.
      */
-    public CompletableFuture<WebhookMod> getModWebhook(long guildId) {
+    public WebhookMod getModWebhook(long guildId) {
         return getEntity(new WebhookMod(), "FROM WebhookMod WHERE guildId=:gid", Map.of("gid", guildId));
     }
 
@@ -252,18 +250,17 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken the Auth-token to verify the access.
      */
     public void setModWebhook(long guildId, long channelId, String webhookId, String authToken) {
-        getModWebhook(guildId).thenAccept(webhookMod -> {
-            if (webhookMod == null) {
-                webhookMod = new WebhookMod();
-                webhookMod.setGuildId(guildId);
-            }
+        WebhookMod webhookLog = getModWebhook(guildId);
+        if (webhookLog == null) {
+            webhookLog = new WebhookMod();
+            webhookLog.setGuildId(guildId);
+        }
 
-            webhookMod.setChannelId(channelId);
-            webhookMod.setWebhookId(guildId);
-            webhookMod.setToken(authToken);
+        webhookLog.setChannelId(channelId);
+        webhookLog.setWebhookId(guildId);
+        webhookLog.setToken(authToken);
 
-            updateEntity(webhookMod);
-        });
+        updateEntity(webhookLog);
     }
 
     /**
@@ -330,11 +327,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken the Auth-Token of the Webhook.
      */
     public void deleteModWebhook(long webhookId, String authToken) {
-        getEntity(new WebhookMod(), "FROM WebhookMod WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken)).thenAccept(WebhookMod -> {
-            if (WebhookMod != null) {
-                deleteEntity(WebhookMod);
-            }
-        });
+        WebhookMod webhookLog =
+                getEntity(new WebhookMod(), "FROM WebhookMod WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken));
+
+        if (webhookLog != null) {
+            deleteEntity(webhookLog);
+        }
     }
 
     //endregion
@@ -1605,15 +1603,15 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //region Recordings
 
-    public CompletableFuture<Map<String, Long>> getRecordings(String guildId) {
-        return getEntityList(new Recording(), "FROM Recording WHERE guildId=:gid", Map.of("gid", guildId)).thenApply(x -> {
-            // Create a new HashMap to save the Role Ids and their needed level.
-            Map<String, Long> records = new HashMap<>();
+    public Map<String, String> getRecordings(String guildId) {
 
-            x.forEach(Recording -> records.put(Recording.getIdentifier(), Recording.getGuildId()));
+        // Create a new HashMap to save the Role Ids and their needed level.
+        Map<String, String> records = new HashMap<>();
 
-            return records;
-        });
+        getEntityList(new Recording(), "FROM Recording WHERE guildId=:gid", Map.of("gid", guildId)).forEach(Recording -> records.put(Recording.getIdentifier(), Recording.getGuildId()));
+
+        // Return the HashMap.
+        return records;
     }
 
 
@@ -1972,7 +1970,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //region BanServ
 
-    public CompletableFuture<List<Setting>> getBanFollowers(String guildId) {
+    public List<Setting> getBanFollowers(String guildId) {
         return getEntityList(new Setting(), "FROM Setting WHERE value = :gid AND name = :name", Map.of("gid", guildId, "name", "configuration_ban_server"));
     }
 
