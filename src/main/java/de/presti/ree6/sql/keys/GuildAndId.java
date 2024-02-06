@@ -23,7 +23,6 @@ public class GuildAndId implements Serializable {
     /**
      * Unique ID of the Webhook.
      */
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
