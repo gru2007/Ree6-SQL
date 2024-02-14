@@ -2188,12 +2188,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (clazz.isAnnotationPresent(Table.class)) {
                 Table table = clazz.getAnnotation(Table.class);
                 try {
-                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GID=?", guildId);
+                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GID=?", true, guildId);
                 } catch (Exception ignore) {
                 }
 
                 try {
-                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GUILDID=?", guildId);
+                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GUILDID=?", true, guildId);
                 } catch (Exception ignore) {
                 }
             }

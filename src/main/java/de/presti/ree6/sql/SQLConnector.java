@@ -115,7 +115,7 @@ public class SQLConnector {
                 MigrationInfo current = info.current();
 
                 if (current != null) {
-                    log.info("Currently at version: " + current.getDescription()  + "(" + current.getVersion() + ")");
+                    log.info("Currently at version: " + current.getDescription() + "(" + current.getVersion() + ")");
                 } else {
                     log.info("Currently at version: 0");
                 }
@@ -151,18 +151,31 @@ public class SQLConnector {
      * @return Either a {@link Integer} or the result object of the ResultSet.
      */
     public Object querySQL(String sqlQuery, Object... parameters) {
-        return querySQL(sqlQuery, !sqlQuery.startsWith("SELECT"), parameters);
+        return querySQL(sqlQuery, false, parameters);
     }
 
     /**
      * Query basic SQL Statements, without using the ORM-System.
      *
-     * @param sqlQuery   The SQL Query.
-     * @param update     If a executeUpdate should be used.
-     * @param parameters The Parameters for the Query.
+     * @param sqlQuery    The SQL Query.
+     * @param ignoreError If errors should not be printed into the console.
+     * @param parameters  The Parameters for the Query.
      * @return Either a {@link Integer} or the result object of the ResultSet.
      */
-    public Object querySQL(String sqlQuery, boolean update, Object... parameters) {
+    public Object querySQL(String sqlQuery, boolean ignoreError, Object... parameters) {
+        return querySQL(sqlQuery, !sqlQuery.startsWith("SELECT"), ignoreError, parameters);
+    }
+
+    /**
+     * Query basic SQL Statements, without using the ORM-System.
+     *
+     * @param sqlQuery    The SQL Query.
+     * @param update      If a executeUpdate should be used.
+     * @param ignoreError If errors should not be printed into the console.
+     * @param parameters  The Parameters for the Query.
+     * @return Either a {@link Integer} or the result object of the ResultSet.
+     */
+    public Object querySQL(String sqlQuery, boolean update, boolean ignoreError, Object... parameters) {
         if (!isConnected()) {
             if (connectedOnce()) {
                 connectToSQLServer();
@@ -196,8 +209,10 @@ public class SQLConnector {
                 }
             }
         } catch (Exception exception) {
-            Sentry.captureException(exception);
-            log.error("Failed to send SQL-Query: " + sqlQuery, exception);
+            if (!ignoreError) {
+                Sentry.captureException(exception);
+                log.error("Failed to send SQL-Query: " + sqlQuery, exception);
+            }
         }
 
         return null;
