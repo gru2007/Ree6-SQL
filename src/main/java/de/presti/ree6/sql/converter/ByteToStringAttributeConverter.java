@@ -5,9 +5,9 @@ import jakarta.persistence.AttributeConverter;
 import java.util.Base64;
 
 /**
- * A AttributeConverter to allow us the usage of byte arrays in entities.
+ * An AttributeConverter to allow us the usage of byte arrays in entities.
  */
-public class ByteAttributeConverter implements AttributeConverter<byte[], String> {
+public class ByteToStringAttributeConverter implements AttributeConverter<byte[], String> {
 
     /**
      * @inheritDoc

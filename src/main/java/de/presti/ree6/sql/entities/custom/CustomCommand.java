@@ -1,7 +1,7 @@
 package de.presti.ree6.sql.entities.custom;
 
 import com.google.gson.JsonElement;
-import de.presti.ree6.sql.converter.JsonAttributeConverter;
+import de.presti.ree6.sql.converter.JsonToBlobAttributeConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -53,7 +53,7 @@ public class CustomCommand {
     /**
      * The response of the command.
      */
-    @Convert(converter = JsonAttributeConverter.class)
+    @Convert(converter = JsonToBlobAttributeConverter.class)
     @Column(name = "responseEmbed")
     private JsonElement embedResponse;
 }

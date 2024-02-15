@@ -1,6 +1,8 @@
 package de.presti.ree6.sql.converter;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import jakarta.persistence.AttributeConverter;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -10,20 +12,20 @@ import java.sql.Blob;
 import java.sql.SQLException;
 
 /**
- * A AttributeConverter to allow us the usage of JsonElements in entities.
+ * An AttributeConverter to allow us the usage of {@link T} in entities.
  */
-public class JsonAttributeConverter implements AttributeConverter<JsonElement, Blob> {
+public class ObjectToBlobAttributeConverter<T> implements AttributeConverter<T, Blob> {
 
     /**
      * Instance of GSON.
      */
-    public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     /**
      * @inheritDoc
      */
     @Override
-    public Blob convertToDatabaseColumn(JsonElement attribute) {
+    public Blob convertToDatabaseColumn(T attribute) {
         try {
             return new SerialBlob(gson.toJson(attribute).getBytes());
         } catch (SQLException e) {
@@ -35,9 +37,9 @@ public class JsonAttributeConverter implements AttributeConverter<JsonElement, B
      * @inheritDoc
      */
     @Override
-    public JsonElement convertToEntityAttribute(Blob dbData) {
+    public T convertToEntityAttribute(Blob dbData) {
         if (dbData == null)
-            return JsonNull.INSTANCE;
+            return null;
 
         StringBuilder content = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(dbData.getBinaryStream()))) {
@@ -48,9 +50,9 @@ public class JsonAttributeConverter implements AttributeConverter<JsonElement, B
         } catch (Exception ignore) {
         }
 
-        if (content.isEmpty())
-            return JsonNull.INSTANCE;
+        if (content.length() == 0)
+            return null;
 
-        return JsonParser.parseString(content.toString());
+        return gson.fromJson(content.toString(),new TypeToken<T>(){}.getType());
     }
 }

@@ -2,7 +2,7 @@ package de.presti.ree6.sql.entities.stats;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import de.presti.ree6.sql.converter.JsonAttributeConverter;
+import de.presti.ree6.sql.converter.JsonToBlobAttributeConverter;
 import jakarta.persistence.*;
 
 /**
@@ -41,7 +41,7 @@ public class Statistics {
     /**
      * The {@link JsonObject} with statistics.
      */
-    @Convert(converter = JsonAttributeConverter.class)
+    @Convert(converter = JsonToBlobAttributeConverter.class)
     @Column(name = "stats")
     JsonElement statsObject;
 
