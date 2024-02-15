@@ -146,17 +146,6 @@ public class SQLConnector {
     /**
      * Query basic SQL Statements, without using the ORM-System.
      *
-     * @param sqlQuery   The SQL Query.
-     * @param parameters The Parameters for the Query.
-     * @return Either a {@link Integer} or the result object of the ResultSet.
-     */
-    public Object querySQL(String sqlQuery, Object... parameters) {
-        return querySQL(sqlQuery, false, parameters);
-    }
-
-    /**
-     * Query basic SQL Statements, without using the ORM-System.
-     *
      * @param sqlQuery    The SQL Query.
      * @param ignoreError If errors should not be printed into the console.
      * @param parameters  The Parameters for the Query.
