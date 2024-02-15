@@ -2,15 +2,11 @@ package de.presti.ree6.sql.entities;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import de.presti.ree6.sql.converter.ByteAttributeConverter;
-import de.presti.ree6.sql.converter.JsonAttributeConverter;
+import de.presti.ree6.sql.converter.ByteToBlobAttributeConverter;
+import de.presti.ree6.sql.converter.JsonToBlobAttributeConverter;
 import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 
 import java.security.SecureRandom;
-import java.sql.Types;
 import java.util.Base64;
 
 /**
@@ -48,15 +44,14 @@ public class Recording {
     /**
      * The WAV-File bytes.
      */
-    @JdbcTypeCode(value = Types.LONGNVARCHAR)
-    @Convert(converter = ByteAttributeConverter.class)
+    @Convert(converter = ByteToBlobAttributeConverter.class)
     @Column(name = "recording")
     byte[] recording;
 
     /**
      * An JsonArray containing the IDs of the Users who have participated in the Recording.
      */
-    @Convert(converter = JsonAttributeConverter.class)
+    @Convert(converter = JsonToBlobAttributeConverter.class)
     @Column(name = "participants")
     JsonElement jsonArray;
 
