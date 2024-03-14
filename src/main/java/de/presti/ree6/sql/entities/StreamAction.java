@@ -1,7 +1,7 @@
 package de.presti.ree6.sql.entities;
 
 import com.google.gson.JsonElement;
-import de.presti.ree6.sql.converter.JsonAttributeConverter;
+import de.presti.ree6.sql.converter.JsonToBlobAttributeConverter;
 import de.presti.ree6.sql.keys.GuildAndName;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -42,7 +42,7 @@ public class StreamAction {
      * The Actions that are to be executed.
      */
     @Column(name = "actions")
-    @Convert(converter = JsonAttributeConverter.class)
+    @Convert(converter = JsonToBlobAttributeConverter.class)
     JsonElement actions;
 
     /**

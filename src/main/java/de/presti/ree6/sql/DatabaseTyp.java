@@ -13,27 +13,29 @@ public enum DatabaseTyp {
     /**
      * The MariaDB Database Information.
      */
-    MariaDB("jdbc:mariadb://%s:%s/%s", "org.hibernate.dialect.MariaDBDialect", "org.mariadb.jdbc.Driver",true),
+    MariaDB("jdbc:mariadb://%s:%s/%s", "org.hibernate.dialect.MariaDBDialect", "org.mariadb.jdbc.Driver",
+            "org.flywaydb.database.mysql.MySQLConnection", true),
 
     /**
      * The SQLite Database Information.
      */
-    SQLite("jdbc:sqlite:%s", "org.hibernate.community.dialect.SQLiteDialect", "org.sqlite.JDBC", false),
+    SQLite("jdbc:sqlite:%s", "org.hibernate.community.dialect.SQLiteDialect", "org.sqlite.JDBC", "", false),
 
     /**
      * The PostgreSQL Database Information.
      */
-    PostgreSQL("jdbc:postgresql://%s:%s/%s", "org.hibernate.dialect.PostgreSQLDialect", "org.postgresql.Driver",true),
+    PostgreSQL("jdbc:postgresql://%s:%s/%s", "org.hibernate.dialect.PostgreSQLDialect", "org.postgresql.Driver",
+            "org.flywaydb.database.postgresql.PostgreSQLConnection", true),
 
     /**
      * H2 Database Information.
      */
-    H2("jdbc:h2:%s;NON_KEYWORDS=VALUE,DAY,MONTH,YEAR;", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false),
+    H2("jdbc:h2:%s;NON_KEYWORDS=VALUE,DAY,MONTH,YEAR;", "org.hibernate.dialect.H2Dialect", "org.h2.Driver", "",false),
 
     /**
      * H2 Server Database Information.
      */
-    H2_Server("jdbc:h2:tcp://%s:%s/%s", "org.hibernate.dialect.H2Dialect", "org.h2.Driver",false);
+    H2_Server("jdbc:h2:tcp://%s:%s/%s", "org.hibernate.dialect.H2Dialect", "org.h2.Driver", "",false);
 
     /**
      * The JDBC Connection URL used by HikariCP and Hibernate.
@@ -49,6 +51,11 @@ public enum DatabaseTyp {
      * The Driver Class used for the Connection.
      */
     private final String driverClass;
+
+    /**
+     * The Flyway Class used for the Migration.
+     */
+    private final String flywayClass;
 
     /**
      * If the SQL-Typ requires an authentication.
