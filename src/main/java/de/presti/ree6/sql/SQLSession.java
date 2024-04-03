@@ -137,12 +137,17 @@ public class SQLSession {
 
         try {
             Class.forName(databaseTyp.getDriverClass());
-            if (!databaseTyp.getFlywayClass().isBlank()) {
-                Class.forName(databaseTyp.getFlywayClass());
-            }
         } catch (ClassNotFoundException e) {
             // Somehow this fixes the Issue?
             log.warn("Couldn't load " + databaseTyp.name() + " Driver!\nThis could lead to errors!", e);
+        }
+
+        if (!databaseTyp.getFlywayClass().isBlank()) {
+            try {
+                Class.forName(databaseTyp.getFlywayClass());
+            } catch (ClassNotFoundException e) {
+                log.error("Couldn't load " + databaseTyp.name() + " Flyway Class!\nThis could lead to errors!", e);
+            }
         }
 
         if (config.isCreateEmbeddedServer()) {
