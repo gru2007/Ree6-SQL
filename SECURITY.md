@@ -9,6 +9,6 @@
 
 ## Reporting a Vulnerability
 
-If you find any Bug that could harm our User Privacy contact us under:
+If you find any Bug that could harm our User Privacy, contact us via these ways:
 
 Email: support@ree6.de
