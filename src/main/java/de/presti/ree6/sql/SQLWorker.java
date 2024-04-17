@@ -1419,7 +1419,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return {@link Boolean} as result if true, there is a role in our Database | if false, we couldn't find anything.
      */
     public CompletableFuture<Boolean> isChatLevelRewardSetup(long guildId, long roleId, long level) {
-        return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND roleId=:rid AND level=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)).thenApply(Objects::nonNull);
+        return getEntity(new ChatAutoRole(), "FROM ChatAutoRole WHERE guildRoleId.guildId=:gid AND guildRoleId.roleId=:rid AND level=:lvl", Map.of("gid", guildId, "rid", roleId, "lvl", level)).thenApply(Objects::nonNull);
     }
 
     //endregion
@@ -1463,7 +1463,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Remove a Voice Level Reward Role from our Database.
      *
      * @param guildId the ID of the Guild.
-     * @param level   the Level required to get this Role.
+     * @param level   the Level required getting this Role.
      */
     public void removeVoiceLevelReward(long guildId, long level) {
         getEntity(new VoiceAutoRole(), "FROM VoiceAutoRole WHERE guildRoleId.guildId=:gid AND level=:lvl",
