@@ -87,7 +87,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public void addChatLevelData(long guildId, @Nonnull ChatUserLevel userLevel) {
         isOptOut(guildId, userLevel.getUserId()).thenAccept(optOut -> {
             if (!optOut) {
-                updateEntity(userLevel);
+                updateEntity(userLevel).join();
             }
         });
     }
@@ -156,7 +156,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public void addVoiceLevelData(long guildId, @Nonnull VoiceUserLevel voiceUserLevel) {
         isOptOut(guildId, voiceUserLevel.getUserId()).thenAccept(optOut -> {
             if (!optOut) {
-                updateEntity(voiceUserLevel);
+                updateEntity(voiceUserLevel).join();
             }
         });
     }
@@ -223,7 +223,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             webhookLog.setWebhookId(webhookId);
             webhookLog.setToken(authToken);
 
-            updateEntity(webhookLog);
+            updateEntity(webhookLog).join();
         });
     }
 
@@ -295,7 +295,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             webhookWelcome.setWebhookId(webhookId);
             webhookWelcome.setToken(authToken);
 
-            updateEntity(webhookWelcome);
+            updateEntity(webhookWelcome).join();
         });
     }
 
@@ -404,7 +404,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             webhookTwitch.setMessage(finalMessageContent);
 
             // Add a new entry into the Database.
-            updateEntity(webhookTwitch);
+            updateEntity(webhookTwitch).join();
         });
     }
 
@@ -541,7 +541,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             webhook.setMessage(finalMessageContent);
 
             // Add a new entry into the Database.
-            updateEntity(webhook);
+            updateEntity(webhook).join();
         });
     }
 
@@ -680,7 +680,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             webhook.setMessage(finalMessageContent);
 
             // Add a new entry into the Database.
-            updateEntity(webhook);
+            updateEntity(webhook).join();
         });
     }
 
@@ -817,7 +817,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             webhook.setMessage(finalMessageContent);
 
             // Add a new entry into the Database.
-            updateEntity(webhook);
+            updateEntity(webhook).join();
         });
     }
 
@@ -952,7 +952,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             webhook.setMessage(finalMessageContent);
 
             // Add a new entry into the Database.
-            updateEntity(webhook);
+            updateEntity(webhook).join();
         });
     }
 
@@ -1087,7 +1087,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             webhook.setMessage(finalMessageContent);
 
             // Add a new entry into the Database.
-            updateEntity(webhook);
+            updateEntity(webhook).join();
         });
     }
 
@@ -1206,7 +1206,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             webhook.setUrl(url);
 
             // Add a new entry into the Database.
-            updateEntity(webhook);
+            updateEntity(webhook).join();
         });
     }
 
@@ -1276,7 +1276,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (x) return;
 
             // Add a new entry into the Database.
-            updateEntity(new AutoRole(guildId, roleId));
+            updateEntity(new AutoRole(guildId, roleId)).join();
         });
     }
 
@@ -1353,7 +1353,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (x) return;
 
             // Add a new entry into the Database.
-            updateEntity(new ChatAutoRole(guildId, roleId, level));
+            updateEntity(new ChatAutoRole(guildId, roleId, level)).join();
         });
     }
 
@@ -1455,7 +1455,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (x) return;
 
             // Add a new entry into the Database.
-            updateEntity(new VoiceAutoRole(guildId, roleId, level));
+            updateEntity(new VoiceAutoRole(guildId, roleId, level)).join();
         });
     }
 
@@ -1572,7 +1572,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteUsage   the Usage count of the Invite.
      */
     public void setInvite(long guildId, long inviteCreator, String inviteCode, long inviteUsage) {
-        updateEntity(new Invite(guildId, inviteCreator, inviteUsage, inviteCode));
+        updateEntity(new Invite(guildId, inviteCreator, inviteUsage, inviteCode)).join();
     }
 
     /**
@@ -1693,7 +1693,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (isSetup) return;
 
             // If not, then just add it.
-            updateEntity(new Blacklist(guildId, word));
+            updateEntity(new Blacklist(guildId, word)).join();
         });
     }
 
@@ -1737,7 +1737,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
                         log.info("Missing default for " + settingName + " in SettingsManager.");
                     } else {
                         setting.setDisplayName(defaultSetting.getDisplayName());
-                        updateEntity(setting);
+                        updateEntity(setting).join();
                     }
                 }
 
@@ -1797,9 +1797,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
                 Map.of("gid", setting.getGuildId(), "name", setting.getName())).thenAccept(databaseSetting -> {
             if (databaseSetting != null) {
                 databaseSetting.setValue(setting.getValue());
-                updateEntity(databaseSetting);
+                updateEntity(databaseSetting).join();
             } else {
-                updateEntity(setting);
+                updateEntity(setting).join();
             }
         });
     }
@@ -1927,10 +1927,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
         getEntity(new Statistics(), "FROM Statistics WHERE day = :day AND month = :month AND year = :year", Map.of("day", today.getDayOfMonth(), "month", today.getMonthValue(), "year", today.getYear())).thenAccept(statistics -> {
             if (statistics != null) {
                 statistics.setStatsObject(statisticObject);
-                updateEntity(statistics);
+                updateEntity(statistics).join();
             } else {
                 statistics = new Statistics(today.getDayOfMonth(), today.getMonthValue(), today.getYear(), statisticObject);
-                updateEntity(statistics);
+                updateEntity(statistics).join();
             }
         });
     }
@@ -2033,10 +2033,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
                         if (x) {
                             getStatsCommand(guildId, command).thenAccept(y -> {
                                 y.setUses(y.getUses() + 1);
-                                updateEntity(y);
+                                updateEntity(y).join();
                             });
                         } else {
-                            updateEntity(new GuildCommandStats(0, guildId, command, 1));
+                            updateEntity(new GuildCommandStats(0, guildId, command, 1)).join();
                         }
                     });
 
@@ -2045,10 +2045,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
                         if (x) {
                             getStatsCommandGlobal(command).thenAccept(y -> {
                                 y.setUses(y.getUses() + 1);
-                                updateEntity(y);
+                                updateEntity(y).join();
                             });
                         } else {
-                            updateEntity(new CommandStats(command, 1));
+                            updateEntity(new CommandStats(command, 1)).join();
                         }
                     });
                 }
@@ -2080,7 +2080,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public void optOut(long guildId, long userId) {
         isOptOut(guildId, userId).thenAccept(optedOut -> {
             if (!optedOut) {
-                updateEntity(new OptOut(guildId, userId));
+                updateEntity(new OptOut(guildId, userId)).join();
             }
         });
     }
@@ -2111,7 +2111,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public void addBirthday(long guildId, long channelId, long userId, String birthday) {
         try {
             BirthdayWish newBirthday = new BirthdayWish(guildId, channelId, userId, new SimpleDateFormat("dd.MM.yyyy").parse(birthday));
-            updateEntity(newBirthday);
+            updateEntity(newBirthday).join();
         } catch (Exception exception) {
             log.error("Couldn't save birthday!", exception);
             Sentry.captureException(exception);
