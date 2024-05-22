@@ -257,7 +257,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public void deleteLogWebhook(long webhookId, String authToken) {
         getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken)).thenAccept(webhookLog -> {
             if (webhookLog != null) {
-                deleteEntity(webhookLog);
+                deleteEntityInternally(webhookLog);
             }
         });
     }
@@ -419,7 +419,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             // Check if there is a Webhook set.
             if (webhook != null) {
                 // Delete the entry.
-                deleteEntity(webhook);
+                deleteEntityInternally(webhook);
             }
         });
     }
@@ -558,7 +558,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             // Check if there is a Webhook set.
             if (webhook != null) {
                 // Delete the entry.
-                deleteEntity(webhook);
+                deleteEntityInternally(webhook);
             }
         });
     }
@@ -695,7 +695,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             // Check if there is a Webhook set.
             if (webhook != null) {
                 // Delete the entry.
-                deleteEntity(webhook);
+                deleteEntityInternally(webhook);
             }
         });
     }
@@ -830,7 +830,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public void removeYouTubeWebhook(long guildId, String youtubeChannel) {
         getYouTubeWebhook(guildId, youtubeChannel).thenAccept(webhook -> {
             if (webhook != null) {
-                deleteEntity(webhook);
+                deleteEntityInternally(webhook);
             }
         });
     }
@@ -965,7 +965,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     public void removeTwitterWebhook(long guildId, String twitterName) {
         getTwitterWebhook(guildId, twitterName).thenAccept(webhook -> {
             if (webhook != null) {
-                deleteEntity(webhook);
+                deleteEntityInternally(webhook);
             }
         });
     }
@@ -1102,7 +1102,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             // Check if there is a Webhook set.
             if (webhook != null) {
                 // Delete the entry.
-                deleteEntity(webhook);
+                deleteEntityInternally(webhook);
             }
         });
     }
@@ -1221,7 +1221,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             // Check if there is a Webhook set.
             if (x != null) {
                 // Delete the entry.
-                deleteEntity(x);
+                deleteEntityInternally(x);
             }
         });
     }
@@ -1292,7 +1292,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (autoRole == null) return;
 
             // Delete the entry.
-            deleteEntity(autoRole);
+            deleteEntityInternally(autoRole);
         });
     }
 
@@ -1368,7 +1368,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
                 Map.of("gid", guildId, "lvl", level)).thenAccept(chatAutoRole -> {
             // Check if there is a role in the database.
             if (chatAutoRole == null) return;
-            deleteEntity(chatAutoRole);
+            deleteEntityInternally(chatAutoRole);
         });
     }
 
@@ -1385,7 +1385,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             // Check if there is a role in the database.
             if (chatAutoRole == null) return;
 
-            deleteEntity(chatAutoRole);
+            deleteEntityInternally(chatAutoRole);
         });
     }
 
@@ -1470,7 +1470,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
                 Map.of("gid", guildId, "lvl", level)).thenAccept(voiceAutoRole -> {
             if (voiceAutoRole == null) return;
 
-            deleteEntity(voiceAutoRole);
+            deleteEntityInternally(voiceAutoRole);
         });
     }
 
@@ -1486,7 +1486,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
                 Map.of("gid", guildId, "rid", roleId, "lvl", level)).thenAccept(voiceAutoRole -> {
             if (voiceAutoRole == null) return;
 
-            deleteEntity(voiceAutoRole);
+            deleteEntityInternally(voiceAutoRole);
         });
     }
 
@@ -1560,7 +1560,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode the Code of the Invite.
      */
     public void removeInvite(long guildId, String inviteCode) {
-        deleteEntity(getInvite(guildId, inviteCode));
+        deleteEntityInternally(getInvite(guildId, inviteCode));
     }
 
     /**
@@ -1620,7 +1620,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode    the Code of the Invite.
      */
     public void removeInvite(long guildId, long inviteCreator, String inviteCode) {
-        deleteEntity(getInvite(guildId, inviteCreator, inviteCode));
+        deleteEntityInternally(getInvite(guildId, inviteCreator, inviteCode));
     }
 
     /**
@@ -1632,7 +1632,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteUsage   the usage count of the Invite.
      */
     public void removeInvite(long guildId, long inviteCreator, String inviteCode, long inviteUsage) {
-        deleteEntity(getInvite(guildId, inviteCreator, inviteCode, inviteUsage));
+        deleteEntityInternally(getInvite(guildId, inviteCreator, inviteCode, inviteUsage));
     }
 
     /**
@@ -1641,7 +1641,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      */
     public void clearInvites(long guildId) {
-        getInvites(guildId).thenAccept(x -> x.forEach(this::deleteEntity));
+        getInvites(guildId).thenAccept(x -> x.forEach(this::deleteEntityInternally));
     }
 
     //endregion
@@ -1710,7 +1710,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (blacklist == null) return;
 
             // If so, then delete it.
-            deleteEntity(blacklist);
+            deleteEntityInternally(blacklist);
         });
     }
 
@@ -2093,7 +2093,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      */
     public void optIn(long guildId, long userId) {
         getEntity(new OptOut(), "FROM OptOut WHERE guildUserId.guildId=:gid AND guildUserId.userId=:uid",
-                Map.of("gid", guildId, "uid", userId)).thenAccept(this::deleteEntity);
+                Map.of("gid", guildId, "uid", userId)).thenAccept(this::deleteEntityInternally);
     }
 
     //endregion
@@ -2125,7 +2125,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      */
     public void removeBirthday(long guildId, long userId) {
-        getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)).thenAccept(this::deleteEntity);
+        getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)).thenAccept(this::deleteEntityInternally);
     }
 
     /**
@@ -2292,13 +2292,17 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param <R> The Class-Entity.
      * @param r   The Class-Entity to delete.
      */
-    public <R> void deleteEntity(R r) {
+    public <R> CompletableFuture<Void> deleteEntity(R r) {
+        return CompletableFuture.runAsync(() -> deleteEntityInternally(r));
+    }
+
+    private <R> void deleteEntityInternally(R r) {
         if (r == null) return;
 
         if (!sqlConnector.isConnected()) {
             if (sqlConnector.connectedOnce()) {
                 sqlConnector.connectToSQLServer();
-                deleteEntity(r);
+                deleteEntityInternally(r);
             }
         }
 
