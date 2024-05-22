@@ -14,10 +14,10 @@ import de.presti.ree6.sql.entities.stats.Statistics;
 import de.presti.ree6.sql.entities.webhook.*;
 import de.presti.ree6.sql.entities.webhook.base.Webhook;
 import de.presti.ree6.sql.entities.webhook.base.WebhookSocial;
+import de.presti.ree6.sql.keys.*;
 import de.presti.ree6.sql.util.SettingsManager;
 import io.sentry.Sentry;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.exception.JDBCConnectionException;
@@ -29,6 +29,7 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Field;
 import java.sql.SQLNonTransientConnectionException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -2183,19 +2184,79 @@ public record SQLWorker(SQLConnector sqlConnector) {
                 ConfigurationBuilder
                         .build()
                         .forPackage("de.presti.ree6.sql.entities", ClasspathHelper.staticClassLoader()))
-                .getTypesAnnotatedWith(Table.class);
+                .getTypesAnnotatedWith(Entity.class);
         for (Class<?> clazz : classSet) {
-            if (clazz.isAnnotationPresent(Table.class)) {
-                Table table = clazz.getAnnotation(Table.class);
-                try {
-                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GID=?", true, guildId);
-                } catch (Exception ignore) {
+            Field[] fields = clazz.getFields();
+            Field[] superFields = null;
+            
+            if (clazz.getSuperclass() != null) {
+                superFields = clazz.getSuperclass().getDeclaredFields();
+            }
+
+            String hibernateQueryForId = "";
+
+            // TODO:: extract this to a method.
+
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(Id.class)) {
+                    if (field.isAnnotationPresent(Column.class)) {
+                        Column column = field.getAnnotation(Column.class);
+                        if (column.name().equalsIgnoreCase("guildId")) {
+                            hibernateQueryForId = field.getName();
+                            break;
+                        }
+                    }
                 }
 
-                try {
-                    sqlConnector.querySQL("DELETE FROM " + table.name() + " WHERE GUILDID=?", true, guildId);
-                } catch (Exception ignore) {
+                if (!field.isAnnotationPresent(EmbeddedId.class))
+                    continue;
+
+                Class<?> declaredClass = field.getDeclaringClass();
+
+                if (declaredClass.isAssignableFrom(GuildAndId.class) ||
+                        declaredClass.isAssignableFrom(GuildAndName.class) ||
+                        declaredClass.isAssignableFrom(GuildUserId.class) ||
+                        declaredClass.isAssignableFrom(GuildRoleId.class) ||
+                        declaredClass.isAssignableFrom(GuildChannelId.class) ||
+                        declaredClass.isAssignableFrom(GuildAndCode.class)) {
+
+                    hibernateQueryForId = field.getName() + ".guildId";
+                    break;
                 }
+            }
+            
+            if (hibernateQueryForId.isBlank() && superFields != null) {
+                for (Field field : superFields) {
+                    if (field.isAnnotationPresent(Id.class)) {
+                        if (field.isAnnotationPresent(Column.class)) {
+                            Column column = field.getAnnotation(Column.class);
+                            if (column.name().equalsIgnoreCase("guildId")) {
+                                hibernateQueryForId = field.getName();
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!field.isAnnotationPresent(EmbeddedId.class))
+                        continue;
+
+                    Class<?> declaredClass = field.getDeclaringClass();
+
+                    if (declaredClass.isAssignableFrom(GuildAndId.class) ||
+                            declaredClass.isAssignableFrom(GuildAndName.class) ||
+                            declaredClass.isAssignableFrom(GuildUserId.class) ||
+                            declaredClass.isAssignableFrom(GuildRoleId.class) ||
+                            declaredClass.isAssignableFrom(GuildChannelId.class) ||
+                            declaredClass.isAssignableFrom(GuildAndCode.class)) {
+
+                        hibernateQueryForId = field.getName() + ".guildId";
+                        break;
+                    }
+                }
+            }
+
+            if (!hibernateQueryForId.isBlank()) {
+                sqlConnector.query("delete " + clazz.getSimpleName() + " where " + hibernateQueryForId + " = :gid", Map.of("gid", guildId));
             }
         }
     }
@@ -2271,7 +2332,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     private <R> long getNextId(R r) {
-        List<R> entityList = getEntityListInternal(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, false, 1);
+        List<R> entityList = getEntityListInternal(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, 1);
 
         if (entityList.isEmpty()) return 1;
 
@@ -2330,21 +2391,21 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return The mapped entity.
      */
     public <R> CompletableFuture<List<R>> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters) {
-        return getEntityList(r, sqlQuery, parameters, false, 0);
+        return getEntityList(r, sqlQuery, parameters, 0);
     }
 
     /**
      * Constructs a new mapped Version of the Entity-class.
      *
-     * @param <R>        The Class-Entity.
-     * @param r          The Class-Entity to get.
-     * @param sqlQuery   the SQL-Query.
-     * @param parameters all parameters.
-     * @param limit      the result limit of the query.
+     * @param <R>            The Class-Entity.
+     * @param r              The Class-Entity to get.
+     * @param sqlQuery       the SQL-Query.
+     * @param parameters     all parameters.
+     * @param limit          the result limit of the query.
      * @return The mapped entity.
      */
     public <R> CompletableFuture<List<R>> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, int limit) {
-        return getEntityList(r, sqlQuery, parameters, false, limit);
+        return CompletableFuture.supplyAsync(() -> getEntityListInternal(r, sqlQuery, parameters, limit));
     }
 
     /**
@@ -2357,22 +2418,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param useNativeQuery if true, use native query, else use hibernate query.
      * @param limit          the result limit of the query.
      * @return The mapped entity.
+     * @deprecated Use {@link #getEntityListInternal(Object, String, Map, int)} instead.
      */
-    public <R> CompletableFuture<List<R>> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery, int limit) {
-        return CompletableFuture.supplyAsync(() -> getEntityListInternal(r, sqlQuery, parameters, useNativeQuery, limit));
-    }
-
-    /**
-     * Constructs a new mapped Version of the Entity-class.
-     *
-     * @param <R>            The Class-Entity.
-     * @param r              The Class-Entity to get.
-     * @param sqlQuery       the SQL-Query.
-     * @param parameters     all parameters.
-     * @param useNativeQuery if true, use native query, else use hibernate query.
-     * @param limit          the result limit of the query.
-     * @return The mapped entity.
-     */
+    @Deprecated(forRemoval = true)
     private <R> List<R> getEntityListInternal(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery, int limit) {
         sqlQuery = sqlQuery.isBlank() ? (useNativeQuery ? "SELECT * FROM " : "FROM ") + r.getClass().getSimpleName() : sqlQuery;
 
@@ -2402,6 +2450,44 @@ public record SQLWorker(SQLConnector sqlConnector) {
         } catch (Exception exception) {
             Sentry.captureException(exception);
             log.error("Failed to get Entity List", exception);
+            throw exception;
+        }
+    }
+
+    /**
+     * Constructs a new mapped Version of the Entity-class.
+     *
+     * @param <R>            The Class-Entity.
+     * @param r              The Class-Entity to get.
+     * @param sqlQuery       the SQL-Query.
+     * @param parameters     all parameters.
+     * @param limit          the result limit of the query.
+     * @return The mapped entity.
+     */
+    @SuppressWarnings("unchecked")
+    private <R> List<R> getEntityListInternal(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, int limit) {
+        sqlQuery = sqlQuery.isBlank() ? "FROM " + r.getClass().getSimpleName() : sqlQuery;
+
+        try (Session session = SQLSession.getSessionFactory().openSession()) {
+
+            session.beginTransaction();
+
+            Query<R> query = (Query<R>) session.createQuery(sqlQuery, r.getClass());
+
+            if (parameters != null) {
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    query.setParameter(entry.getKey(), entry.getValue());
+                }
+            }
+
+            if (limit > 0) query.setMaxResults(limit);
+
+            session.getTransaction().commit();
+
+            return query.getResultList();
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
+            log.error("Failed to get Entity List!", exception);
             throw exception;
         }
     }
@@ -2443,6 +2529,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param useNativeQuery if true, use native query, else use hibernate query.
      * @return The mapped Version of the given Class-Entity.
      */
+    @Deprecated(forRemoval = true)
     private <R> R getEntityInternal(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery) {
         sqlQuery = sqlQuery.isEmpty() ? (useNativeQuery ? "SELECT * FROM " : "FROM ") + r.getClass().getSimpleName() : sqlQuery;
 

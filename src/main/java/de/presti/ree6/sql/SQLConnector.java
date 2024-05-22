@@ -150,7 +150,9 @@ public class SQLConnector {
      * @param ignoreError If errors should not be printed into the console.
      * @param parameters  The Parameters for the Query.
      * @return Either a {@link Integer} or the result object of the ResultSet.
+     * @deprecated Use {@link #query(String, Map)} instead.
      */
+    @Deprecated(forRemoval = true)
     public Object querySQL(String sqlQuery, boolean ignoreError, Object... parameters) {
         return querySQL(sqlQuery, !sqlQuery.startsWith("SELECT"), ignoreError, parameters);
     }
@@ -163,7 +165,9 @@ public class SQLConnector {
      * @param ignoreError If errors should not be printed into the console.
      * @param parameters  The Parameters for the Query.
      * @return Either a {@link Integer} or the result object of the ResultSet.
+     * @deprecated Use {@link #query(String, Map)} instead.
      */
+    @Deprecated(forRemoval = true)
     public Object querySQL(String sqlQuery, boolean update, boolean ignoreError, Object... parameters) {
         if (!isConnected()) {
             if (connectedOnce()) {
@@ -200,7 +204,7 @@ public class SQLConnector {
         } catch (Exception exception) {
             if (!ignoreError) {
                 Sentry.captureException(exception);
-                log.error("Failed to send SQL-Query: " + sqlQuery, exception);
+                log.error("Failed to send SQL-Query: {}", sqlQuery, exception);
             }
         }
 
@@ -215,7 +219,9 @@ public class SQLConnector {
      * @param sqlQuery   the SQL-Query.
      * @param parameters a list with all parameters that should be considered.
      * @return The Result from the SQL-Server.
+     * @deprecated Use {@link #query(String, Map)} instead.
      */
+    @Deprecated(forRemoval = true)
     public <R> Query<R> querySQL(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters) {
 
         if (!isConnected()) {
@@ -244,7 +250,46 @@ public class SQLConnector {
             return query;
         } catch (Exception exception) {
             Sentry.captureException(exception);
-            log.error("Failed to send SQL-Query: " + sqlQuery, exception);
+            log.error("Failed to send SQL-Query: {}", sqlQuery, exception);
+            throw exception;
+        }
+    }
+
+    /**
+     * Query HQL-Statements without the need of a class Instance.
+     *
+     * @param hqlQuery   The HQL-Query.
+     * @param parameters The Parameters for the Query.
+     */
+    @SuppressWarnings("rawtypes")
+    public void query(@NotNull String hqlQuery, @Nullable Map<String, Object> parameters) {
+        if (!isConnected()) {
+            if (connectedOnce()) {
+                connectToSQLServer();
+                query(hqlQuery, parameters);
+            }
+
+            return;
+        }
+
+        try (Session session = SQLSession.getSessionFactory().openSession()) {
+
+            session.beginTransaction();
+
+            Query query = session.createQuery(hqlQuery);
+
+            if (parameters != null) {
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    query.setParameter(entry.getKey(), entry.getValue());
+                }
+            }
+
+            query.executeUpdate();
+
+            session.getTransaction().commit();
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
+            log.error("Failed to send HQL-Query: {}", hqlQuery, exception);
             throw exception;
         }
     }
