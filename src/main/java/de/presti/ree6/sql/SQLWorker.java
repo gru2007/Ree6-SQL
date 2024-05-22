@@ -2502,7 +2502,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return The mapped Version of the given Class-Entity.
      */
     public <R> CompletableFuture<R> getEntity(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters) {
-        return getEntity(r, sqlQuery, parameters, false);
+        return CompletableFuture.supplyAsync(() -> getEntityInternal(r, sqlQuery, parameters));
     }
 
     /**
@@ -2514,20 +2514,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param parameters     The arguments to use.
      * @param useNativeQuery if true, use native query, else use hibernate query.
      * @return The mapped Version of the given Class-Entity.
-     */
-    public <R> CompletableFuture<R> getEntity(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery) {
-        return CompletableFuture.supplyAsync(() -> getEntityInternal(r, sqlQuery, parameters, useNativeQuery));
-    }
-
-    /**
-     * Constructs a query for the given Class-Entity, and returns a mapped Version of the given Class-Entity.
-     *
-     * @param <R>            The Class-Entity.
-     * @param r              The Class-Entity to get.
-     * @param sqlQuery       The query to use.
-     * @param parameters     The arguments to use.
-     * @param useNativeQuery if true, use native query, else use hibernate query.
-     * @return The mapped Version of the given Class-Entity.
+     * @deprecated Use {@link #getEntityInternal(Object, String, Map)} instead.
      */
     @Deprecated(forRemoval = true)
     private <R> R getEntityInternal(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, boolean useNativeQuery) {
@@ -2544,6 +2531,41 @@ public record SQLWorker(SQLConnector sqlConnector) {
             } else {
                 query = (Query<R>) session.createQuery(sqlQuery, r.getClass());
             }
+
+            if (parameters != null) {
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    query.setParameter(entry.getKey(), entry.getValue());
+                }
+            }
+
+            session.getTransaction().commit();
+
+            return query.setMaxResults(1).getSingleResultOrNull();
+        } catch (Exception exception) {
+            Sentry.captureException(exception);
+            log.error("Failed to get Entity", exception);
+            throw exception;
+        }
+    }
+
+    /**
+     * Constructs a query for the given Class-Entity, and returns a mapped Version of the given Class-Entity.
+     *
+     * @param <R>            The Class-Entity.
+     * @param r              The Class-Entity to get.
+     * @param sqlQuery       The query to use.
+     * @param parameters     The arguments to use.
+     * @return The mapped Version of the given Class-Entity.
+     */
+    @SuppressWarnings("unchecked")
+    private <R> R getEntityInternal(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters) {
+        sqlQuery = sqlQuery.isEmpty() ? "FROM " + r.getClass().getSimpleName() : sqlQuery;
+
+        try (Session session = SQLSession.getSessionFactory().openSession()) {
+
+            session.beginTransaction();
+
+            Query<R> query = (Query<R>) session.createQuery(sqlQuery, r.getClass());
 
             if (parameters != null) {
                 for (Map.Entry<String, Object> entry : parameters.entrySet()) {
