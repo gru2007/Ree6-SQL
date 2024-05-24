@@ -7,6 +7,8 @@ import de.presti.ree6.sql.entities.level.VoiceUserLevel;
 import io.sentry.Sentry;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -110,10 +112,11 @@ public class LevelUtil {
      */
     public static int getCurrentRank(UserLevel userLevel) {
         try {
+            // TODO:: ASYNC
             if (userLevel instanceof ChatUserLevel) {
-                return SQLSession.getSqlConnector().getSqlWorker().getAllChatLevelSorted(userLevel.getGuildId()).get(5, TimeUnit.SECONDS).indexOf(userLevel.getUserId()) + 1;
+                return SQLSession.getSqlConnector().getSqlWorker().getAllChatLevelSorted(userLevel.getGuildId()).block(Duration.of(5, ChronoUnit.SECONDS)).indexOf(userLevel.getUserId()) + 1;
             } else if (userLevel instanceof VoiceUserLevel) {
-                return SQLSession.getSqlConnector().getSqlWorker().getAllVoiceLevelSorted(userLevel.getGuildId()).get(5, TimeUnit.SECONDS).indexOf(userLevel.getUserId()) + 1;
+                return SQLSession.getSqlConnector().getSqlWorker().getAllVoiceLevelSorted(userLevel.getGuildId()).block(Duration.of(5, ChronoUnit.SECONDS)).indexOf(userLevel.getUserId()) + 1;
             }
         } catch (Exception e) {
             log.error("Error while getting current Rank of UserLevel!", e);
