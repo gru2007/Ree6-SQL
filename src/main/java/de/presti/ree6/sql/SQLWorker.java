@@ -2275,7 +2275,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return the new update entity.
      */
     public <R> Mono<R> updateEntity(R r) {
-        return Mono.fromFuture(CompletableFuture.supplyAsync(() -> updateEntityInternal(r)));
+        return Mono.fromSupplier(() -> updateEntityInternal(r));
     }
 
     private <R> R updateEntityInternal(R r) {
@@ -2356,7 +2356,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param r   The Class-Entity to delete.
      */
     public <R> Mono<Void> deleteEntity(R r) {
-        return Mono.fromFuture(CompletableFuture.runAsync(() -> deleteEntityInternally(r)));
+        return Mono.fromRunnable(() -> deleteEntityInternally(r));
     }
 
     private <R> void deleteEntityInternally(R r) {
@@ -2407,7 +2407,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return The mapped entity.
      */
     public <R> Mono<List<R>> getEntityList(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters, int limit) {
-        return Mono.fromFuture(CompletableFuture.supplyAsync(() -> getEntityListInternal(r, sqlQuery, parameters, limit)));
+        return Mono.fromSupplier(() -> getEntityListInternal(r, sqlQuery, parameters, limit));
     }
 
     /**
@@ -2504,7 +2504,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return The mapped Version of the given Class-Entity.
      */
     public <R> Mono<R> getEntity(@NotNull R r, @NotNull String sqlQuery, @Nullable Map<String, Object> parameters) {
-        return Mono.fromFuture(CompletableFuture.supplyAsync(() -> getEntityInternal(r, sqlQuery, parameters)));
+        return Mono.fromSupplier(() -> getEntityInternal(r, sqlQuery, parameters));
     }
 
     /**
