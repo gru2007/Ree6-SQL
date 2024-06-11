@@ -16,6 +16,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 import org.reflections.util.ClasspathHelper;
@@ -189,34 +190,7 @@ public class SQLSession {
         if (sessionFactory != null) return getSessionFactory();
 
         try {
-            Configuration configuration = new Configuration();
-            Properties properties = new Properties();
-            //properties.put("hibernate.connection.datasource", getSqlConnector().getDataSource());
-            //properties.put("hibernate.connection.driver_class", getDatabaseTyp().getDriverClass());
-            properties.put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
-            properties.put("hibernate.connection.url", jdbcURL);
-
-            if (!databaseTyp.isAuthRequired() && databaseUser.equalsIgnoreCase("root") && databasePassword.equalsIgnoreCase("yourpw")) {
-                properties.put("hibernate.connection.username", "");
-                properties.put("hibernate.connection.password", "");
-            } else {
-                properties.put("hibernate.connection.username", databaseUser);
-                properties.put("hibernate.connection.password", databasePassword);
-            }
-
-            properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(getMaxPoolSize()));
-            //properties.put("hibernate.dialect", getDatabaseTyp().getHibernateDialect());
-
-            if (databaseTyp == DatabaseTyp.SQLite)
-                properties.put("hibernate.hikari.connectionInitSql", "PRAGMA foreign_keys = ON;");
-
-            properties.put("hibernate.show_sql", debug);
-            properties.put("hibernate.format_sql", debug);
-
-            //properties.put("hibernate.hbm2ddl.auto", "validate");
-            properties.put("jakarta.persistence.schema-generation.database.action", "validate");
-
-            configuration.addProperties(properties);
+            Configuration configuration = new Configuration().addProperties(getProperties(debug));
 
             Set<Class<?>> classSet = new Reflections(
                     ConfigurationBuilder
@@ -239,6 +213,40 @@ public class SQLSession {
             Sentry.captureException(ex);
             throw new ExceptionInInitializerError(ex);
         }
+    }
+
+    /**
+     * Get the Properties used to create the SessionFactory.
+     * @param debug if we should print debug messages.
+     * @return The Properties.
+     */
+    private static @NotNull Properties getProperties(boolean debug) {
+        Properties properties = new Properties();
+        //properties.put("hibernate.connection.datasource", getSqlConnector().getDataSource());
+        //properties.put("hibernate.connection.driver_class", getDatabaseTyp().getDriverClass());
+        properties.put("hibernate.connection.provider_class", "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
+        properties.put("hibernate.connection.url", jdbcURL);
+
+        if (!databaseTyp.isAuthRequired() && databaseUser.equalsIgnoreCase("root") && databasePassword.equalsIgnoreCase("yourpw")) {
+            properties.put("hibernate.connection.username", "");
+            properties.put("hibernate.connection.password", "");
+        } else {
+            properties.put("hibernate.connection.username", databaseUser);
+            properties.put("hibernate.connection.password", databasePassword);
+        }
+
+        properties.put("hibernate.hikari.maximumPoolSize", String.valueOf(getMaxPoolSize()));
+        //properties.put("hibernate.dialect", getDatabaseTyp().getHibernateDialect());
+
+        if (databaseTyp == DatabaseTyp.SQLite)
+            properties.put("hibernate.hikari.connectionInitSql", "PRAGMA foreign_keys = ON;");
+
+        properties.put("hibernate.show_sql", debug);
+        properties.put("hibernate.format_sql", debug);
+
+        //properties.put("hibernate.hbm2ddl.auto", "validate");
+        properties.put("jakarta.persistence.schema-generation.database.action", "validate");
+        return properties;
     }
 
     /**
