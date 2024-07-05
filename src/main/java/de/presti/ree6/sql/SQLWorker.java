@@ -2244,9 +2244,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return the new update entity.
      * @deprecated This method is only here to make it easier to find methods that need to be updated.
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public <R> Mono<R> updateEntity(Optional<R> r) {
-        return Mono.fromSupplier(() -> updateEntityInternal(r.get()));
+        return r.map(this::updateEntity).orElseGet(Mono::empty);
     }
 
     /**
@@ -2334,6 +2334,18 @@ public record SQLWorker(SQLConnector sqlConnector) {
         }
 
         return maxId + 1;
+    }
+
+    /**
+     * Delete an entity from the database
+     *
+     * @param <R> The Class-Entity.
+     * @param r   The Class-Entity to delete.
+     * @deprecated This method is only here to make it easier to find methods that need to be updated.
+     */
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    public <R> Mono<Void> deleteEntity(Optional<R> r) {
+        return r.map(this::deleteEntity).orElse(Mono.empty());
     }
 
     /**
