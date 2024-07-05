@@ -1906,7 +1906,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (statistics.isPresent()) {
                 Statistics statisticsEntity = statistics.get();
                 statisticsEntity.setStatsObject(statisticObject);
-                updateEntity(statistics).block();
+                updateEntity(statisticsEntity).block();
             } else {
                 updateEntity(new Statistics(today.getDayOfMonth(), today.getMonthValue(), today.getYear(), statisticObject)).block();
             }
@@ -2249,6 +2249,11 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @return the new update entity.
      */
     public <R> Mono<R> updateEntity(R r) {
+        if (r.getClass().isAssignableFrom(Optional.class)) {
+            Sentry.captureMessage("Someone called the Update method with a Optional? Why??");
+            log.error("Calling the UpdateEntity Method with a Optional is not supported.");
+            return Mono.empty();
+        }
         return Mono.fromSupplier(() -> updateEntityInternal(r));
     }
 

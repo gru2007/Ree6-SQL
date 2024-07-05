@@ -5,6 +5,7 @@ import de.presti.ree6.sql.util.SQLConfig;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class Main {
 
@@ -33,11 +34,11 @@ public class Main {
         }
 
         WebhookYouTube hook = new WebhookYouTube(-1, "test", "test", -1, -1, "test");
-        SQLSession.getSqlConnector().getSqlWorker().updateEntity(hook);
+        SQLSession.getSqlConnector().getSqlWorker().updateEntity(Optional.of(hook)).block();
 
-        SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Warning(), "", null);
-        SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Giveaway(), "", null);
-        SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.roles.AutoRole(), "", null);
+        SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Warning(), "", null).block();
+        SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Giveaway(), "", null).block();
+        SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.roles.AutoRole(), "", null).block();
     }
 
 }
