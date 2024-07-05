@@ -248,9 +248,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param authToken the Auth-Token of the Webhook.
      */
     public void deleteLogWebhook(long webhookId, String authToken) {
-        getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken)).subscribe(webhookLog -> {
-            webhookLog.ifPresent(this::deleteEntityInternally);
-        });
+        getEntity(new WebhookLog(), "FROM WebhookLog WHERE webhookId=:cid AND token=:token", Map.of("cid", String.valueOf(webhookId), "token", authToken)).subscribe(webhookLog -> webhookLog.ifPresent(this::deleteEntityInternally));
     }
 
     //endregion
@@ -813,9 +811,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param youtubeChannel the Name of the YouTube channel.
      */
     public void removeYouTubeWebhook(long guildId, String youtubeChannel) {
-        getYouTubeWebhook(guildId, youtubeChannel).subscribe(webhook -> {
-            webhook.ifPresent(this::deleteEntityInternally);
-        });
+        getYouTubeWebhook(guildId, youtubeChannel).subscribe(webhook -> webhook.ifPresent(this::deleteEntityInternally));
     }
 
     /**
@@ -1847,14 +1843,12 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param guildId the ID of the Guild.
      */
     public void createSettings(long guildId) {
-        SettingsManager.getSettings().forEach(setting -> {
-            hasSetting(guildId, setting).subscribe(hasSetting -> {
-                // If not, then create every Setting that doesn't exist for the Guild.
-                if (!hasSetting) {
-                    setSetting(guildId, setting.getName(), setting.getDisplayName(), setting.getValue());
-                }
-            });
-        });
+        SettingsManager.getSettings().forEach(setting -> hasSetting(guildId, setting).subscribe(hasSetting -> {
+            // If not, then create every Setting that doesn't exist for the Guild.
+            if (!hasSetting) {
+                setSetting(guildId, setting.getName(), setting.getDisplayName(), setting.getValue());
+            }
+        }));
     }
 
     //endregion
@@ -2240,6 +2234,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
     //endregion
 
     //region Entity-System
+
+
+    /**
+     * Update an Entity in the Database.
+     *
+     * @param <R> The Class-Entity.
+     * @param r   The Class-Entity to update.
+     * @return the new update entity.
+     * @deprecated This method is only here to make it easier to find methods that need to be updated.
+     */
+    @Deprecated(forRemoval = true)
+    public <R> Mono<R> updateEntity(Optional<R> r) {
+        return Mono.fromSupplier(() -> updateEntityInternal(r.get()));
+    }
 
     /**
      * Update an Entity in the Database.
