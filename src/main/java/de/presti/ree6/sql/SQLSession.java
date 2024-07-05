@@ -49,7 +49,6 @@ public class SQLSession {
 
     /**
      * The JDBC URL to connect to the Database.
-
      */
     @Getter
     static String jdbcURL;
@@ -180,6 +179,7 @@ public class SQLSession {
 
         sqlConnector = new SQLConnector();
     }
+
     /**
      * Build a new SessionFactory or return the current one.
      *
@@ -217,6 +217,7 @@ public class SQLSession {
 
     /**
      * Get the Properties used to create the SessionFactory.
+     *
      * @param debug if we should print debug messages.
      * @return The Properties.
      */
@@ -334,6 +335,7 @@ public class SQLSession {
 
     /**
      * Get or create a SessionFactory.
+     *
      * @return The {@link SessionFactory}.
      */
     public static SessionFactory getSessionFactory() {
