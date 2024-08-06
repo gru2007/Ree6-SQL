@@ -8,14 +8,14 @@ CREATE TABLE PunishmentsLog
     CONSTRAINT pk_punishmentslog PRIMARY KEY (id)
 );
 
-ALTER TABLE Punishments
+ALTER TABLE PunishmentsLog
     MODIFY id BIGINT;
 
-ALTER TABLE Punishments
+ALTER TABLE PunishmentsLog
     DROP PRIMARY KEY;
 
-ALTER TABLE Punishments
+ALTER TABLE PunishmentsLog
     ADD PRIMARY KEY (id, guildId);
 
-ALTER TABLE Punishments
+ALTER TABLE PunishmentsLog
     MODIFY id BIGINT NOT NULL AUTO_INCREMENT;
