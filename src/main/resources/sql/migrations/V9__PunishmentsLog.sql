@@ -3,6 +3,7 @@ CREATE TABLE PunishmentsLog
     id          BIGINT AUTO_INCREMENT NOT NULL,
     guildId     BIGINT                NOT NULL,
     userId     BIGINT                 NOT NULL,
+    moderId     BIGINT                 NOT NULL,
     action      INT                   NOT NULL,
     reason      VARCHAR(255)          NULL,
     creation        datetime              NULL,

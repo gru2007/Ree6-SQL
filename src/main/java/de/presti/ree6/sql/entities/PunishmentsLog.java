@@ -41,6 +41,11 @@ public class PunishmentsLog {
     long userId;
 
     /**
+     * The User ID.
+     */
+    long moderId;
+
+    /**
      * The reason for the kick and ban action.
      */
     String reason;
