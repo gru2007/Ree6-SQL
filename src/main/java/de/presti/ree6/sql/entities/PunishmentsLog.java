@@ -1,6 +1,7 @@
 package de.presti.ree6.sql.entities;
 
 import de.presti.ree6.sql.keys.GuildAndId;
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -33,6 +34,11 @@ public class PunishmentsLog {
      * The action (1 -> timeout, 2 -> kick, 3 -> warn)
      */
     int action;
+
+    /**
+     * The User ID.
+     */
+    long userId;
 
     /**
      * The reason for the kick and ban action.
