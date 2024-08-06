@@ -2313,6 +2313,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
             if (punishments.getId() <= 0) {
                 ((Punishments)r).getGuildAndId().setId(getNextId(r));
             }
+        } else if (r instanceof PunishmentsLog punishments) {
+            if (punishments.getId() <= 0) {
+                ((PunishmentsLog)r).getGuildAndId().setId(getNextId(r));
+            }
         } else if (r instanceof ScheduledMessage scheduledMessage) {
             if (scheduledMessage.getId() <= 0) {
                 ((ScheduledMessage)r).getGuildAndId().setId(getNextId(r));
