@@ -181,6 +181,14 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //endregion
 
+    //region Card
+
+    public Mono<Optional<UserRankCard>> getUserRankCard(long userId) {
+        return getEntity(new UserRankCard(), "FROM UserRankCard WHERE userId=:uid", Map.of("uid", userId));
+    }
+
+    //endregion
+
     //endregion
 
     //region Webhooks
