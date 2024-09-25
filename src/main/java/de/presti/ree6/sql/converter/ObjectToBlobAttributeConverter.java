@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.BufferedReader;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 /**
  * An AttributeConverter to allow us the usage of {@link T} in entities.
  */
+@Converter(autoApply = false)
 public class ObjectToBlobAttributeConverter<T> implements AttributeConverter<T, Blob> {
 
     /**

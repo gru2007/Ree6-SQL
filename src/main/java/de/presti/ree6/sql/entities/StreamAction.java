@@ -6,6 +6,9 @@ import de.presti.ree6.sql.keys.GuildAndName;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.sql.Types;
 
 @Getter
 @Setter
@@ -41,6 +44,7 @@ public class StreamAction {
     /**
      * The Actions that are to be executed.
      */
+    @JdbcTypeCode(value = Types.LONGVARBINARY)
     @Column(name = "actions")
     @Convert(converter = JsonToBlobAttributeConverter.class)
     JsonElement actions;

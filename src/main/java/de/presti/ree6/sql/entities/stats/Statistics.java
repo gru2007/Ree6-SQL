@@ -4,6 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.presti.ree6.sql.converter.JsonToBlobAttributeConverter;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.sql.Types;
 
 /**
  * SQL Entity for statistics.
@@ -41,6 +44,7 @@ public class Statistics {
     /**
      * The {@link JsonObject} with statistics.
      */
+    @JdbcTypeCode(value = Types.LONGVARBINARY)
     @Convert(converter = JsonToBlobAttributeConverter.class)
     @Column(name = "stats")
     JsonElement statsObject;

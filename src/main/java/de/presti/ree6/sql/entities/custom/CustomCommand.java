@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.sql.Types;
 
 /**
  * Entity class for the Custom commands.
@@ -53,6 +56,7 @@ public class CustomCommand {
     /**
      * The response of the command.
      */
+    @JdbcTypeCode(value = Types.LONGVARBINARY)
     @Convert(converter = JsonToBlobAttributeConverter.class)
     @Column(name = "responseEmbed")
     private JsonElement embedResponse;

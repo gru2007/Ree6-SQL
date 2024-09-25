@@ -1,15 +1,16 @@
 package de.presti.ree6.sql.converter;
 
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.Base64;
 
 /**
  * An AttributeConverter to allow us the usage of byte arrays in entities.
  */
+@Converter(autoApply = false)
 public class ByteToBlobAttributeConverter implements AttributeConverter<byte[], Blob> {
 
     /**

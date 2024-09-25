@@ -2329,7 +2329,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     private <R> long getNextId(R r) {
-        List<R> entityList = getEntityListInternal(r, "select max(guildAndId.id) from " + r.getClass().getName(), null, 1);
+        List<Long> entityList = getEntityListInternal(0L, "select max(guildAndId.id) from " + r.getClass().getName(), null, 1);
 
         if (entityList.isEmpty()) return 1;
 

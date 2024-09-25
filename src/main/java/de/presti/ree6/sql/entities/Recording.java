@@ -53,6 +53,7 @@ public class Recording {
     /**
      * An JsonArray containing the IDs of the Users who have participated in the Recording.
      */
+    @JdbcTypeCode(value = Types.LONGVARBINARY)
     @Convert(converter = JsonToBlobAttributeConverter.class)
     @Column(name = "participants")
     JsonElement jsonArray;

@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+
+import java.sql.Types;
 
 /**
  * Entity class for the Custom Events.
@@ -48,6 +51,7 @@ public class CustomEventAction {
     /**
      * The Actions that are to be executed.
      */
+    @JdbcTypeCode(value = Types.LONGVARBINARY)
     @Column(name = "actions")
     @Convert(converter = JsonToBlobAttributeConverter.class)
     JsonElement actions;

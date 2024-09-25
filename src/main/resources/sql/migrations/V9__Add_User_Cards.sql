@@ -1,7 +1,7 @@
 CREATE TABLE UserRankCard
 (
     userId   BIGINT NOT NULL,
-    rankCard MEDIUMBLOB NULL,
+    rankCard LONGBLOB NULL,
     CONSTRAINT pk_userrankcard PRIMARY KEY (userId)
 );
 

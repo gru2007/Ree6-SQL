@@ -2,6 +2,7 @@ package de.presti.ree6.sql.converter;
 
 import com.google.gson.*;
 import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 /**
  * An AttributeConverter to allow us the usage of JsonElements in entities.
  */
+@Converter(autoApply = false)
 public class JsonToBlobAttributeConverter implements AttributeConverter<JsonElement, Blob> {
 
     /**
