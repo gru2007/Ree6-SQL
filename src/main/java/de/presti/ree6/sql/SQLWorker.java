@@ -1731,9 +1731,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
                     return Optional.empty();
                 }
 
-                // Check if everything is alright with the config.
-                checkSetting(guildId, settingName);
-
                 defaultSetting.getSettingId().setGuildId(guildId);
                 return Optional.of(defaultSetting);
             }
@@ -1824,7 +1821,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @param setting the Setting itself.
+     *
+     * @deprecated This will loop through every setting and sets them every single time a config is being received.
      */
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public void checkSetting(long guildId, Setting setting) {
         checkSetting(guildId, setting.getName());
     }
@@ -1834,7 +1834,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId     the ID of the Guild.
      * @param settingName the Identifier of the Setting.
+     *
+     * @deprecated This will loop through every setting and sets them every single time a config is being received.
      */
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public void checkSetting(long guildId, String settingName) {
         // Check if the Setting exists in our Database.
         hasSetting(guildId, settingName).subscribe(hasSetting -> {
@@ -1849,7 +1852,10 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Create Settings entries for the Guild
      *
      * @param guildId the ID of the Guild.
+     *
+     * @deprecated This will loop through every setting and sets them every single time a config is being received.
      */
+    @Deprecated(forRemoval = true, since = "3.0.0")
     public void createSettings(long guildId) {
         SettingsManager.getSettings().forEach(setting -> hasSetting(guildId, setting).subscribe(hasSetting -> {
             // If not, then create every Setting that doesn't exist for the Guild.
