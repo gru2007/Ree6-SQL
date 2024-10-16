@@ -1865,6 +1865,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
         }));
     }
 
+    /**
+     * Create Settings entries for the commands on the Guild
+     *
+     * @param guildId the ID of the Guild.
+     */
+    public void createCommandSettings(long guildId) {
+        SettingsManager.getSettings().stream().filter(x -> x.getName().startsWith("command_")).forEach(setting -> hasSetting(guildId, setting).subscribe(hasSetting -> {
+            // If not, then create every Setting that doesn't exist for the Guild.
+            if (!hasSetting) {
+                setSetting(guildId, setting.getName(), setting.getDisplayName(), setting.getValue());
+            }
+        }));
+    }
+
     //endregion
 
     //endregion
