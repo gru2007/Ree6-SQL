@@ -15,7 +15,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ReactionRole")
+@Table(name = "ReactionRole", indexes = @Index(columnList = "roleId, guildId"))
 public class ReactionRole {
 
     /**

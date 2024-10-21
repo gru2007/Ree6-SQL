@@ -13,7 +13,7 @@ import java.sql.Types;
 @Getter
 @Setter
 @Entity
-@Table(name = "StreamActions")
+@Table(name = "StreamActions", indexes = @Index(columnList = "name, guildId"))
 public class StreamAction {
 
     /**

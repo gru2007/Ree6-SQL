@@ -16,7 +16,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "RSSFeed")
+@Table(name = "RSSFeed", indexes = @Index(columnList = "id, guildId"))
 public class RSSFeed extends WebhookSocial {
 
     /**

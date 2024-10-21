@@ -1821,7 +1821,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId the ID of the Guild.
      * @param setting the Setting itself.
-     *
      * @deprecated This will loop through every setting and sets them every single time a config is being received.
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
@@ -1834,7 +1833,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
      *
      * @param guildId     the ID of the Guild.
      * @param settingName the Identifier of the Setting.
-     *
      * @deprecated This will loop through every setting and sets them every single time a config is being received.
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
@@ -1852,7 +1850,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Create Settings entries for the Guild
      *
      * @param guildId the ID of the Guild.
-     *
      * @deprecated This will loop through every setting and sets them every single time a config is being received.
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
@@ -2191,72 +2188,44 @@ public record SQLWorker(SQLConnector sqlConnector) {
                 superFields = clazz.getSuperclass().getDeclaredFields();
             }
 
-            String hibernateQueryForId = "";
-
-            // TODO:: extract this to a method.
-
-            for (Field field : fields) {
-                if (field.isAnnotationPresent(Id.class)) {
-                    if (field.isAnnotationPresent(Column.class)) {
-                        Column column = field.getAnnotation(Column.class);
-                        if (column.name().equalsIgnoreCase("guildId")) {
-                            hibernateQueryForId = field.getName();
-                            break;
-                        }
-                    }
-                }
-
-                if (!field.isAnnotationPresent(EmbeddedId.class))
-                    continue;
-
-                Class<?> declaredClass = field.getDeclaringClass();
-
-                if (declaredClass.isAssignableFrom(GuildAndId.class) ||
-                        declaredClass.isAssignableFrom(GuildAndName.class) ||
-                        declaredClass.isAssignableFrom(GuildUserId.class) ||
-                        declaredClass.isAssignableFrom(GuildRoleId.class) ||
-                        declaredClass.isAssignableFrom(GuildChannelId.class) ||
-                        declaredClass.isAssignableFrom(GuildAndCode.class)) {
-
-                    hibernateQueryForId = field.getName() + ".guildId";
-                    break;
-                }
-            }
+            String hibernateQueryForId = getHibernateQueryForId(fields);
 
             if (hibernateQueryForId.isBlank() && superFields != null) {
-                for (Field field : superFields) {
-                    if (field.isAnnotationPresent(Id.class)) {
-                        if (field.isAnnotationPresent(Column.class)) {
-                            Column column = field.getAnnotation(Column.class);
-                            if (column.name().equalsIgnoreCase("guildId")) {
-                                hibernateQueryForId = field.getName();
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!field.isAnnotationPresent(EmbeddedId.class))
-                        continue;
-
-                    Class<?> declaredClass = field.getDeclaringClass();
-
-                    if (declaredClass.isAssignableFrom(GuildAndId.class) ||
-                            declaredClass.isAssignableFrom(GuildAndName.class) ||
-                            declaredClass.isAssignableFrom(GuildUserId.class) ||
-                            declaredClass.isAssignableFrom(GuildRoleId.class) ||
-                            declaredClass.isAssignableFrom(GuildChannelId.class) ||
-                            declaredClass.isAssignableFrom(GuildAndCode.class)) {
-
-                        hibernateQueryForId = field.getName() + ".guildId";
-                        break;
-                    }
-                }
+                hibernateQueryForId = getHibernateQueryForId(superFields);
             }
 
             if (!hibernateQueryForId.isBlank()) {
                 sqlConnector.query("delete " + clazz.getSimpleName() + " where " + hibernateQueryForId + " = :gid", Map.of("gid", guildId));
             }
         }
+    }
+
+    private String getHibernateQueryForId(Field[] fields) {
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Id.class) && field.isAnnotationPresent(Column.class)) {
+                Column column = field.getAnnotation(Column.class);
+                if (column.name().equalsIgnoreCase("guildId")) {
+                    return field.getName();
+                }
+            }
+
+            if (!field.isAnnotationPresent(EmbeddedId.class))
+                continue;
+
+            Class<?> declaredClass = field.getDeclaringClass();
+
+            if (declaredClass.isAssignableFrom(GuildAndId.class) ||
+                    declaredClass.isAssignableFrom(GuildAndName.class) ||
+                    declaredClass.isAssignableFrom(GuildUserId.class) ||
+                    declaredClass.isAssignableFrom(GuildRoleId.class) ||
+                    declaredClass.isAssignableFrom(GuildChannelId.class) ||
+                    declaredClass.isAssignableFrom(GuildAndCode.class)) {
+
+                return field.getName() + ".guildId";
+            }
+        }
+
+        return "";
     }
 
     //endregion
@@ -2303,18 +2272,9 @@ public record SQLWorker(SQLConnector sqlConnector) {
             }
         }
 
-        // TODO:: Need a better way to handle this.
-        if (r instanceof Punishments punishments) {
-            if (punishments.getId() <= 0) {
-                ((Punishments) r).getGuildAndId().setId(getNextId(r));
-            }
-        } else if (r instanceof ScheduledMessage scheduledMessage) {
-            if (scheduledMessage.getId() <= 0) {
-                ((ScheduledMessage) r).getGuildAndId().setId(getNextId(r));
-            }
-        } else if (r instanceof WebhookSocial webhookSocial) {
-            if (webhookSocial.getId() <= 0) {
-                ((WebhookSocial) r).getGuildAndId().setId(getNextId(r));
+        if (r instanceof GuildAndIdBaseEntity guildAndIdBaseEntity) {
+            if (guildAndIdBaseEntity.getId() <= 0) {
+                guildAndIdBaseEntity.getGuildAndId().setId(getNextId(r));
             }
         }
 

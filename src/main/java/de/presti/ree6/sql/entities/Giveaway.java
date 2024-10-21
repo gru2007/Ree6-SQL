@@ -2,6 +2,7 @@ package de.presti.ree6.sql.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.sql.Timestamp;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Giveaway")
+@Table(name = "Giveaway", indexes = @Index(columnList = "guildId"))
 public class Giveaway {
 
     /**

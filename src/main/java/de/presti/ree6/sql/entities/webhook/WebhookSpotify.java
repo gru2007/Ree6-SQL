@@ -3,6 +3,7 @@ package de.presti.ree6.sql.entities.webhook;
 import de.presti.ree6.sql.entities.webhook.base.WebhookSocial;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "SpotifyNotify")
+@Table(name = "SpotifyNotify", indexes = @Index(columnList = "id, guildId"))
 public class WebhookSpotify extends WebhookSocial {
 
     /**

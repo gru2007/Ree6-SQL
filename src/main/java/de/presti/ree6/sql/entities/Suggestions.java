@@ -11,7 +11,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "Suggestions")
+@Table(name = "Suggestions", indexes = @Index(columnList = "channelId, guildId"))
 public class Suggestions {
 
     /**

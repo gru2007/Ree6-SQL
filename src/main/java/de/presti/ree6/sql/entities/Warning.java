@@ -15,7 +15,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Warning")
+@Table(name = "Warning", indexes = @Index(columnList = "userId, guildId"))
 public class Warning {
 
     /**

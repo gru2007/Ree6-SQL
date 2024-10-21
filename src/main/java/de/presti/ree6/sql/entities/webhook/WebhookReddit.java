@@ -4,6 +4,7 @@ import de.presti.ree6.sql.entities.webhook.base.Webhook;
 import de.presti.ree6.sql.entities.webhook.base.WebhookSocial;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "RedditNotify")
+@Table(name = "RedditNotify", indexes = @Index(columnList = "id, guildId"))
 public class WebhookReddit extends WebhookSocial {
 
     /**

@@ -7,7 +7,7 @@ import jakarta.persistence.*;
  * Invite class to store information about an Invite.
  */
 @Entity
-@Table(name = "Invites")
+@Table(name = "Invites", indexes = @Index(columnList = "code, guildId"))
 public class Invite {
 
     /**

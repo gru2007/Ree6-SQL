@@ -8,7 +8,7 @@ import java.util.Date;
  * This class is used to represent a Birthday-Wish, in our Database.
  */
 @Entity
-@Table(name = "BirthdayWish")
+@Table(name = "BirthdayWish", indexes = @Index(columnList = "userId, guildId"))
 public class BirthdayWish {
 
 

@@ -15,7 +15,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Money_Holder")
+@Table(name = "Money_Holder", indexes = @Index(columnList = "userId, guildId"))
 public class MoneyHolder {
 
     /**

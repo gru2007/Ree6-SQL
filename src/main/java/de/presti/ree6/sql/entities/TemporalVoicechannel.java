@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "TemporalVoicechannel")
+@Table(name = "TemporalVoicechannel", indexes = @Index(columnList = "channelId, guildId"))
 public class TemporalVoicechannel {
 
     /**

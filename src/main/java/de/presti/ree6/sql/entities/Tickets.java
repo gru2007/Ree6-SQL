@@ -1,9 +1,6 @@
 package de.presti.ree6.sql.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -14,7 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Getter
 @Setter
 @Entity
-@Table(name = "Tickets")
+@Table(name = "Tickets", indexes = @Index(columnList = "channelId, guildId"))
 public class Tickets {
 
     /**

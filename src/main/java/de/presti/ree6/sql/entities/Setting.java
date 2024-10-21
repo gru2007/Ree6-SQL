@@ -19,7 +19,7 @@ import java.sql.Types;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Settings")
+@Table(name = "Settings", indexes = @Index(columnList = "name, guildId"))
 public class Setting {
 
     /**

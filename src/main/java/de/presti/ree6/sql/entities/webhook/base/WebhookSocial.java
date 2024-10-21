@@ -1,5 +1,6 @@
 package de.presti.ree6.sql.entities.webhook.base;
 
+import de.presti.ree6.sql.entities.GuildAndIdBaseEntity;
 import de.presti.ree6.sql.keys.GuildAndId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,13 +16,7 @@ import lombok.Setter;
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
-public class WebhookSocial {
-
-    /**
-     * The ID of the Entity.
-     */
-    @EmbeddedId
-    GuildAndId guildAndId;
+public class WebhookSocial extends GuildAndIdBaseEntity {
 
     @Column(name = "channel", nullable = false)
     long channelId = 0;
@@ -51,38 +46,5 @@ public class WebhookSocial {
         this.channelId = channelId;
         this.webhookId = webhookId;
         this.token = token;
-    }
-
-    /**
-     * Get the ID of the Webhook.
-     * @return The ID of the Webhook.
-     */
-    public long getId() {
-        if (guildAndId == null)
-            return -1;
-
-        return guildAndId.getId();
-    }
-
-    /**
-     * Set the GuildID of the Webhook.
-     * @param guildId The GuildID of the Webhook.
-     */
-    public void setGuildId(long guildId) {
-        if (guildAndId == null)
-            this.guildAndId = new GuildAndId(guildId);
-        else
-            this.guildAndId.setGuildId(guildId);
-    }
-
-    /**
-     * Get the GuildID of the Webhook.
-     * @return The GuildID of the Webhook.
-     */
-    public long getGuildId() {
-        if (guildAndId == null)
-            return -1;
-
-        return guildAndId.getGuildId();
     }
 }

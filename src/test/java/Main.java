@@ -1,5 +1,6 @@
 import de.presti.ree6.sql.DatabaseTyp;
 import de.presti.ree6.sql.SQLSession;
+import de.presti.ree6.sql.entities.level.ChatUserLevel;
 import de.presti.ree6.sql.entities.webhook.WebhookYouTube;
 import de.presti.ree6.sql.util.SQLConfig;
 
@@ -38,6 +39,7 @@ public class Main {
         SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Warning(), "", null).block();
         SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.Giveaway(), "", null).block();
         SQLSession.getSqlConnector().getSqlWorker().getEntityList(new de.presti.ree6.sql.entities.roles.AutoRole(), "", null).block();
+        ChatUserLevel level = SQLSession.getSqlConnector().getSqlWorker().getChatLevelData(0, 2).block();
     }
 
 }

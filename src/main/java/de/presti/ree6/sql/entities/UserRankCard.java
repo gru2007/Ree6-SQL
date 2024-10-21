@@ -10,7 +10,7 @@ import java.sql.Types;
 @Entity
 @Getter
 @Setter
-@Table(name = "UserRankCard")
+@Table(name = "UserRankCard", indexes = @Index(columnList = "userId"))
 public class UserRankCard {
 
     /**

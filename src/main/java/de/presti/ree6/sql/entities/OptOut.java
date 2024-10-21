@@ -7,7 +7,7 @@ import jakarta.persistence.*;
  * Class that represents the OptOut Database Entity.
  */
 @Entity
-@Table(name = "Opt_out")
+@Table(name = "Opt_out", indexes = @Index(columnList = "userId, guildId"))
 public class OptOut {
 
     /**

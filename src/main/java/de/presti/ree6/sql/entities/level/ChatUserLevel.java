@@ -1,8 +1,7 @@
 package de.presti.ree6.sql.entities.level;
 
-import de.presti.ree6.sql.SQLSession;
-import de.presti.ree6.sql.util.LevelUtil;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
 /**
@@ -10,7 +9,7 @@ import jakarta.persistence.Table;
  * Experience and their Level.
  */
 @Entity
-@Table(name = "Level")
+@Table(name = "Level", indexes = @Index(columnList = "userId, guildId"))
 public class ChatUserLevel extends UserLevel {
 
     /**

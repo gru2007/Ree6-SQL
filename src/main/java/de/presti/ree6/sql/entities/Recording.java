@@ -14,7 +14,7 @@ import java.util.Base64;
  * This class is used to represent a Ree6-Voice-Recording, in our Database.
  */
 @Entity
-@Table(name = "Recording")
+@Table(name = "Recording", indexes = @Index(columnList = "id, guildId"))
 public class Recording {
 
     /**
