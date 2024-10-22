@@ -1817,52 +1817,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
     }
 
     /**
-     * Check if there is an entry for the Setting, if not, create one for every Setting that doesn't have an entry.
-     *
-     * @param guildId the ID of the Guild.
-     * @param setting the Setting itself.
-     * @deprecated This will loop through every setting and sets them every single time a config is being received.
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    public void checkSetting(long guildId, Setting setting) {
-        checkSetting(guildId, setting.getName());
-    }
-
-    /**
-     * Check if there is an entry for the Setting, if not, create one for every Setting that doesn't have an entry.
-     *
-     * @param guildId     the ID of the Guild.
-     * @param settingName the Identifier of the Setting.
-     * @deprecated This will loop through every setting and sets them every single time a config is being received.
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    public void checkSetting(long guildId, String settingName) {
-        // Check if the Setting exists in our Database.
-        hasSetting(guildId, settingName).subscribe(hasSetting -> {
-            // If not then creat every Setting that doesn't exist for the Guild.
-            if (!hasSetting) {
-                createSettings(guildId);
-            }
-        });
-    }
-
-    /**
-     * Create Settings entries for the Guild
-     *
-     * @param guildId the ID of the Guild.
-     * @deprecated This will loop through every setting and sets them every single time a config is being received.
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    public void createSettings(long guildId) {
-        SettingsManager.getSettings().forEach(setting -> hasSetting(guildId, setting).subscribe(hasSetting -> {
-            // If not, then create every Setting that doesn't exist for the Guild.
-            if (!hasSetting) {
-                setSetting(guildId, setting.getName(), setting.getDisplayName(), setting.getValue());
-            }
-        }));
-    }
-
-    /**
      * Create Settings entries for the commands on the Guild
      *
      * @param guildId the ID of the Guild.
@@ -2232,20 +2186,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //region Entity-System
 
-
-    /**
-     * Update an Entity in the Database.
-     *
-     * @param <R> The Class-Entity.
-     * @param r   The Class-Entity to update.
-     * @return the new update entity.
-     * @deprecated This method is only here to make it easier to find methods that need to be updated.
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    public <R> Mono<R> updateEntity(Optional<R> r) {
-        return r.map(this::updateEntity).orElseGet(Mono::empty);
-    }
-
     /**
      * Update an Entity in the Database.
      *
@@ -2322,18 +2262,6 @@ public record SQLWorker(SQLConnector sqlConnector) {
         }
 
         return maxId + 1;
-    }
-
-    /**
-     * Delete an entity from the database
-     *
-     * @param <R> The Class-Entity.
-     * @param r   The Class-Entity to delete.
-     * @deprecated This method is only here to make it easier to find methods that need to be updated.
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    public <R> Mono<Void> deleteEntity(Optional<R> r) {
-        return r.map(this::deleteEntity).orElse(Mono.empty());
     }
 
     /**

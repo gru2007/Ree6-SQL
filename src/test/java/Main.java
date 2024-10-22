@@ -25,13 +25,13 @@ public class Main {
 
         new SQLSession(sqlConfig);
 
-        if (sqlConfig.getTyp() == DatabaseTyp.SQLite) {
+        /*if (sqlConfig.getTyp() == DatabaseTyp.SQLite) {
             SQLSession.getSqlConnector().querySQL("PRAGMA foreign_keys = ON;", true, (Object[]) null);
 
             if (SQLSession.getSqlConnector().querySQL("PRAGMA foreign_keys;", false, (Object[]) null) instanceof ResultSet resultSet) {
                 System.out.println(resultSet.getBoolean(1));
             }
-        }
+        }*/
 
         WebhookYouTube hook = new WebhookYouTube(-1, "test", "test", -1, -1, "test");
         SQLSession.getSqlConnector().getSqlWorker().updateEntity(hook).block();
