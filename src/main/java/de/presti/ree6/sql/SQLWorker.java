@@ -1540,7 +1540,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode the Code of the Invite.
      */
     public void removeInvite(long guildId, String inviteCode) {
-        deleteEntityInternally(getInvite(guildId, inviteCode));
+        getInvite(guildId, inviteCode).subscribe(x -> x.ifPresent(this::deleteEntityInternally));
     }
 
     /**
@@ -1600,7 +1600,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteCode    the Code of the Invite.
      */
     public void removeInvite(long guildId, long inviteCreator, String inviteCode) {
-        deleteEntityInternally(getInvite(guildId, inviteCreator, inviteCode));
+        getInvite(guildId, inviteCreator, inviteCode).subscribe(x -> x.ifPresent(this::deleteEntityInternally));
     }
 
     /**
@@ -1612,7 +1612,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param inviteUsage   the usage count of the Invite.
      */
     public void removeInvite(long guildId, long inviteCreator, String inviteCode, long inviteUsage) {
-        deleteEntityInternally(getInvite(guildId, inviteCreator, inviteCode, inviteUsage));
+        getInvite(guildId, inviteCreator, inviteCode, inviteUsage).subscribe(x -> x.ifPresent(this::deleteEntityInternally));
     }
 
     /**
@@ -2075,7 +2075,7 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * @param userId  the ID of the User.
      */
     public void removeBirthday(long guildId, long userId) {
-        getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)).subscribe(this::deleteEntityInternally);
+        getEntity(new BirthdayWish(), "FROM BirthdayWish WHERE guildId=:gid AND userId=:uid", Map.of("gid", guildId, "uid", userId)).subscribe(x -> x.ifPresent(this::deleteEntityInternally));
     }
 
     /**
