@@ -1741,10 +1741,20 @@ public record SQLWorker(SQLConnector sqlConnector) {
      * Get the every Setting by the Guild.
      *
      * @param guildId the ID of the Guild.
+     * @param loadDefaults if the default settings should be loaded into the list as well.
      * @return {@link List<Setting>} which is a List with every Setting that stores every information needed.
      */
-    public Mono<List<Setting>> getAllSettings(long guildId) {
-        return getEntityList(new Setting(), "FROM Setting WHERE settingId.guildId = :gid", Map.of("gid", guildId));
+    public Mono<List<Setting>> getAllSettings(long guildId, boolean loadDefaults) {
+        return getEntityList(new Setting(), "FROM Setting WHERE settingId.guildId = :gid", Map.of("gid", guildId)).map(x -> {
+            if (loadDefaults) {
+                SettingsManager.getSettings().forEach(setting -> {
+                    if (x.stream().noneMatch(y -> y.getName().equalsIgnoreCase(setting.getName()))) {
+                        x.add(setting);
+                    }
+                });
+            }
+            return x;
+        });
     }
 
     /**
